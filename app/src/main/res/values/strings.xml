@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Boiler-CommsLogin</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign Up with New Account</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="email_taken">That email is already in use</string>
+    <string name="username_taken">That username is already in use</string>
+    <string name="username_and_email_taken">Both that username and that email are in use</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid email</string>
+    <string name="invalid_password">Password must be > 9 characters and contain numbers/characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="BoilerComms">"Boiler-Comms"</string>
+    <string name="login">Login</string>
+    <string name="PurdueLogo">Purdue Logo</string>
+    <string name="sign_up">"Sign Up"</string>
+    <string name="prompt_username">UserName</string>
+    <string name="invalid_email">Not a valid email </string>
+    <string name="invalid_confirm_password">Passwords must match</string>
+    <string name="first_name">"First Name"</string>
+    <string name="last_name">"Last Name"</string>
+    <string name="delete_account">"Delete Account"</string>
+    <string name="change_profile_picture">"Change Profile Picture"</string>
+    <string name="save_changes">"Save Changes"</string>
+    <string name="confirm_password">"Confirm Password"</string>
+    <string name="todo">TODO</string>
+</resources>
