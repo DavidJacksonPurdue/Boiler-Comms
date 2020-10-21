@@ -12,6 +12,8 @@ import android.os.AsyncTask;
 import android.widget.TextView;
 import android.util.Log;
 
+import com.example.boiler_commslogin.Constants;
+
 public class LoginModel extends AsyncTask{
 
     private TextView statusField,roleField;
@@ -32,7 +34,7 @@ public class LoginModel extends AsyncTask{
             String password = (String)objects[1];
 
             /* Create the url request string using the parameters*/
-            String link = "http://10.0.2.2:63343/PHP_TEST2BOYS/Login.php?q=" + email + "_" + password;
+            String link = Constants.LOGIN + email + "_" + password;
 
             /* Create a new url */
             URL url = new URL(link);

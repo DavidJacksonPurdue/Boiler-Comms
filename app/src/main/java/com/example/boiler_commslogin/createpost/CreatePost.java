@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.example.boiler_commslogin.Constants;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,7 +51,7 @@ public class CreatePost extends AsyncTask {
         String base64Image = "data:image/;" + filetype + ";base64," + ((String) objects[6]);
         Log.d("b64", base64Image);
         try {
-            url = new URL("http://10.0.2.2:63343/PHP_TEST2BOYS/createPost.php?q=" + userID + "_" + postID + "_" + topicID + "_" + postName + "_" + postText + "_" + postDate);
+            url = new URL(Constants.CREATE_POST + userID + "_" + postID + "_" + topicID + "_" + postName + "_" + postText + "_" + postDate);
             Log.d("URL", url.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -84,7 +86,7 @@ public class CreatePost extends AsyncTask {
             con.connect();
         } catch (IOException e) {
             e.printStackTrace();
-            Log.d("WRITE", "Writing error I guess");
+            Log.d("WRITE", "Writing error");
             return "Error";
         }
         int status = 0;

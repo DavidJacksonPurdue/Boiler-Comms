@@ -8,6 +8,9 @@ import java.net.URL;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.TextView;
+
+import com.example.boiler_commslogin.Constants;
+
 public class SignUpModel extends AsyncTask{
 
         private TextView statusField,roleField;
@@ -30,8 +33,7 @@ public class SignUpModel extends AsyncTask{
             String password = (String)objects[4];
 
             /* Create the url request string using the parameters*/
-            String link = "http://10.0.2.2:63343/PHP_TEST2BOYS/insertUser.php?q=1_"+username+"_"+first_name+"_"+
-                    last_name+"_"+email+"_"+password+"_null";
+            String link = Constants.INSERTUSER + username + "_" + first_name + "_" + last_name + "_" + email + "_" + password + "_null";
 
             /* Create a new url */
             URL url = new URL(link);
