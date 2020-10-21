@@ -9,6 +9,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.TextView;
 
+import com.example.boiler_commslogin.Constants;
+
 public class topicModel extends AsyncTask{
 
     private TextView statusField,roleField;
@@ -28,7 +30,7 @@ public class topicModel extends AsyncTask{
             String topicName = (String)objects[1];
 
             /* Create the url request string using the parameters*/
-            String link = "http://10.0.2.2:63343/PHP_TEST2BOYS/insertTopic.php?q="+topicId+"_"+topicName;
+            String link = Constants.INSERTOPIC + topicId + "_" + topicName;
 
             /* Create a new url */
             URL url = new URL(link);

@@ -13,6 +13,9 @@ import java.net.URLEncoder;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.TextView;
+
+import com.example.boiler_commslogin.Constants;
+
 // Written by Nick Rosato
 // Delete an account from the mySQL database
 // Access the database through a PHP link
@@ -31,7 +34,7 @@ public class deleteUser extends AsyncTask{
         try {
             /* Create the url request string using the parameters*/
             // the link is made for a simulator device on a localhost server
-            String link = "http://10.0.2.2:63343/PHP_TEST2BOYS/deleteUser.php?q=" + this.userID;
+            String link = Constants.DELETEUSER + this.userID;
             /* Create a new url */
             URL url = new URL(link);
             /* Open a connection */

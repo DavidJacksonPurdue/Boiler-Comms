@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.loader.content.AsyncTaskLoader;
 
+import com.example.boiler_commslogin.Constants;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,7 +57,7 @@ public class SendUserCredentials extends AsyncTask {
         String filetype = (String)objects[7];
         String base64Image = "data:image/;" + filetype +";base64," + ((String)objects[6]);
         try {
-            url = new URL("http://10.0.2.2:63343/PHP_TEST2BOYS/uploadFile2.php?q=" + userID + "_" + username + "_" +  firstname + "_" + lastname + "_" + email + "_" + password);
+            url = new URL(Constants.UPLOADFILE2 + userID + "_" + username + "_" +  firstname + "_" + lastname + "_" + email + "_" + password);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

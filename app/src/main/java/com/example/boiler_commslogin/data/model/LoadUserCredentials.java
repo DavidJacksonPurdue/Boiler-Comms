@@ -7,6 +7,8 @@ import android.widget.TextView;
 
 import androidx.loader.content.AsyncTaskLoader;
 
+import com.example.boiler_commslogin.Constants;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,7 +38,7 @@ public class LoadUserCredentials extends AsyncTask {
         URL url = null;
         String userID = (String)objects[0];
         try {
-            url = new URL("http://10.0.2.2:63343/PHP_TEST2BOYS/getUserCredentials.php?q=" + objects[0].toString());
+            url = new URL(Constants.GETUSERCREDENTIALS + objects[0].toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

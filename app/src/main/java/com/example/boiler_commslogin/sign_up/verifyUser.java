@@ -2,6 +2,8 @@ package com.example.boiler_commslogin.sign_up;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.TextView;
+
+import com.example.boiler_commslogin.Constants;
 import com.example.boiler_commslogin.R;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,7 +28,7 @@ public class verifyUser extends AsyncTask {
             String email = (String)objects[1];
 
             /* Create the url request string using the parameters*/
-            String link = "http://10.0.2.2:63343/PHP_TEST2BOYS/verifyUser.php?q="+username+"_"+email;
+            String link = Constants.VERIFYUSER + username + "_" + email;
 
             /* Create a new url */
             URL url = new URL(link);

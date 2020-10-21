@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.boiler_commslogin.Constants;
 import com.example.boiler_commslogin.R;
 import com.example.boiler_commslogin.createpost.CreatePostActivity;
 import com.example.boiler_commslogin.ui.login.EditUserProfile;
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             URL url = null;
             String userID = (String)objects[0];
             try {
-                url = new URL("http://10.0.2.2:63343/PHP_TEST2BOYS/getPost.php?q=" + objects[0].toString());
+                url = new URL(Constants.GETPOST + objects[0].toString());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
