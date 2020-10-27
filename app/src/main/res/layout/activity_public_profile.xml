@@ -31,7 +31,7 @@
         app:layout_constraintVertical_bias="0.153"
         app:srcCompat="@drawable/ic_emoji_emotions_24px"
         tools:srcCompat="@drawable/ic_emoji_emotions_24px"
-        tools:ignore="VectorDrawableCompat" />
+        tools:ignore="ContentDescription,VectorDrawableCompat" />
 
     <TextView
         android:id="@+id/user"
