@@ -70,8 +70,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class EditUserProfile extends AppCompatActivity {
-    public static final String UPLOAD_URL = "http://10.0.2.2:63343/PHP_TEST2BOYS/postUserCredentials.php";
+public class PublicProfilePage extends AppCompatActivity {
     public static final String UPLOAD_KEY = "image";
 
     private int PICK_IMAGE_REQUEST = 1;
@@ -155,88 +154,6 @@ public class EditUserProfile extends AppCompatActivity {
             profilePicImageView.setImageBitmap(decodedByte);
         }
 
-        EditUser_LoginViewModel.getLoginFromState().observe(this, new Observer<Edit_User_LoginFromState>() {
-            @Override
-            public void onChanged(@Nullable Edit_User_LoginFromState Edit_User_LoginFromState) {
-                if (Edit_User_LoginFromState == null) {
-                    return;
-                }
-                loginButton.setEnabled(Edit_User_LoginFromState.isDataValid());
-                if (Edit_User_LoginFromState.getUsernameError() != null) {
-                    emailEditText.setError(getString(Edit_User_LoginFromState.getUsernameError()));
-                }
-                if (Edit_User_LoginFromState.getPasswordError() != null) {
-                    passwordEditText.setError(getString(Edit_User_LoginFromState.getPasswordError()));
-                }
-                if (Edit_User_LoginFromState.getConfirmPasswordError() != null) {
-                    confirmPasswordEditText.setError(getString(Edit_User_LoginFromState.getConfirmPasswordError()));
-                }
-            }
-        });
-
-        EditUser_LoginViewModel.getLoginResult().observe(this, new Observer<EditLoginResult>() {
-            @Override
-            public void onChanged(@Nullable EditLoginResult loginResult) {
-                if (loginResult == null) {
-                    return;
-                }
-                loadingProgressBar.setVisibility(View.GONE);
-                if (loginResult.getError() != null) {
-                    showLoginFailed(loginResult.getError());
-                }
-                if (loginResult.getSuccess() != null) {
-                    updateUiWithUser(loginResult.getSuccess());
-                }
-                setResult(Activity.RESULT_OK);
-
-                //Complete and destroy login activity once successful
-                finish();
-            }
-        });
-
-        TextWatcher afterTextChangedListener = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // ignore
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ignore
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                EditUser_LoginViewModel.loginDataChanged(emailEditText.getText().toString(),
-                        passwordEditText.getText().toString(), confirmPasswordEditText.getText().toString());
-            }
-        };
-        emailEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.addTextChangedListener(afterTextChangedListener);
-        confirmPasswordEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    EditUser_LoginViewModel.login(emailEditText.getText().toString(),
-                            passwordEditText.getText().toString(), confirmPasswordEditText.getText().toString());
-                }
-                return false;
-            }
-        });
-        confirmPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    EditUser_LoginViewModel.login(emailEditText.getText().toString(),
-                            passwordEditText.getText().toString(), confirmPasswordEditText.getText().toString());
-                }
-                return false;
-            }
-        });
-
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -316,62 +233,6 @@ public class EditUserProfile extends AppCompatActivity {
                 startActivityForResult(gallery, PICK_IMAGE);
             }
         });
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogTheme);
-        builder.setTitle("Delete Account?");
-        builder.setMessage("Are you sure you want to delete your account? This action cannot be undone.");
-        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String del_result = "";
-                try {
-                    del_result = (String) new deleteUser(getApplicationContext(), getIntent().getStringExtra("USERID")).execute().get(2000, TimeUnit.MILLISECONDS);
-                }catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (TimeoutException e) {
-                    e.printStackTrace();
-                }
-                if (del_result.equals("Success")) {
-                    Toast.makeText(getApplicationContext(), "Bye Bye", Toast.LENGTH_LONG).show();
-                    setContentView(R.layout.activity_login);
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(intent);
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "Delete user failed. Try Again", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "Cancel", Toast.LENGTH_LONG).show();
-            }
-        });
-        builder.setIcon(android.R.drawable.ic_dialog_alert);
-
-
-        deletebutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                dialog.getButton(-1).setVisibility(View.VISIBLE);
-                dialog.getButton(-2).setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
-    private void updateUiWithUser(EditLoggedInUserView model) {
-        String welcome = getString(R.string.welcome) + model.getDisplayName();
-        // TODO : initiate successful logged in experience
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-    }
-
-    private void showLoginFailed(@StringRes Integer errorString) {
-        Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
     private String uriToBitmap(Uri selectedFileUri) {
@@ -413,58 +274,4 @@ public class EditUserProfile extends AppCompatActivity {
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
     }
-    String getFileName(Uri uri){
-        String result = null;
-        if (uri.getScheme().equals("content")) {
-            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                }
-            } finally {
-                cursor.close();
-            }
-        }
-        if (result == null) {
-            result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(cut + 1);
-            }
-        }
-        return result;
-    }
-    private void uploadImage(){
-        class UploadImage extends AsyncTask<Bitmap,Void,String> {
-            RequestHandler rh = new RequestHandler();
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            protected String doInBackground(Bitmap... params) {
-                Bitmap bitmap = params[0];
-                String uploadImage = getStringImage(bitmap);
-
-                HashMap<String,String> data = new HashMap<>();
-                data.put(UPLOAD_KEY, uploadImage);
-                data.put("name",getFileName(filePath));
-
-                String result = rh.postRequest(UPLOAD_URL,data);
-                return result;
-            }
-        }
-
-        UploadImage ui = new UploadImage();
-        ui.execute(bitmap);
-    }
-
 }
