@@ -158,11 +158,13 @@ public class PublicProfilePage extends AppCompatActivity {
         profileFirstName.setText(firstName);
         profileLastName.setText(lastName);
 
-        if(!img.equals("null")) {
-            String base64Image = img.split(",")[1];
-            byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            profilePic.setImageBitmap(decodedByte);
+        if (img != null) {
+            if (!img.equals("null")) {
+                String base64Image = img.split(",")[1];
+                byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                profilePic.setImageBitmap(decodedByte);
+            }
         }
 
         backButton.setOnClickListener(new View.OnClickListener() {

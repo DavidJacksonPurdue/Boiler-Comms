@@ -80,17 +80,28 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             final int position = itemView.getId();
+            final int username_pos = 0;
+            final int topic_pos = 1;
+            int body_pos = 2;
             username = itemView.findViewById(R.id.username);
             time = itemView.findViewById(R.id.time);
             title = itemView.findViewById(R.id.title);
             body = itemView.findViewById(R.id.body);
             topic = itemView.findViewById(R.id.topic);
             image = itemView.findViewById(R.id.image);
-            itemView.setOnClickListener(new View.OnClickListener() {
+            username.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(myOnItemClickListener != null) {
-                        myOnItemClickListener.onItemSelected(position, v, username.getText().toString());
+                        myOnItemClickListener.onItemSelected(username_pos, v, username.getText().toString());
+                    }
+                }
+            });
+            topic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (myOnItemClickListener != null) {
+                        myOnItemClickListener.onItemSelected(topic_pos, v, topic.getText().toString());
                     }
                 }
             });

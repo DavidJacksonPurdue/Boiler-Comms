@@ -37,7 +37,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class MainActivity extends AppCompatActivity {
+public class TopicTimeline extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ArrayList<String> username = new ArrayList<>();
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             URL url = null;
             String userID = (String)objects[0];
             try {
-                url = new URL(Constants.GETPOST + objects[0].toString());
+                url = new URL(Constants.GETPOSTTOPIC + objects[0].toString());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_topic_timeline);
         //setContentView(R.layout.activity_login);
 
         recyclerView = findViewById(R.id.recyclerView);
