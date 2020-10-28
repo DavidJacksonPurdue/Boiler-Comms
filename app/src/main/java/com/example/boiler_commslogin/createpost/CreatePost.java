@@ -119,69 +119,6 @@ public class CreatePost extends AsyncTask {
 
         userCredentials =  content.toString();
 
-        // create a new votes query for the new post
-        String upvotes = "0";
-        String downvotes = "0";
-        String vote_total = "0";
-
-        try {
-            url = new URL(Constants.UPDATEVOTES + upvotes + "_" + downvotes + "_" + vote_total + "_" + postID);
-            Log.d("URL", url.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            Log.d("URL", url.toString());
-            return "Error";
-        }
-        con = null;
-
-        try {
-            con = (HttpURLConnection) url.openConnection();
-            con.setDoOutput(true);
-            con.setDoInput(true);
-            con.setRequestMethod("POST");
-            con.setFixedLengthStreamingMode(data.getBytes().length);
-            con.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-
-            OutputStream out = new BufferedOutputStream(con.getOutputStream());
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-            writer.write(data);
-            writer.flush();
-            writer.close();
-            out.close();
-            con.connect();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d("WRITE", "Writing error");
-            return "Error";
-        }
-        status = 0;
-        in = null;
-        content = new StringBuilder();
-        try {
-            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-
-            while (true) {
-
-                inputLine = in.readLine();
-                if(inputLine == null){
-                    break;
-                }
-                content.append(inputLine);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.d("CONTENTLOG",content.toString());
-        try {
-            if(in != null) {
-                in.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         return "Success";
     }
 
