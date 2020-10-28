@@ -34,7 +34,7 @@ public class SignUpModel extends AsyncTask{
 
             /* Create the url request string using the parameters*/
             String link = Constants.INSERTUSER + username + "_" + first_name + "_" + last_name + "_" + email + "_" + password + "_null";
-
+            System.out.println(link);
             /* Create a new url */
             URL url = new URL(link);
 
