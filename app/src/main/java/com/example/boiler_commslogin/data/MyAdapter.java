@@ -18,7 +18,7 @@ import com.example.boiler_commslogin.R;
 import java.util.ArrayList;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-    ArrayList<String> username, topic, title, body, image, time;
+    private ArrayList<String> username, topic, title, body, image, time;
     Context context;
     public MyAdapter(Context context, ArrayList<String> username, ArrayList<String> topic, ArrayList<String> title, ArrayList<String> body,
                      ArrayList<String> image, ArrayList<String> time) {
@@ -30,7 +30,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         this.title = title;
         this.image = image;
     }
-
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -56,6 +55,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         }
     }
 
+    private OnItemClickListener myOnItemClickListener;
+
+    public void setMyOnItemClickListener(OnItemClickListener listener) {
+        myOnItemClickListener = listener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemSelected(int position, View view, Object object);
+    }
+
     @Override
     public int getItemCount() {
         return body.size();
@@ -70,12 +79,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            final int position = itemView.getId();
             username = itemView.findViewById(R.id.username);
             time = itemView.findViewById(R.id.time);
             title = itemView.findViewById(R.id.title);
             body = itemView.findViewById(R.id.body);
             topic = itemView.findViewById(R.id.topic);
             image = itemView.findViewById(R.id.image);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(myOnItemClickListener != null) {
+                        myOnItemClickListener.onItemSelected(position, v, username.getText().toString());
+                    }
+                }
+            });
         }
     }
 }

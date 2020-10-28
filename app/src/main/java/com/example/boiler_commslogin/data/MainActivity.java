@@ -188,12 +188,26 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time);
+        myAdapter.setMyOnItemClickListener(new MyAdapter.OnItemClickListener() {
+            @Override
+            public void onItemSelected(int position, View view, Object object) {
+                setContentView(R.layout.activity_public_profile);
+                Intent intent = new Intent(getApplicationContext(), PublicProfilePage.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("PUBLIC_USER", object.toString());
+                startActivity(intent);
+            }
+        });
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         final Button settings = findViewById(R.id.settings);
         final Button logout = findViewById(R.id.logout);
         final Button createPost = findViewById(R.id.createPost);
+
+
 
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
