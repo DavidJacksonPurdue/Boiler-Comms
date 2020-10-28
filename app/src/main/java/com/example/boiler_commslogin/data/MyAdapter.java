@@ -19,7 +19,7 @@ import com.example.boiler_commslogin.R;
 import java.util.ArrayList;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-    ArrayList<String> username, topic, title, body, image, time; //votecount;
+    ArrayList<String> username, topic, title, body, image, time, votecount;
     Context context;
 
     private OnItemClickListener listener;
@@ -33,7 +33,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     }
 
     public MyAdapter(Context context, ArrayList<String> username, ArrayList<String> topic, ArrayList<String> title, ArrayList<String> body,
-                     ArrayList<String> image, ArrayList<String> time) {  //ArrayList<String> votecount) {
+                     ArrayList<String> image, ArrayList<String> time, ArrayList<String> votecount) {
         this.context = context;
         this.username = username;
         this.topic = topic;
@@ -41,7 +41,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         this.time = time;
         this.title = title;
         this.image = image;
-      //  this.votecount = votecount;
+        this.votecount = votecount;
     }
 
     @NonNull
@@ -61,6 +61,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         holder.time.setText(time.get(position));
         holder.title.setText(title.get(position));
         String img = image.get(position).toString();
+        holder.votecount.setText(votecount.get(position).toString());
         if(!img.equals("null")) {
             String base64Image = img.split(",")[1];
             byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
@@ -93,7 +94,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             image = itemView.findViewById(R.id.image);
             upvote = itemView.findViewById(R.id.upvote_button);
             downvote = itemView.findViewById(R.id.downvote_button);
-      //      votecount = itemView.findViewById(R.id.vote_count);
+            votecount = itemView.findViewById(R.id.vote_count);
 
             final int upvote_id = 0;
             final int downvote_id = 1;

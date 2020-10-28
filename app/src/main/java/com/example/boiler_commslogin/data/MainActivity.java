@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> body = new ArrayList<>();
     ArrayList<String> image = new ArrayList<>();
     ArrayList<String> time = new ArrayList<>();
-    //ArrayList<String> votecount = new ArrayList<>();
+    ArrayList<String> votecount = new ArrayList<>();
 
     public class LoadUserCredentialsPost extends AsyncTask {
         //private TextView statusField,roleField;
@@ -118,13 +118,13 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
-            username.add(getIntent().getStringExtra("USERNAME"));
+            username.add(getIntent().getStringExtra("userName"));
             topic.add(obj.getString("topicName"));
             title.add(obj.getString("postName"));
             time.add(obj.getString("postDate"));
             image.add(obj.getString("postImage"));
             body.add(obj.getString("postText"));
-            //votecount.add(obj.getString(""));
+            votecount.add(obj.getString("upvoteCount"));
 
         }
     }
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time);
+        MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time, votecount);
         final int upvote_id = 0;
         final int downvote_id = 1;
         myAdapter.setListener(new MyAdapter.OnItemClickListener() {
