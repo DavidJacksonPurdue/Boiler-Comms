@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,10 +19,21 @@ import com.example.boiler_commslogin.R;
 import java.util.ArrayList;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-    ArrayList<String> username, topic, title, body, image, time;
+    ArrayList<String> username, topic, title, body, image, time; //votecount;
     Context context;
+
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemSelected(int position, View view, Object object);
+    }
+
+    public void setListener(OnItemClickListener l) {
+        this.listener = l;
+    }
+
     public MyAdapter(Context context, ArrayList<String> username, ArrayList<String> topic, ArrayList<String> title, ArrayList<String> body,
-                     ArrayList<String> image, ArrayList<String> time) {
+                     ArrayList<String> image, ArrayList<String> time) {  //ArrayList<String> votecount) {
         this.context = context;
         this.username = username;
         this.topic = topic;
@@ -29,6 +41,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         this.time = time;
         this.title = title;
         this.image = image;
+      //  this.votecount = votecount;
     }
 
     @NonNull
@@ -63,8 +76,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView time, title, body, username, topic;
+        TextView time, title, body, username, topic, votecount;
         ImageView image;
+        Button upvote;
+        Button downvote;
 
 
 
@@ -76,6 +91,31 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             body = itemView.findViewById(R.id.body);
             topic = itemView.findViewById(R.id.topic);
             image = itemView.findViewById(R.id.image);
+            upvote = itemView.findViewById(R.id.upvote_button);
+            downvote = itemView.findViewById(R.id.downvote_button);
+      //      votecount = itemView.findViewById(R.id.vote_count);
+
+            final int upvote_id = 0;
+            final int downvote_id = 1;
+
+            upvote.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        listener.onItemSelected(upvote_id, v, null);
+                    }
+                }
+            });
+
+            downvote.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        listener.onItemSelected(downvote_id, v, null);
+                    }
+                }
+            });
+
         }
     }
 }
