@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> image = new ArrayList<>();
     ArrayList<String> time = new ArrayList<>();
     ArrayList<String> votecount = new ArrayList<>();
+    ArrayList<String> userID = new ArrayList<>();
+    ArrayList<String> topicID = new ArrayList<>();
+    ArrayList<String> postID = new ArrayList<>();
 
     public class LoadUserCredentialsPost extends AsyncTask {
         //private TextView statusField,roleField;
@@ -116,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
 
         JSONArray jsonArray = new JSONArray(json);
 
+        Log.d("json", jsonArray.toString());
+
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
             username.add(getIntent().getStringExtra("userName"));
@@ -125,7 +130,9 @@ public class MainActivity extends AppCompatActivity {
             image.add(obj.getString("postImage"));
             body.add(obj.getString("postText"));
             votecount.add(obj.getString("upvoteCount"));
-
+            userID.add(obj.getString("userID"));
+            topicID.add(obj.getString("topicID"));
+            postID.add(obj.getString("postID"));
         }
     }
 
@@ -156,19 +163,49 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time, votecount);
+        MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time, votecount, postID, topicID, userID);
         final int upvote_id = 0;
         final int downvote_id = 1;
         myAdapter.setListener(new MyAdapter.OnItemClickListener() {
             @Override
-            public void onItemSelected(int position, View view, Object object) {
+            public void onItemSelected(int position, View view, ArrayList<Object> object) {
                 if (position == upvote_id) {
                     // include functionality for upvote button
-                    Toast.makeText(getApplicationContext(), "Successfully Upvoted Post", Toast.LENGTH_SHORT).show();
+                    String upvote_result = "";
+                    try {
+                        upvote_result = (String) new UpvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                    if (upvote_result.equals("")) {
+                        Toast.makeText(getApplicationContext(), "Failed To Upvote Post At This Time", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Successfully Upvoted Post", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else if (position == downvote_id) {
                     // include downvote functionality
-                    Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
+                    String downvote_result = "";
+                    try {
+                        downvote_result = (String) new DownvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                    if (downvote_result.equals("")) {
+                        Toast.makeText(getApplicationContext(), "Failed To Downvote Post At This Time", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
