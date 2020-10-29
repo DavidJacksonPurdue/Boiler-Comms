@@ -17,14 +17,17 @@
 
     <TextView
         android:id="@+id/topic_title"
-        android:layout_width="409dp"
-        android:layout_height="100dp"
+        android:layout_width="329dp"
+        android:layout_height="79dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
         android:layout_marginBottom="3dp"
         android:text="@string/topic"
         android:textSize="48sp"
         app:layout_constraintBottom_toTopOf="@+id/recyclerViewTopic"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.266" />
 
     <Button
         android:id="@+id/goey_homey"

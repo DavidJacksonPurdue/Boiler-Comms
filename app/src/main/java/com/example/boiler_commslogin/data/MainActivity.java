@@ -204,7 +204,13 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if (position == topic_pos) {
-                    Toast.makeText(getApplicationContext(), "Topic: " + object.toString(), Toast.LENGTH_LONG).show();
+                    setContentView(R.layout.activity_topic_timeline);
+                    Intent intent = new Intent(getApplicationContext(), TopicTimeline.class);
+                    intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                    intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                    intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                    intent.putExtra("TOPIC", object.toString());
+                    startActivity(intent);
                 }
             }
         });

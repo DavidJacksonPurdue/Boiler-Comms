@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -126,7 +127,7 @@ public class TopicTimeline extends AppCompatActivity {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
             username.add(getIntent().getStringExtra("USERNAME"));
-            topic.add(obj.getString("topicName"));
+            topic.add(getIntent().getStringExtra("TOPIC"));
             title.add(obj.getString("postName"));
             time.add(obj.getString("postDate"));
             image.add(obj.getString("postImage"));
@@ -151,8 +152,9 @@ public class TopicTimeline extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_timeline);
         //setContentView(R.layout.activity_login);
-
-        recyclerView = findViewById(R.id.recyclerView);
+        TextView topic_title = findViewById(R.id.topic_title);
+        topic_title.setText(getIntent().getStringExtra("TOPIC"));
+        recyclerView = findViewById(R.id.recyclerViewTopic);
         String str_result = null;
         try {
             String userID = getIntent().getStringExtra("USERID");
@@ -211,61 +213,16 @@ public class TopicTimeline extends AppCompatActivity {
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        final Button settings = findViewById(R.id.settings);
-        final Button logout = findViewById(R.id.logout);
-        final Button createPost = findViewById(R.id.createPost);
-
-
-
-        settings.setOnClickListener(new View.OnClickListener() {
+        final Button back_button = findViewById(R.id.goey_homey);
+        back_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setContentView(R.layout.activity_editprofile);
-                Intent intent = new Intent(getApplicationContext(), EditUserProfile.class);
-                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
-                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                startActivity(intent);
-            }
-        });
-
-        createPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setContentView(R.layout.activity_createpost);
-                Intent intent = new Intent(getApplicationContext(), CreatePostActivity.class);
+                setContentView(R.layout.activity_main);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                 startActivity(intent);
-            }
-        });
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogTheme);
-        builder.setTitle("Logout?");
-        builder.setMessage("This will bring you back to the login page.");
-        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                setContentView(R.layout.activity_login);
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "Canceled Logout", Toast.LENGTH_LONG).show();
-            }
-        });
-        builder.setIcon(android.R.drawable.ic_dialog_alert);
-
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                dialog.getButton(-1).setVisibility(View.VISIBLE);
-                dialog.getButton(-2).setVisibility(View.VISIBLE);
             }
         });
     }

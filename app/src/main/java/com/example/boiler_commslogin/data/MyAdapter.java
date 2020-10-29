@@ -18,10 +18,10 @@ import com.example.boiler_commslogin.R;
 import java.util.ArrayList;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-    private ArrayList<String> username, topic, title, body, image, time;
+    private ArrayList<String> username, topic, title, body, image, time, postId, topicId, userID;
     Context context;
     public MyAdapter(Context context, ArrayList<String> username, ArrayList<String> topic, ArrayList<String> title, ArrayList<String> body,
-                     ArrayList<String> image, ArrayList<String> time) {
+                     ArrayList<String> image, ArrayList<String> time, ArrayList<String> postId, ArrayList<String> topicId, ArrayList<String> userID) {
         this.context = context;
         this.username = username;
         this.topic = topic;
@@ -29,6 +29,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         this.time = time;
         this.title = title;
         this.image = image;
+        this.postId = postId;
+        this.topicId = topicId;
+        this.userID = userID;
     }
     @NonNull
     @Override
@@ -46,6 +49,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         holder.body.setText(body.get(position));
         holder.time.setText(time.get(position));
         holder.title.setText(title.get(position));
+        holder.postId.setText(postId.get(position));
+        holder.userId.setText(userID.get(position));
+        holder.topicId.setText(topicId.get(position));
         String img = image.get(position).toString();
         if(!img.equals("null")) {
             String base64Image = img.split(",")[1];
@@ -72,7 +78,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView time, title, body, username, topic;
+        TextView time, title, body, username, topic, postId, userId, topicId;
         ImageView image;
 
 
@@ -82,7 +88,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             final int position = itemView.getId();
             final int username_pos = 0;
             final int topic_pos = 1;
-            int body_pos = 2;
+            final int body_pos = 2;
             username = itemView.findViewById(R.id.username);
             time = itemView.findViewById(R.id.time);
             title = itemView.findViewById(R.id.title);
