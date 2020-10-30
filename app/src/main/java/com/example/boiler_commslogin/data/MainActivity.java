@@ -24,18 +24,27 @@ import com.example.boiler_commslogin.ui.login.LoginActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -115,28 +124,37 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadIntoRecyclerView(String json) throws JSONException {
+    //private void loadIntoRecyclerView(String json) throws JSONException {
 
-        JSONArray jsonArray = new JSONArray(json);
+        //JSONArray jsonArray = new JSONArray(json);
 
-        Log.d("json", jsonArray.toString());
+        //Log.d("json", jsonArray.toString());
 
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject obj = jsonArray.getJSONObject(i);
-            username.add(obj.getString("userName"));
-            topic.add(obj.getString("topicName"));
-            title.add(obj.getString("postName"));
-            time.add(obj.getString("postDate"));
-            image.add(obj.getString("postImage"));
-            body.add(obj.getString("postText"));
-            votecount.add(obj.getString("upvoteCount"));
-            userID.add(obj.getString("userID"));
-            topicID.add(obj.getString("topicID"));
-            postID.add(obj.getString("postID"));
-        }
+        //for (int i = 0; i < jsonArray.length(); i++) {
+        //    JSONObject obj = jsonArray.getJSONObject(i);
+       //     username.add(obj.getString("userName"));
+        //    topic.add(obj.getString("topicName"));
+         //   title.add(obj.getString("postName"));
+        //    time.add(obj.getString("postDate"));
+         //   image.add(obj.getString("postImage"));
+         //   body.add(obj.getString("postText"));
+         //   votecount.add(obj.getString("voteTotal"));
+         //   userID.add(obj.getString("userID"));
+         //   topicID.add(obj.getString("topicID"));
+         //   postID.add(obj.getString("postID"));
+       // }
+
+
+    //}
+
+
+    public static Document loadXMLFromString(String xml) throws Exception
+    {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        InputSource is = new InputSource(new StringReader(xml));
+        return builder.parse(is);
     }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,11 +175,36 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        Document postXML = null;
         try {
-            loadIntoRecyclerView(str_result);
-        } catch (JSONException e) {
+            postXML = loadXMLFromString(str_result);
+        }catch(Exception e){
             e.printStackTrace();
         }
+
+        if (postXML != null) {
+            postXML.getDocumentElement().normalize();
+            NodeList nList = postXML.getElementsByTagName("post");
+            for (int x = 0; x < nList.getLength(); x++) {
+                Element Post = (Element) (nList.item(x));
+                postID.add(Post.getAttribute("postID"));
+                userID.add(Post.getAttribute("userID"));
+                topicID.add(Post.getAttribute("topicID"));
+                topic.add(Post.getAttribute("topicName"));
+                title.add(Post.getAttribute("postName"));
+                body.add(Post.getAttribute("postText"));
+                time.add(Post.getAttribute("postDate"));
+                username.add(Post.getAttribute("userName"));
+                votecount.add(Post.getAttribute("voteTotal"));
+                image.add(Post.getAttribute("postImage"));
+            }
+        }
+
+        //try {
+            //loadIntoRecyclerView(str_result);
+        //} catch (JSONException e) {
+            //e.printStackTrace();
+        //}
 
         MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time, votecount, postID, topicID, userID);
         final int upvote_id = 0;
