@@ -69,7 +69,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         holder.postId.setText(postId.get(position));
         holder.userId.setText(userId.get(position));
         String img = image.get(position).toString();
-        if (votecount.get(position) == null) {
+        if (votecount.get(position).equals("null")) {
             holder.votecount.setText("0");
         }
         else {
