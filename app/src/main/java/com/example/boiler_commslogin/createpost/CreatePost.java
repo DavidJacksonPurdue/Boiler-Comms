@@ -116,7 +116,9 @@ public class CreatePost extends AsyncTask {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         userCredentials =  content.toString();
+
         return "Success";
     }
 
