@@ -25,5 +25,10 @@
     <string name="change_profile_picture">"Change Profile Picture"</string>
     <string name="save_changes">"Save Changes"</string>
     <string name="confirm_password">"Confirm Password"</string>
+    <string name="back_button">"Go Home"</string>
+    <string name="view_posts">"View Posts"</string>
+    <string name="liked_posts">"Liked Posts"</string>
+    <string name="comments">"Comments"</string>
+    <string name="topic">"Topic"</string>
     <string name="todo">TODO</string>
 </resources>
