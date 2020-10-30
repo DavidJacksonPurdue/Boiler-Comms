@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             userCredentials = content.toString();
+            System.out.println(content.toString());
             return content.toString();
         }
         protected void onPostExecute(String result){

@@ -1,7 +1,7 @@
 package com.example.boiler_commslogin;
 
 public abstract class Constants {
-    public static final String ROOT_URL = "http://10.0.2.2:8000/";
+    public static final String ROOT_URL = "http://10.0.2.2:80/";
     public static final String CREATE_POST = ROOT_URL + "createPost.php?q=";
     public static final String DELETEUSER = ROOT_URL + "deleteUser.php?q=";
     public static final String EDITUSER = ROOT_URL + "editUser.php?q=";
@@ -17,4 +17,5 @@ public abstract class Constants {
     public static final String GETPOSTTOPIC = ROOT_URL + "getPostByTopic.php?q=";
     public static final String UPVOTE = ROOT_URL + "upvotePost.php?q=";
     public static final String DOWNVOTE = ROOT_URL + "downvotePost.php?q=";
+    public static final String GET_TOPICS = ROOT_URL + "getTopics.php";
 }

@@ -36,6 +36,10 @@ public class TopicPostActivity extends AppCompatActivity {
     ArrayList<String> body = new ArrayList<>();
     ArrayList<String> image = new ArrayList<>();
     ArrayList<String> time = new ArrayList<>();
+    ArrayList<String> votecount = new ArrayList<>();
+    ArrayList<String> userID = new ArrayList<>();
+    ArrayList<String> topicID = new ArrayList<>();
+    ArrayList<String> postID = new ArrayList<>();
     Context context = this;
 
 
@@ -91,7 +95,7 @@ public class TopicPostActivity extends AppCompatActivity {
         }
 
         // Store them in an adapter
-        MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time);
+        final MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time, votecount, postID, topicID, userID);
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         final Button clearPost = findViewById(R.id.clearPost);
