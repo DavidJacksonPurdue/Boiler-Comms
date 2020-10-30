@@ -129,13 +129,12 @@ public class MainActivity extends AppCompatActivity {
             time.add(obj.getString("postDate"));
             image.add(obj.getString("postImage"));
             body.add(obj.getString("postText"));
-            votecount.add(obj.getString("upvoteCount"));
+            votecount.add(obj.getString("voteTotal"));
             userID.add(obj.getString("userID"));
             topicID.add(obj.getString("topicID"));
             postID.add(obj.getString("postID"));
         }
     }
-
 
 
     @Override
