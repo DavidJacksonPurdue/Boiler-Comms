@@ -46,13 +46,10 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> body = new ArrayList<>();
     ArrayList<String> image = new ArrayList<>();
     ArrayList<String> time = new ArrayList<>();
-
-    /*
-    String[] username = {"Chirag", "Eli", "Nick", "Mitch"};
-    String[] title = {"CS", "Math", "Purdue", "Covid"};
-    String[] topic = {"classes", "classes", "College", "College"};
-    String[] body = {"skjadfngj sdkofnsa", " khjbdafjkabskvajdnv", "dksajfbjkadbngv", "dkfjnajgnoiasdng"};
-    String[] time = {"12:345" , "324234", "234234" , "12:33 am"};*/
+    ArrayList<String> votecount = new ArrayList<>();
+    ArrayList<String> userID = new ArrayList<>();
+    ArrayList<String> topicID = new ArrayList<>();
+    ArrayList<String> postID = new ArrayList<>();
 
     public class LoadUserCredentialsPost extends AsyncTask {
         //private TextView statusField,roleField;
@@ -74,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-            //Log.d("url", url.toString());
             HttpURLConnection con = null;
             try {
                 con = (HttpURLConnection) url.openConnection();
@@ -104,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //Log.d("initial",content.toString());
             try {
                 if(in != null) {
                     in.close();
@@ -119,31 +114,27 @@ public class MainActivity extends AppCompatActivity {
             userCredentials = result;
         }
     }
+
     private void loadIntoRecyclerView(String json) throws JSONException {
 
         JSONArray jsonArray = new JSONArray(json);
-        //String[] heroes = new String[jsonArray.length()];
+
+        Log.d("json", jsonArray.toString());
+
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
-            username.add(getIntent().getStringExtra("USERNAME"));
+            username.add(obj.getString("userName"));
             topic.add(obj.getString("topicName"));
             title.add(obj.getString("postName"));
             time.add(obj.getString("postDate"));
             image.add(obj.getString("postImage"));
-            //Log.d("image", image.get(i).toString());
             body.add(obj.getString("postText"));
-            //if (i == jsonArray.length() - 1) {
-            //    if (time.get(i).charAt(time.get(i).length() - 1) != ']') {
-            //        time.set(i, time.get(i) + "00:12}]");
-            //    }
-            //}
+            votecount.add(obj.getString("voteTotal"));
+            userID.add(obj.getString("userID"));
+            topicID.add(obj.getString("topicID"));
+            postID.add(obj.getString("postID"));
         }
-        //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, heroes);
-        //listView.setAdapter(arrayAdapter);
-
-
     }
-
 
 
     @Override
@@ -165,29 +156,69 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        /*try {
-            JSONObject reader = new JSONObject(str_result);
-            email  = reader.getString("email");
-            password = reader.getString("PASSWORD");
-            firstName = reader.getString("firstName");
-            lastName = reader.getString("lastName");
-            img = reader.getString("profilePic");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
-        //Log.d("POSTING", str_result);
-        /*username.add("Chirag");
-        topic.add("Purdue");
-        title.add("asdf");
-        time.add("asdasd");
-        image.add("adkjgnvjksangjklasdnfblovasflkjb");
-        body.add("adfnaodnvioav");*/
         try {
             loadIntoRecyclerView(str_result);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time);
+
+        MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time, votecount, postID, topicID, userID);
+        final int upvote_id = 0;
+        final int downvote_id = 1;
+        final int user_pos = 2;
+        myAdapter.setListener(new MyAdapter.OnItemClickListener() {
+            @Override
+            public void onItemSelected(int position, View view, ArrayList<Object> object) {
+                if (position == upvote_id) {
+                    // include functionality for upvote button
+                    String upvote_result = "";
+                    try {
+                        upvote_result = (String) new UpvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                    if (upvote_result.equals("")) {
+                        Toast.makeText(getApplicationContext(), "Failed To Upvote Post At This Time", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Successfully Upvoted Post", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else if (position == downvote_id) {
+                    // include downvote functionality
+                    String downvote_result = "";
+                    try {
+                        downvote_result = (String) new DownvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                    if (downvote_result.equals("")) {
+                        Toast.makeText(getApplicationContext(), "Failed To Downvote Post At This Time", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else if (position == user_pos) {
+                    setContentView(R.layout.activity_public_profile);
+                    Intent intent = new Intent(getApplicationContext(), PublicProfilePage.class);
+                    intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                    intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                    intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                    intent.putExtra("PUBLIC_USER", object.get(0).toString());
+                    startActivity(intent);
+                }
+            }
+        });
+
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
