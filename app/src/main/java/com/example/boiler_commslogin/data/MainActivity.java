@@ -194,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
         final Button settings = findViewById(R.id.settings);
         final Button logout = findViewById(R.id.logout);
         final Button createPost = findViewById(R.id.createPost);
+        final Button topicPage = findViewById(R.id.topicPage);
 
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,6 +212,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setContentView(R.layout.activity_createpost);
                 Intent intent = new Intent(getApplicationContext(), CreatePostActivity.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                startActivity(intent);
+            }
+        });
+
+        topicPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_topic_post);
+                Intent intent = new Intent(getApplicationContext(), TopicPostActivity.class);
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
@@ -236,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         builder.setIcon(android.R.drawable.ic_dialog_alert);
+
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
