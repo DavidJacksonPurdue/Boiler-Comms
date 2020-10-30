@@ -103,10 +103,23 @@ public class PublicProfilePage extends AppCompatActivity {
         final Button comments = findViewById(R.id.view_comments);
 
         //Get the userID of the user we're trying to load
-        String user = null;
+        //String user = null;
 
+        //try {
+        //    user = (String) new GetUserID(this).execute(getIntent().getStringExtra("PUBLIC_USER")).get(3000, TimeUnit.MILLISECONDS);
+        //} catch (ExecutionException e) {
+        //    e.printStackTrace();
+        //} catch (InterruptedException e) {
+        //    e.printStackTrace();
+        //} catch (TimeoutException e) {
+        //    e.printStackTrace();
+        //}
+        //Download public profile from user
+        String str_result = null;
+
+        //if (user != null && !user.equals("-1")) {
         try {
-            user = (String) new GetUserID(this).execute(getIntent().getStringExtra("PUBLIC_USER")).get(3000, TimeUnit.MILLISECONDS);
+            str_result = (String) new LoadUserCredentials(this).execute(getIntent().getStringExtra("PUBLIC_USER")).get(2000, TimeUnit.MILLISECONDS);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -114,30 +127,16 @@ public class PublicProfilePage extends AppCompatActivity {
         } catch (TimeoutException e) {
             e.printStackTrace();
         }
-        //Download public profile from user
-        String str_result = null;
-
-        if (user != null && !user.equals("-1")) {
-            try {
-                str_result = (String) new LoadUserCredentials(this).execute(user).get(2000, TimeUnit.MILLISECONDS);
-
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (TimeoutException e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            Toast.makeText(getApplicationContext(), "Failed To Load Profile", Toast.LENGTH_LONG).show();
-            setContentView(R.layout.activity_main);
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
-            intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
-            intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-            startActivity(intent);
-        }
+        //}
+        //else {
+            //Toast.makeText(getApplicationContext(), "Failed To Load Profile", Toast.LENGTH_LONG).show();
+            //setContentView(R.layout.activity_main);
+            //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            //intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+            //intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+            //intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+            //startActivity(intent);
+        //}
         String userName = null;
         String firstName = null;
         String lastName = null;

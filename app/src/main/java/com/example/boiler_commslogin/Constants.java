@@ -15,4 +15,6 @@ public abstract class Constants {
     public static final String VERIFYUSER = ROOT_URL + "verifyUser.php?q=";
     public static final String GETUSERID = ROOT_URL + "getIDFromUsername.php?q=";
     public static final String GETPOSTTOPIC = ROOT_URL + "getPostByTopic.php?q=";
+    public static final String UPVOTE = ROOT_URL + "upvotePost.php?q=";
+    public static final String DOWNVOTE = ROOT_URL + "downvotePost.php?q=";
 }

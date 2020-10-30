@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
-            username.add(getIntent().getStringExtra("userName"));
+            username.add(getIntent().getStringExtra("USERNAME"));
             topic.add(obj.getString("topicName"));
             title.add(obj.getString("postName"));
             time.add(obj.getString("postDate"));
@@ -166,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
         MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time, votecount, postID, topicID, userID);
         final int upvote_id = 0;
         final int downvote_id = 1;
+        final int user_pos = 2;
         myAdapter.setListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void onItemSelected(int position, View view, ArrayList<Object> object) {
@@ -206,6 +207,15 @@ public class MainActivity extends AppCompatActivity {
                     else {
                         Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
                     }
+                }
+                else if (position == user_pos) {
+                    setContentView(R.layout.activity_public_profile);
+                    Intent intent = new Intent(getApplicationContext(), PublicProfilePage.class);
+                    intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                    intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                    intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                    intent.putExtra("PUBLIC_USER", object.get(0).toString());
+                    startActivity(intent);
                 }
             }
         });

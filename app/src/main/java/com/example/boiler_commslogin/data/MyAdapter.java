@@ -112,6 +112,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
             final int upvote_id = 0;
             final int downvote_id = 1;
+            final int user_pos = 2;
 
             upvote.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -135,6 +136,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                         downvote.add(userId.getText().toString());
                         votecount.setText(Integer.toString(Integer.parseInt(votecount.getText().toString()) - 1));
                         listener.onItemSelected(downvote_id, v, downvote);
+                    }
+                }
+            });
+
+            username.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        ArrayList<Object> user = new ArrayList<>();
+                        user.add(userId.getText().toString());
+                        listener.onItemSelected(user_pos, v, user);
                     }
                 }
             });
