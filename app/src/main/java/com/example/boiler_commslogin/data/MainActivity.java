@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
-            username.add(getIntent().getStringExtra("USERNAME"));
+            username.add(obj.getString("userName"));
             topic.add(obj.getString("topicName"));
             title.add(obj.getString("postName"));
             time.add(obj.getString("postDate"));
