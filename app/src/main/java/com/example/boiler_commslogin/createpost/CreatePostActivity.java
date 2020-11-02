@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class CreatePostActivity extends AppCompatActivity {
-
+//Git Repository Test
     TextView postNameText;
     TextView postTopicText;
     ImageView imageView;
