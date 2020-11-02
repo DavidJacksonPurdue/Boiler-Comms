@@ -10,7 +10,7 @@ public abstract class Constants {
     public static final String INSERTOPIC = ROOT_URL + "insertTopic.php?q=";
     public static final String INSERTUSER = ROOT_URL + "insertUser.php?q=1_";
     public static final String LOGIN = ROOT_URL + "Login.php?q=";
-    public static final String POSTUSERCREDENTIALS = ROOT_URL + "postUserCredentials.php?q=";
+    public static final String POSTUSERCREDENTIALS = ROOT_URL + "postUserCredentials.php";
     public static final String UPLOADFILE2 = ROOT_URL + "uploadFile2.php?q=";
     public static final String VERIFYUSER = ROOT_URL + "verifyUser.php?q=";
     public static final String GETCOMMENTS = ROOT_URL + "getComments.php?q=";
@@ -21,4 +21,6 @@ public abstract class Constants {
     public static final String UPVOTE = ROOT_URL + "upvotePost.php?q=";
     public static final String DOWNVOTE = ROOT_URL + "downvotePost.php?q=";
     public static final String GET_TOPICS = ROOT_URL + "getTopics.php";
+    public static final String GET_UPVOTED = ROOT_URL + "getUpvoteList?q=";
+    public static final String GET_DOWNVOTED = ROOT_URL + "getDownvoteList?q=";
 }

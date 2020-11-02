@@ -59,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> userID = new ArrayList<>();
     ArrayList<String> topicID = new ArrayList<>();
     ArrayList<String> postID = new ArrayList<>();
+    ArrayList<String> upvotedPosts = new ArrayList<>();
+    ArrayList<String> downvotedPosts = new ArrayList<>();
+
 
     public class LoadUserCredentialsPost extends AsyncTask {
         //private TextView statusField,roleField;
@@ -125,30 +128,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //private void loadIntoRecyclerView(String json) throws JSONException {
-
-        //JSONArray jsonArray = new JSONArray(json);
-
-        //Log.d("json", jsonArray.toString());
-
-        //for (int i = 0; i < jsonArray.length(); i++) {
-        //    JSONObject obj = jsonArray.getJSONObject(i);
-       //     username.add(obj.getString("userName"));
-        //    topic.add(obj.getString("topicName"));
-         //   title.add(obj.getString("postName"));
-        //    time.add(obj.getString("postDate"));
-         //   image.add(obj.getString("postImage"));
-         //   body.add(obj.getString("postText"));
-         //   votecount.add(obj.getString("voteTotal"));
-         //   userID.add(obj.getString("userID"));
-         //   topicID.add(obj.getString("topicID"));
-         //   postID.add(obj.getString("postID"));
-       // }
-
-
-    //}
-
-
     public static Document loadXMLFromString(String xml) throws Exception
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -200,12 +179,6 @@ public class MainActivity extends AppCompatActivity {
                 image.add(Post.getAttribute("postImage"));
             }
         }
-
-        //try {
-            //loadIntoRecyclerView(str_result);
-        //} catch (JSONException e) {
-            //e.printStackTrace();
-        //}
 
         MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time, votecount, postID, topicID, userID);
         final int upvote_id = 0;
