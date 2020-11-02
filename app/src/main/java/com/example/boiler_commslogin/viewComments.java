@@ -28,6 +28,9 @@ import java.util.concurrent.TimeoutException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 public class viewComments extends AppCompatActivity {
 
     @Override
@@ -86,7 +89,8 @@ public class viewComments extends AppCompatActivity {
 
         //If you want to already opened Multi-RecyclerView just call openTill where is parameter is
         // position to corresponding each level.
-        multiLevelRecyclerView.openTill(0);
+        multiLevelRecyclerView.setToggleItemOnClick(FALSE);
+        multiLevelRecyclerView.openTill(2,1,0,0);
     }
 
 
@@ -108,7 +112,8 @@ public class viewComments extends AppCompatActivity {
             Item item = new Item(level);
             item.setTitle(String.format(Locale.ENGLISH, commentsList.get(x).getUserName(), x));
             item.setBody(String.format(Locale.ENGLISH, commentsList.get(x).getBody(), x));
-
+            item.setCommentID(commentsList.get(x).getCommentID());
+            item.setParentID(commentsList.get(x).getParentID());
             if(commentsList.get(x).getParentID() == goalID){
                 item.addChildren((List<RecyclerViewItem>) recursivlyPopulateComments(commentsList, commentsList.remove(x).getCommentID(), level + 1));
                 x--;
@@ -120,37 +125,4 @@ public class viewComments extends AppCompatActivity {
     }
 
 
-
-
-
-
-
-    private List<?> recursivePopulateFakeData(int levelNumber, int depth) {
-        List<RecyclerViewItem> itemList = new ArrayList<>();
-
-        String title;
-        switch (levelNumber) {
-            case 1:
-                title = "PQRST %d";
-                break;
-            case 2:
-                title = "XYZ %d";
-                break;
-            default:
-                title = "ABCDE %d";
-                break;
-        }
-
-        for (int i = 0; i < depth; i++) {
-            Item item = new Item(levelNumber);
-            item.setTitle(String.format(Locale.ENGLISH, title, i));
-            item.setBody(String.format(Locale.ENGLISH, title.toLowerCase(), i));
-            if (depth % 2 == 0) {//add child based on recursion
-                item.addChildren((List<RecyclerViewItem>) recursivePopulateFakeData(levelNumber + 1, depth / 2));
-            }
-            itemList.add(item);//add at same level
-        }
-
-        return itemList;
-    }
 }

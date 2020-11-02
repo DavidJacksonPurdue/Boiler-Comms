@@ -14,4 +14,6 @@ public abstract class Constants {
     public static final String UPLOADFILE2 = ROOT_URL + "uploadFile2.php?q=";
     public static final String VERIFYUSER = ROOT_URL + "verifyUser.php?q=";
     public static final String GETCOMMENTS = ROOT_URL + "getComments.php?q=";
+    public static final String SENDCOMMENT = ROOT_URL + "insertComment.php?q=";
+    public static final String GETMYCOMMENTS = ROOT_URL + "getUserCommentsByDate.php?q=";
 }

@@ -1,5 +1,7 @@
 package com.example.boiler_commslogin;
 
+import android.util.Log;
+
 import com.multilevelview.models.RecyclerViewItem;
 
 public class Item extends RecyclerViewItem {
@@ -30,6 +32,7 @@ public class Item extends RecyclerViewItem {
     }
 
     public int getCommentID() {
+        Log.d("commentID: ", Integer.toString(commentID));
         return commentID;
     }
 
@@ -38,6 +41,7 @@ public class Item extends RecyclerViewItem {
     }
 
     public int getParentID() {
+        Log.d("ParentID: ", Integer.toString(parentID));
         return parentID;
     }
 
