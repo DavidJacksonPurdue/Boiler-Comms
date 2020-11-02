@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,7 +47,7 @@ import java.util.concurrent.TimeoutException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class OtherTimeline extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ArrayList<String> username = new ArrayList<>();
@@ -59,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> userID = new ArrayList<>();
     ArrayList<String> topicID = new ArrayList<>();
     ArrayList<String> postID = new ArrayList<>();
+    final int post_timeline_type = 0;
+    final int topic_timeline_type = 1;
+    final int upvote_timeline_type = 2;
+    final int saved_timeline_type = 3;
+    final int comment_timeline_type = 4;
 
     public class LoadUserCredentialsPost extends AsyncTask {
         //private TextView statusField,roleField;
@@ -126,23 +132,23 @@ public class MainActivity extends AppCompatActivity {
 
     //private void loadIntoRecyclerView(String json) throws JSONException {
 
-        //JSONArray jsonArray = new JSONArray(json);
+    //JSONArray jsonArray = new JSONArray(json);
 
-        //Log.d("json", jsonArray.toString());
+    //Log.d("json", jsonArray.toString());
 
-        //for (int i = 0; i < jsonArray.length(); i++) {
-        //    JSONObject obj = jsonArray.getJSONObject(i);
-       //     username.add(obj.getString("userName"));
-        //    topic.add(obj.getString("topicName"));
-         //   title.add(obj.getString("postName"));
-        //    time.add(obj.getString("postDate"));
-         //   image.add(obj.getString("postImage"));
-         //   body.add(obj.getString("postText"));
-         //   votecount.add(obj.getString("voteTotal"));
-         //   userID.add(obj.getString("userID"));
-         //   topicID.add(obj.getString("topicID"));
-         //   postID.add(obj.getString("postID"));
-       // }
+    //for (int i = 0; i < jsonArray.length(); i++) {
+    //    JSONObject obj = jsonArray.getJSONObject(i);
+    //     username.add(obj.getString("userName"));
+    //    topic.add(obj.getString("topicName"));
+    //   title.add(obj.getString("postName"));
+    //    time.add(obj.getString("postDate"));
+    //   image.add(obj.getString("postImage"));
+    //   body.add(obj.getString("postText"));
+    //   votecount.add(obj.getString("voteTotal"));
+    //   userID.add(obj.getString("userID"));
+    //   topicID.add(obj.getString("topicID"));
+    //   postID.add(obj.getString("postID"));
+    // }
 
 
     //}
@@ -159,14 +165,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_other_timeline);
         //setContentView(R.layout.activity_login);
 
         recyclerView = findViewById(R.id.recyclerView);
+        final TextView timelineTitle = findViewById(R.id.timeline_title);
+        final Button back_button = findViewById(R.id.go_home);
+
         String str_result = null;
         try {
-            String userID = getIntent().getStringExtra("USERID");
-            str_result = (String) new LoadUserCredentialsPost(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
+            if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == post_timeline_type) {
+                String userID = getIntent().getStringExtra("PUBLIC_USER");
+                str_result = (String) new LoadUserCredentialsPost(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
+            }
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -201,9 +212,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //try {
-            //loadIntoRecyclerView(str_result);
+        //loadIntoRecyclerView(str_result);
         //} catch (JSONException e) {
-            //e.printStackTrace();
+        //e.printStackTrace();
         //}
 
         MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time, votecount, postID, topicID, userID);
@@ -266,73 +277,35 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        final Button settings = findViewById(R.id.settings);
-        final Button logout = findViewById(R.id.logout);
-        final Button createPost = findViewById(R.id.createPost);
-        final Button profileButton = findViewById(R.id.view_profile);
+        if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == post_timeline_type) {
+            String title_string = username.get(0) + "'s Posts";
+            timelineTitle.setText(title_string);
+        }
+        else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == topic_timeline_type) {
+            String title_string = topic.get(0);
+            timelineTitle.setText(title_string);
+        }
+        else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == upvote_timeline_type) {
+            String title_string = username.get(0) + "'s Upvoted Posts";
+            timelineTitle.setText(title_string);
+        }
+        else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == saved_timeline_type) {
+            timelineTitle.setText("Your Saved Posts");
+        }
+        else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == comment_timeline_type) {
+            String title_string = username.get(0) + "'s Comments";
+            timelineTitle.setText(title_string);
+        }
 
-        settings.setOnClickListener(new View.OnClickListener() {
+        back_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setContentView(R.layout.activity_editprofile);
-                Intent intent = new Intent(getApplicationContext(), EditUserProfile.class);
-                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
-                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                startActivity(intent);
-            }
-        });
-
-        createPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setContentView(R.layout.activity_createpost);
-                Intent intent = new Intent(getApplicationContext(), CreatePostActivity.class);
-                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
-                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
-                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                startActivity(intent);
-            }
-        });
-
-        profileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setContentView(R.layout.activity_public_profile);
-                Intent intent = new Intent(getApplicationContext(), PublicProfilePage.class);
+                setContentView(R.layout.activity_main);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                intent.putExtra("PUBLIC_USER", getIntent().getStringExtra("USERID"));
                 startActivity(intent);
-            }
-        });
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogTheme);
-        builder.setTitle("Logout?");
-        builder.setMessage("This will bring you back to the login page.");
-        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                setContentView(R.layout.activity_login);
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "Canceled Logout", Toast.LENGTH_LONG).show();
-            }
-        });
-        builder.setIcon(android.R.drawable.ic_dialog_alert);
-
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                dialog.getButton(-1).setVisibility(View.VISIBLE);
-                dialog.getButton(-2).setVisibility(View.VISIBLE);
             }
         });
     }
