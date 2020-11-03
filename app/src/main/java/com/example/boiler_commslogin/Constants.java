@@ -7,7 +7,7 @@ public abstract class Constants {
     public static final String EDITUSER = ROOT_URL + "editUser.php?q=";
     public static final String GETPOST = ROOT_URL + "getPost.php?q=";
     public static final String GETUSERCREDENTIALS = ROOT_URL + "getUserCredentials.php?q=";
-    public static final String INSERTOPIC = ROOT_URL + "insertTopic.php?q=";
+    public static final String INSERTTOPIC = ROOT_URL + "insertTopic.php?q=";
     public static final String INSERTUSER = ROOT_URL + "insertUser.php?q=1_";
     public static final String LOGIN = ROOT_URL + "Login.php?q=";
     public static final String POSTUSERCREDENTIALS = ROOT_URL + "postUserCredentials.php?q=";
