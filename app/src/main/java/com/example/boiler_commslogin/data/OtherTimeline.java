@@ -278,23 +278,43 @@ public class OtherTimeline extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == post_timeline_type) {
-            String title_string = username.get(0) + "'s Posts";
-            timelineTitle.setText(title_string);
+            if (username.size() > 0) {
+                String title_string = username.get(0) + "'s Posts";
+                timelineTitle.setText(title_string);
+            }
+            else {
+                timelineTitle.setText("This user has no posts");
+            }
         }
         else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == topic_timeline_type) {
-            String title_string = topic.get(0);
-            timelineTitle.setText(title_string);
+            if (topic.size() > 0) {
+                String title_string = topic.get(0);
+                timelineTitle.setText(title_string);
+            }
+            else {
+                timelineTitle.setText("There are no posts with this topic");
+            }
         }
         else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == upvote_timeline_type) {
-            String title_string = username.get(0) + "'s Upvoted Posts";
-            timelineTitle.setText(title_string);
+            if (username.size() > 0) {
+                String title_string = username.get(0) + "'s Upvoted Posts";
+                timelineTitle.setText(title_string);
+            }
+            else {
+                timelineTitle.setText("This user has not upvoted any posts");
+            }
         }
         else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == saved_timeline_type) {
             timelineTitle.setText("Your Saved Posts");
         }
         else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == comment_timeline_type) {
-            String title_string = username.get(0) + "'s Comments";
-            timelineTitle.setText(title_string);
+            if (username.size() > 0) {
+                String title_string = username.get(0) + "'s Comments";
+                timelineTitle.setText(title_string);
+            }
+            else {
+                timelineTitle.setText("This user has no comments");
+            }
         }
 
         back_button.setOnClickListener(new View.OnClickListener() {

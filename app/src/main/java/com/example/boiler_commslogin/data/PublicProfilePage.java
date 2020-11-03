@@ -102,6 +102,7 @@ public class PublicProfilePage extends AppCompatActivity {
         final Button likedPosts = findViewById(R.id.view_likes);
         final Button comments = findViewById(R.id.view_comments);
         final Button savedPosts = findViewById(R.id.saved_posts);
+        final Button followButton = findViewById(R.id.follow_button);
         final int post_timeline_type = 0;
         final int upvote_timeline_type = 2;
         final int saved_timeline_type = 3;
@@ -152,6 +153,7 @@ public class PublicProfilePage extends AppCompatActivity {
 
         if (getIntent().getStringExtra("PUBLIC_USER").equals(getIntent().getStringExtra("USERID"))) {
             savedPosts.setVisibility(View.VISIBLE);
+            followButton.setVisibility(View.INVISIBLE);
         }
 
         if (img != null) {
