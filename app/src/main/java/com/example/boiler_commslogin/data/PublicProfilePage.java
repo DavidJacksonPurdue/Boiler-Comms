@@ -177,6 +177,34 @@ public class PublicProfilePage extends AppCompatActivity {
             }
         });
 
+        savedPosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_other_timeline);
+                Intent intent = new Intent(getApplicationContext(), OtherTimeline.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("PUBLIC_USER", getIntent().getStringExtra("PUBLIC_USER"));
+                intent.putExtra("TIMELINE_TYPE", saved_timeline_type);
+                startActivity(intent);
+            }
+        });
+
+        likedPosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_other_timeline);
+                Intent intent = new Intent(getApplicationContext(), OtherTimeline.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("PUBLIC_USER", getIntent().getStringExtra("PUBLIC_USER"));
+                intent.putExtra("TIMELINE_TYPE", upvote_timeline_type);
+                startActivity(intent);
+            }
+        });
+
         viewPosts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

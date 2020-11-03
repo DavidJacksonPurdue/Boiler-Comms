@@ -74,9 +74,6 @@ public class OtherTimeline extends AppCompatActivity {
         public LoadUserCredentialsPost(Context context) {
             this.context = context;
         }
-        public String getUserCredentials(){
-            return userCredentials;
-        }
         @Override
         protected Object doInBackground(Object[] objects) {
             URL url = null;
@@ -130,6 +127,127 @@ public class OtherTimeline extends AppCompatActivity {
         }
     }
 
+    public class LoadUserSavedPost extends AsyncTask {
+        //private TextView statusField,roleField;
+        private Context context;
+        String userCredentials;
+        //flag 0 means get and 1 means post.(By default it is get.)
+        public LoadUserSavedPost(Context context) {
+            this.context = context;
+        }
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            URL url = null;
+            String userID = (String)objects[0];
+            try {
+                url = new URL(Constants.GETSAVED + objects[0].toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            HttpURLConnection con = null;
+            try {
+                con = (HttpURLConnection) url.openConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                con.setRequestMethod("GET");
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+            }
+            con.setConnectTimeout(5000);
+            con.setReadTimeout(5000);
+            int status = 0;
+            BufferedReader in = null;
+            StringBuilder content = new StringBuilder();
+            try {
+                in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                while (true) {
+                    inputLine = in.readLine();
+                    if(inputLine == null){
+                        break;
+                    }
+                    content.append(inputLine);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if(in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            userCredentials = content.toString();
+            return content.toString();
+        }
+        protected void onPostExecute(String result){
+            userCredentials = result;
+        }
+    }
+
+    public class LoadUserLikedPost extends AsyncTask {
+        //private TextView statusField,roleField;
+        private Context context;
+        String userCredentials;
+        //flag 0 means get and 1 means post.(By default it is get.)
+        public LoadUserLikedPost(Context context) {
+            this.context = context;
+        }
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            URL url = null;
+            String userID = (String)objects[0];
+            try {
+                url = new URL(Constants.GETSAVED + objects[0].toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            HttpURLConnection con = null;
+            try {
+                con = (HttpURLConnection) url.openConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                con.setRequestMethod("GET");
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+            }
+            con.setConnectTimeout(5000);
+            con.setReadTimeout(5000);
+            int status = 0;
+            BufferedReader in = null;
+            StringBuilder content = new StringBuilder();
+            try {
+                in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                while (true) {
+                    inputLine = in.readLine();
+                    if(inputLine == null){
+                        break;
+                    }
+                    content.append(inputLine);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if(in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            userCredentials = content.toString();
+            return content.toString();
+        }
+        protected void onPostExecute(String result){
+            userCredentials = result;
+        }
+    }
     //private void loadIntoRecyclerView(String json) throws JSONException {
 
     //JSONArray jsonArray = new JSONArray(json);
@@ -177,6 +295,14 @@ public class OtherTimeline extends AppCompatActivity {
             if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == post_timeline_type) {
                 String userID = getIntent().getStringExtra("PUBLIC_USER");
                 str_result = (String) new LoadUserCredentialsPost(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
+            }
+            else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == saved_timeline_type) {
+                String userID = getIntent().getStringExtra("PUBLIC_USER");
+                str_result = (String) new LoadUserSavedPost(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
+            }
+            else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == upvote_timeline_type) {
+                String userID = getIntent().getStringExtra("PUBLIC_USER");
+                str_result = (String) new LoadUserLikedPost(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
             }
         } catch (ExecutionException e) {
             e.printStackTrace();
