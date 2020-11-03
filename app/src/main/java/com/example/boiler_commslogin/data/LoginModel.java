@@ -14,7 +14,7 @@ import android.util.Log;
 
 import com.example.boiler_commslogin.Constants;
 
-public class LoginModel extends AsyncTask{
+public class LoginModel extends AsyncTask {
 
     private TextView statusField,roleField;
     private Context context;

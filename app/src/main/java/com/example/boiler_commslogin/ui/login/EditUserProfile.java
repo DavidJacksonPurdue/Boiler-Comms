@@ -38,6 +38,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.boiler_commslogin.Constants;
 import com.example.boiler_commslogin.R;
 import com.example.boiler_commslogin.data.MainActivity;
 import com.example.boiler_commslogin.data.PasswordHasher;
@@ -71,7 +72,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class EditUserProfile extends AppCompatActivity {
-    public static final String UPLOAD_URL = "http://10.0.2.2:63343/PHP_TEST2BOYS/postUserCredentials.php";
     public static final String UPLOAD_KEY = "image";
 
     private int PICK_IMAGE_REQUEST = 1;
@@ -82,9 +82,6 @@ public class EditUserProfile extends AppCompatActivity {
     private ImageView imageView;
     private Bitmap bitmap;
     private Uri filePath;
-
-
-
 
     public static final int PICK_IMAGE = 100;
     Uri imageURI;
@@ -259,14 +256,6 @@ public class EditUserProfile extends AppCompatActivity {
                 String userID = getIntent().getStringExtra("USERID");
                 String ver_result = "";
 
-                //BitmapDrawable drawable = (BitmapDrawable) profilePicImageView.getDrawable();
-                //Bitmap bitmap = drawable.getBitmap();
-                //ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                //bitmap.compress(Bitmap.CompressFormat.PNG,100,bos);
-                //byte[] bb = bos.toByteArray();
-                //String image = Base64.encodeToString(bb,0,bb.length, Base64.DEFAULT);
-                //image.replaceAll("//+", "%2B");
-                //image.replaceAll("///", "%2F");
                 String str_result = "";
 
                 try {
@@ -462,7 +451,7 @@ public class EditUserProfile extends AppCompatActivity {
                 data.put(UPLOAD_KEY, uploadImage);
                 data.put("name",getFileName(filePath));
 
-                String result = rh.postRequest(UPLOAD_URL,data);
+                String result = rh.postRequest(Constants.POSTUSERCREDENTIALS,data);
                 return result;
             }
         }
