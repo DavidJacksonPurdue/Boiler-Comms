@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,7 +47,7 @@ import java.util.concurrent.TimeoutException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class OtherTimeline extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ArrayList<String> username = new ArrayList<>();
@@ -59,21 +60,19 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> userID = new ArrayList<>();
     ArrayList<String> topicID = new ArrayList<>();
     ArrayList<String> postID = new ArrayList<>();
-    ArrayList<String> upvotedPosts = new ArrayList<>();
-    ArrayList<String> downvotedPosts = new ArrayList<>();
-
+    final int post_timeline_type = 0;
+    final int topic_timeline_type = 1;
+    final int upvote_timeline_type = 2;
+    final int saved_timeline_type = 3;
+    final int comment_timeline_type = 4;
 
     public class LoadUserCredentialsPost extends AsyncTask {
         //private TextView statusField,roleField;
         private Context context;
         String userCredentials;
-
         //flag 0 means get and 1 means post.(By default it is get.)
         public LoadUserCredentialsPost(Context context) {
             this.context = context;
-        }
-        public String getUserCredentials(){
-            return userCredentials;
         }
         @Override
         protected Object doInBackground(Object[] objects) {
@@ -121,31 +120,27 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             userCredentials = content.toString();
-            return userCredentials;
+            return content.toString();
         }
         protected void onPostExecute(String result){
             userCredentials = result;
         }
     }
 
-    public class LoadUpvoteList extends AsyncTask {
+    public class LoadUserSavedPost extends AsyncTask {
         //private TextView statusField,roleField;
         private Context context;
-        String upvoteList;
-
+        String userCredentials;
         //flag 0 means get and 1 means post.(By default it is get.)
-        public LoadUpvoteList(Context context) {
+        public LoadUserSavedPost(Context context) {
             this.context = context;
-        }
-        public String getUpvoteList(){
-            return upvoteList;
         }
         @Override
         protected Object doInBackground(Object[] objects) {
             URL url = null;
             String userID = (String)objects[0];
             try {
-                url = new URL(Constants.GET_UPVOTED + userID);
+                url = new URL(Constants.GETSAVED + objects[0].toString());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -185,34 +180,28 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            upvoteList = content.toString();
-            System.out.println(content.toString());
-
-            return upvoteList;
+            userCredentials = content.toString();
+            return content.toString();
         }
         protected void onPostExecute(String result){
-            upvoteList = result;
+            userCredentials = result;
         }
     }
 
-    public class LoadDownvoteList extends AsyncTask {
+    public class LoadUserLikedPost extends AsyncTask {
         //private TextView statusField,roleField;
         private Context context;
-        String downvoteList;
-
+        String userCredentials;
         //flag 0 means get and 1 means post.(By default it is get.)
-        public LoadDownvoteList(Context context) {
+        public LoadUserLikedPost(Context context) {
             this.context = context;
-        }
-        public String getDownvoteList(){
-            return downvoteList;
         }
         @Override
         protected Object doInBackground(Object[] objects) {
             URL url = null;
             String userID = (String)objects[0];
             try {
-                url = new URL(Constants.GET_DOWNVOTED + userID);
+                url = new URL(Constants.GETSAVED + objects[0].toString());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -252,15 +241,36 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            downvoteList = content.toString();
-            System.out.println(content.toString());
-
-            return downvoteList;
+            userCredentials = content.toString();
+            return content.toString();
         }
         protected void onPostExecute(String result){
-            downvoteList = result;
+            userCredentials = result;
         }
     }
+    //private void loadIntoRecyclerView(String json) throws JSONException {
+
+    //JSONArray jsonArray = new JSONArray(json);
+
+    //Log.d("json", jsonArray.toString());
+
+    //for (int i = 0; i < jsonArray.length(); i++) {
+    //    JSONObject obj = jsonArray.getJSONObject(i);
+    //     username.add(obj.getString("userName"));
+    //    topic.add(obj.getString("topicName"));
+    //   title.add(obj.getString("postName"));
+    //    time.add(obj.getString("postDate"));
+    //   image.add(obj.getString("postImage"));
+    //   body.add(obj.getString("postText"));
+    //   votecount.add(obj.getString("voteTotal"));
+    //   userID.add(obj.getString("userID"));
+    //   topicID.add(obj.getString("topicID"));
+    //   postID.add(obj.getString("postID"));
+    // }
+
+
+    //}
+
 
     public static Document loadXMLFromString(String xml) throws Exception
     {
@@ -273,18 +283,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_other_timeline);
         //setContentView(R.layout.activity_login);
 
         recyclerView = findViewById(R.id.recyclerView);
+        final TextView timelineTitle = findViewById(R.id.timeline_title);
+        final Button back_button = findViewById(R.id.go_home);
+
         String str_result = null;
-        String upvote_result = null;
-        String downvote_result = null;
         try {
-            String userID = getIntent().getStringExtra("USERID");
-            str_result = (String) new LoadUserCredentialsPost(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
-            upvote_result = (String) new LoadUpvoteList(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
-            downvote_result = (String) new LoadDownvoteList(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
+            if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == post_timeline_type) {
+                String userID = getIntent().getStringExtra("PUBLIC_USER");
+                str_result = (String) new LoadUserCredentialsPost(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
+            }
+            else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == saved_timeline_type) {
+                String userID = getIntent().getStringExtra("PUBLIC_USER");
+                str_result = (String) new LoadUserSavedPost(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
+            }
+            else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == upvote_timeline_type) {
+                String userID = getIntent().getStringExtra("PUBLIC_USER");
+                str_result = (String) new LoadUserLikedPost(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
+            }
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -294,13 +313,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Document postXML = null;
-        Document upvoteXML = null;
-        Document downvoteXML = null;
-
         try {
             postXML = loadXMLFromString(str_result);
-            upvoteXML = loadXMLFromString(upvote_result);
-            downvoteXML = loadXMLFromString(downvote_result);
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -323,29 +337,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (upvoteXML != null) {
-            upvoteXML.getDocumentElement().normalize();
-            NodeList nList = upvoteXML.getElementsByTagName("post");
-
-            for (int x = 0; x < nList.getLength(); x++) {
-                Element Post = (Element) (nList.item(x));
-                upvotedPosts.add(Post.getAttribute("postID"));
-            }
-        }
-
-        VoteLists.upvotedPosts = upvotedPosts;
-
-        if (downvoteXML != null) {
-            downvoteXML.getDocumentElement().normalize();
-            NodeList nList = downvoteXML.getElementsByTagName("post");
-
-            for (int x = 0; x < nList.getLength(); x++) {
-                Element Post = (Element) (nList.item(x));
-                downvotedPosts.add(Post.getAttribute("postID"));
-            }
-        }
-
-        VoteLists.downvotedPosts = downvotedPosts;
+        //try {
+        //loadIntoRecyclerView(str_result);
+        //} catch (JSONException e) {
+        //e.printStackTrace();
+        //}
 
         MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time, votecount, postID, topicID, userID);
         final int upvote_id = 0;
@@ -368,9 +364,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     if (upvote_result.equals("")) {
                         Toast.makeText(getApplicationContext(), "Failed To Upvote Post At This Time", Toast.LENGTH_SHORT).show();
-                    } else if (upvote_result.equals("upvoted")) {
-                        Toast.makeText(getApplicationContext(), "You have already upvoted this post.", Toast.LENGTH_SHORT).show();
-                    } else {
+                    }
+                    else {
                         Toast.makeText(getApplicationContext(), "Successfully Upvoted Post", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -388,9 +383,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     if (downvote_result.equals("")) {
                         Toast.makeText(getApplicationContext(), "Failed To Downvote Post At This Time", Toast.LENGTH_SHORT).show();
-                    } else if (downvote_result.equals("downvoted")) {
-                        Toast.makeText(getApplicationContext(), "You have already downvoted this post.", Toast.LENGTH_SHORT).show();
-                    } else {
+                    }
+                    else {
                         Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -409,86 +403,55 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        final Button settings = findViewById(R.id.settings);
-        final Button logout = findViewById(R.id.logout);
-        final Button createPost = findViewById(R.id.createPost);
-        final Button topicPage = findViewById(R.id.topicPage);
-        final Button profileButton = findViewById(R.id.view_profile);
-
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setContentView(R.layout.activity_editprofile);
-                Intent intent = new Intent(getApplicationContext(), EditUserProfile.class);
-                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
-                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                startActivity(intent);
+        if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == post_timeline_type) {
+            if (username.size() > 0) {
+                String title_string = username.get(0) + "'s Posts";
+                timelineTitle.setText(title_string);
             }
-        });
+            else {
+                timelineTitle.setText("This user has no posts");
+            }
+        }
+        else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == topic_timeline_type) {
+            if (topic.size() > 0) {
+                String title_string = topic.get(0);
+                timelineTitle.setText(title_string);
+            }
+            else {
+                timelineTitle.setText("There are no posts with this topic");
+            }
+        }
+        else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == upvote_timeline_type) {
+            if (username.size() > 0) {
+                String title_string = username.get(0) + "'s Upvoted Posts";
+                timelineTitle.setText(title_string);
+            }
+            else {
+                timelineTitle.setText("This user has not upvoted any posts");
+            }
+        }
+        else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == saved_timeline_type) {
+            timelineTitle.setText("Your Saved Posts");
+        }
+        else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == comment_timeline_type) {
+            if (username.size() > 0) {
+                String title_string = username.get(0) + "'s Comments";
+                timelineTitle.setText(title_string);
+            }
+            else {
+                timelineTitle.setText("This user has no comments");
+            }
+        }
 
-        createPost.setOnClickListener(new View.OnClickListener() {
+        back_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setContentView(R.layout.activity_createpost);
-                Intent intent = new Intent(getApplicationContext(), CreatePostActivity.class);
+                setContentView(R.layout.activity_main);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                 startActivity(intent);
-            }
-        });
-
-        topicPage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setContentView(R.layout.activity_topic_post);
-                Intent intent = new Intent(getApplicationContext(), TopicPostActivity.class);
-                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
-                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
-                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                startActivity(intent);
-            }
-        });
-
-        profileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setContentView(R.layout.activity_public_profile);
-                Intent intent = new Intent(getApplicationContext(), PublicProfilePage.class);
-                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
-                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
-                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                intent.putExtra("PUBLIC_USER", getIntent().getStringExtra("USERID"));
-                startActivity(intent);
-            }
-        });
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogTheme);
-        builder.setTitle("Logout?");
-        builder.setMessage("This will bring you back to the login page.");
-        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                setContentView(R.layout.activity_login);
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "Canceled Logout", Toast.LENGTH_LONG).show();
-            }
-        });
-        builder.setIcon(android.R.drawable.ic_dialog_alert);
-
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                dialog.getButton(-1).setVisibility(View.VISIBLE);
-                dialog.getButton(-2).setVisibility(View.VISIBLE);
             }
         });
     }
