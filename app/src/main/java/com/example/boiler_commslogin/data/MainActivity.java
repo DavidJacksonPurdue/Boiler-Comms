@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
         String downvote_result = null;
         try {
             String userID = getIntent().getStringExtra("USERID");
-            str_result = (String) new LoadUserCredentialsPost(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
+            str_result = (String) new LoadUserCredentialsPost(this).execute(userID).get(5000, TimeUnit.MILLISECONDS);
             upvote_result = (String) new LoadUpvoteList(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
             downvote_result = (String) new LoadDownvoteList(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
         } catch (ExecutionException e) {
