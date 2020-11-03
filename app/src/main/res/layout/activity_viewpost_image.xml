@@ -6,13 +6,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Button
+        android:id="@+id/downvoteButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:height="10dp"
+        android:background="@drawable/ic_keyboard_arrow_down_black_24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upvoteButton" />
+
     <TextView
         android:id="@+id/postName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:clickable="false"
@@ -158,7 +167,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="25dp"
         android:clickable="false"
         android:editable="false"
         android:text="Title"
@@ -190,4 +199,35 @@
         android:text="Topic"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/postAuthor" />
+
+    <Button
+        android:id="@+id/upvoteButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:height="10dp"
+        android:background="@drawable/ic_keyboard_arrow_up_black_24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/voteText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:hint="votes"
+        app:layout_constraintEnd_toStartOf="@+id/downvoteButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/ic_baseline_bookmark_border_24"
+        app:layout_constraintStart_toEndOf="@+id/backButton"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

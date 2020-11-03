@@ -410,7 +410,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                     intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                     intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                    intent.putExtra("POSTID", getIntent().getStringExtra("POSTID"));
+                    intent.putExtra("POSTID", (String) object.get(0));
                     if (object.size() == 2) {
                         intent.putExtra("IMAGE", true);
                     } else {

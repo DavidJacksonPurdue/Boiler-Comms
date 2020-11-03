@@ -6,18 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:clickable="false"
-        android:editable="false"
-        android:text="Author"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+    <Button
+        android:id="@+id/downvoteButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:height="10dp"
+        android:background="@drawable/ic_keyboard_arrow_down_black_24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upvoteButton" />
 
     <TextView
         android:id="@+id/postName"
@@ -25,14 +21,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:clickable="false"
         android:editable="false"
         android:hint="Post Name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintStart_toEndOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/backButton" />
 
     <TextView
@@ -48,7 +44,7 @@
         android:editable="false"
         android:hint="Post Author"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView3"
+        app:layout_constraintStart_toEndOf="@+id/textView7"
         app:layout_constraintTop_toBottomOf="@+id/postName" />
 
     <TextView
@@ -64,7 +60,7 @@
         android:editable="false"
         android:hint="Post Topic"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView4"
+        app:layout_constraintStart_toEndOf="@+id/textView8"
         app:layout_constraintTop_toBottomOf="@+id/postAuthor" />
 
     <Button
@@ -87,7 +83,7 @@
         android:layout_height="150dp"
         android:layout_marginStart="5dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="5dp"
         android:layout_marginRight="5dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -121,7 +117,6 @@
         android:layout_marginTop="50dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
-        android:maxLenth="280"
         android:hint="Type Comment"
         app:layout_constraintEnd_toStartOf="@+id/postCommentButton"
         app:layout_constraintStart_toStartOf="parent"
@@ -153,12 +148,12 @@
         app:layout_constraintTop_toBottomOf="@+id/postCommentButton" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="25dp"
         android:clickable="false"
         android:editable="false"
         android:text="Title"
@@ -166,7 +161,20 @@
         app:layout_constraintTop_toBottomOf="@+id/backButton" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:clickable="false"
+        android:editable="false"
+        android:text="Author"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postName" />
+
+    <TextView
+        android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -176,5 +184,36 @@
         android:editable="false"
         android:text="Topic"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/postAuthor" />
+
+    <Button
+        android:id="@+id/upvoteButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:height="10dp"
+        android:background="@drawable/ic_keyboard_arrow_up_black_24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/voteText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:hint="votes"
+        app:layout_constraintEnd_toStartOf="@+id/downvoteButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/ic_baseline_bookmark_border_24"
+        app:layout_constraintStart_toEndOf="@+id/backButton"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
