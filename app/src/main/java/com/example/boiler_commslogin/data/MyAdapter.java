@@ -19,6 +19,7 @@ import com.example.boiler_commslogin.R;
 
 import java.util.ArrayList;
 
+
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     ArrayList<String> username, topic, title, body, image, time, votecount, postId, topicId, userId;
     Context context;
@@ -118,11 +119,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
-                        ArrayList<Object> upvote = new ArrayList<>();
-                        upvote.add(postId.getText().toString());
-                        upvote.add(userId.getText().toString());
-                        votecount.setText(Integer.toString(Integer.parseInt(votecount.getText().toString()) + 1));
-                        listener.onItemSelected(upvote_id, v, upvote);
+                        upvote.setEnabled(false);
+                        downvote.setEnabled(false);
+
+                        ArrayList<Object> upvoteList = new ArrayList<>();
+                        upvoteList.add(postId.getText().toString());
+                        upvoteList.add(userId.getText().toString());
+
+                        if (!VoteLists.upvotedPosts.contains(postId.getText().toString()) && !VoteLists.downvotedPosts.contains(postId.getText().toString())) {
+                            VoteLists.downvotedPosts.add(postId.getText().toString());
+                            votecount.setText(Integer.toString(Integer.parseInt(votecount.getText().toString()) + 1));
+                        }
+
+                        listener.onItemSelected(upvote_id, v, upvoteList);
+
+                        upvote.setEnabled(true);
+                        downvote.setEnabled(true);
                     }
                 }
             });
@@ -131,12 +143,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
-                        ArrayList<Object> downvote = new ArrayList<>();
-                        downvote.add(postId.getText().toString());
-                        downvote.add(userId.getText().toString());
-                        votecount.setText(Integer.toString(Integer.parseInt(votecount.getText().toString()) - 1));
-                        listener.onItemSelected(downvote_id, v, downvote);
+                        upvote.setEnabled(false);
+                        downvote.setEnabled(false);
+
+                        ArrayList<Object> downvoteList = new ArrayList<>();
+                        downvoteList.add(postId.getText().toString());
+                        downvoteList.add(userId.getText().toString());
+
+                        if (!VoteLists.upvotedPosts.contains(postId.getText().toString()) && !VoteLists.downvotedPosts.contains(postId.getText().toString())) {
+                            VoteLists.upvotedPosts.add(postId.getText().toString());
+                            votecount.setText(Integer.toString(Integer.parseInt(votecount.getText().toString()) - 1));
+                        }
+
+                        listener.onItemSelected(downvote_id, v, downvoteList);
+                        upvote.setEnabled(true);
+                        downvote.setEnabled(true);
                     }
+
+
                 }
             });
 

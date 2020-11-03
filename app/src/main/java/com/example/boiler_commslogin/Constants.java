@@ -21,6 +21,6 @@ public abstract class Constants {
     public static final String UPVOTE = ROOT_URL + "upvotePost.php?q=";
     public static final String DOWNVOTE = ROOT_URL + "downvotePost.php?q=";
     public static final String GET_TOPICS = ROOT_URL + "getTopics.php";
-    public static final String GET_UPVOTED = ROOT_URL + "getUpvoteList?q=";
-    public static final String GET_DOWNVOTED = ROOT_URL + "getDownvoteList?q=";
+    public static final String GET_UPVOTED = ROOT_URL + "getUpvoteList.php?q=";
+    public static final String GET_DOWNVOTED = ROOT_URL + "getDownvoteList.php?q=";
 }

@@ -28,54 +28,60 @@ public class UpvoteTask extends AsyncTask{
 
     @Override
     protected Object doInBackground(Object[] objects) {
-        try {
-            /* Get the parameters and store them */
-            String postID = (String)objects[0];
-            String userID = (String)objects[1];
+        if (!VoteLists.upvotedPosts.contains((String)objects[0]) && !VoteLists.downvotedPosts.contains((String)objects[0])) {
 
-            /* Create the url request string using the parameters*/
-            String link = Constants.UPVOTE + postID + "_" + userID;
+            try {
+                /* Get the parameters and store them */
+                String postID = (String) objects[0];
+                String userID = (String) objects[1];
 
-            /* Create a new url */
-            URL url = new URL(link);
-            /* Open a connection */
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            con.setConnectTimeout(5000);
-            con.setReadTimeout(5000);
+                /* Create the url request string using the parameters*/
+                String link = Constants.UPVOTE + postID + "_" + userID;
 
-            /* Read the response from the server */
-            int status = con.getResponseCode();
-            Log.d("status value", Integer.toString(status));
-            /* Check if we have an error */
-            if (status <= 299) {
-                /* Create a buffer to read from the input stream */
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(con.getInputStream()));
-                String inputLine;
-                StringBuffer content = new StringBuffer();
-                while ((inputLine = in.readLine()) != null) {
-                    content.append(inputLine);
+                /* Create a new url */
+                URL url = new URL(link);
+                /* Open a connection */
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("GET");
+                con.setConnectTimeout(5000);
+                con.setReadTimeout(5000);
+
+                /* Read the response from the server */
+                int status = con.getResponseCode();
+                Log.d("status value", Integer.toString(status));
+                /* Check if we have an error */
+                if (status <= 299) {
+                    /* Create a buffer to read from the input stream */
+                    BufferedReader in = new BufferedReader(
+                            new InputStreamReader(con.getInputStream()));
+                    String inputLine;
+                    StringBuffer content = new StringBuffer();
+                    while ((inputLine = in.readLine()) != null) {
+                        content.append(inputLine);
+                    }
+
+                    /* Close the connection and disconnect */
+                    in.close();
+                    con.disconnect();
+
+                    return content.toString();
+                } else {
+                    /* If we have an error, disconnect */
+                    con.disconnect();
+                    return "Error";
                 }
 
-                /* Close the connection and disconnect */
-                in.close();
-                con.disconnect();
-                return content.toString();
+                /* Catch errors and print the stack trace */
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            else {
-                /* If we have an error, disconnect */
-                con.disconnect();
-                return "Error";
-            }
-
-            /* Catch errors and print the stack trace */
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            return "error";
+        } else {
+            return "upvoted";
         }
-        return "error";
+
     }
 
     @Override
