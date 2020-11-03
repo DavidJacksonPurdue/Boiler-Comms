@@ -38,6 +38,7 @@
 
         <EditText
             android:id="@+id/replyEditText"
+            android:maxLength="280"
             android:layout_width="240dp"
             android:layout_height="wrap_content" />
 
