@@ -59,11 +59,15 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> userID = new ArrayList<>();
     ArrayList<String> topicID = new ArrayList<>();
     ArrayList<String> postID = new ArrayList<>();
+    ArrayList<String> upvotedPosts = new ArrayList<>();
+    ArrayList<String> downvotedPosts = new ArrayList<>();
+
 
     public class LoadUserCredentialsPost extends AsyncTask {
         //private TextView statusField,roleField;
         private Context context;
         String userCredentials;
+
         //flag 0 means get and 1 means post.(By default it is get.)
         public LoadUserCredentialsPost(Context context) {
             this.context = context;
@@ -117,36 +121,148 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             userCredentials = content.toString();
-            return content.toString();
+            System.out.println(content.toString());
+
+            return userCredentials;
         }
         protected void onPostExecute(String result){
             userCredentials = result;
         }
     }
 
-    //private void loadIntoRecyclerView(String json) throws JSONException {
+    public class LoadUpvoteList extends AsyncTask {
+        //private TextView statusField,roleField;
+        private Context context;
+        String upvoteList;
 
-        //JSONArray jsonArray = new JSONArray(json);
+        //flag 0 means get and 1 means post.(By default it is get.)
+        public LoadUpvoteList(Context context) {
+            this.context = context;
+        }
+        public String getUpvoteList(){
+            return upvoteList;
+        }
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            URL url = null;
+            String userID = (String)objects[0];
+            try {
+                url = new URL(Constants.GET_UPVOTED + userID);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            HttpURLConnection con = null;
+            try {
+                con = (HttpURLConnection) url.openConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                con.setRequestMethod("GET");
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+            }
+            con.setConnectTimeout(5000);
+            con.setReadTimeout(5000);
+            int status = 0;
+            BufferedReader in = null;
+            StringBuilder content = new StringBuilder();
+            try {
+                in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                while (true) {
+                    inputLine = in.readLine();
+                    if(inputLine == null){
+                        break;
+                    }
+                    content.append(inputLine);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if(in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            upvoteList = content.toString();
+            System.out.println(content.toString());
 
-        //Log.d("json", jsonArray.toString());
+            return upvoteList;
+        }
+        protected void onPostExecute(String result){
+            upvoteList = result;
+        }
+    }
 
-        //for (int i = 0; i < jsonArray.length(); i++) {
-        //    JSONObject obj = jsonArray.getJSONObject(i);
-       //     username.add(obj.getString("userName"));
-        //    topic.add(obj.getString("topicName"));
-         //   title.add(obj.getString("postName"));
-        //    time.add(obj.getString("postDate"));
-         //   image.add(obj.getString("postImage"));
-         //   body.add(obj.getString("postText"));
-         //   votecount.add(obj.getString("voteTotal"));
-         //   userID.add(obj.getString("userID"));
-         //   topicID.add(obj.getString("topicID"));
-         //   postID.add(obj.getString("postID"));
-       // }
+    public class LoadDownvoteList extends AsyncTask {
+        //private TextView statusField,roleField;
+        private Context context;
+        String downvoteList;
 
+        //flag 0 means get and 1 means post.(By default it is get.)
+        public LoadDownvoteList(Context context) {
+            this.context = context;
+        }
+        public String getDownvoteList(){
+            return downvoteList;
+        }
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            URL url = null;
+            String userID = (String)objects[0];
+            try {
+                url = new URL(Constants.GET_DOWNVOTED + userID);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            HttpURLConnection con = null;
+            try {
+                con = (HttpURLConnection) url.openConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                con.setRequestMethod("GET");
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+            }
+            con.setConnectTimeout(5000);
+            con.setReadTimeout(5000);
+            int status = 0;
+            BufferedReader in = null;
+            StringBuilder content = new StringBuilder();
+            try {
+                in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                while (true) {
+                    inputLine = in.readLine();
+                    if(inputLine == null){
+                        break;
+                    }
+                    content.append(inputLine);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if(in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            downvoteList = content.toString();
+            System.out.println(content.toString());
 
-    //}
-
+            return downvoteList;
+        }
+        protected void onPostExecute(String result){
+            downvoteList = result;
+        }
+    }
 
     public static Document loadXMLFromString(String xml) throws Exception
     {
@@ -160,13 +276,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //setContentView(R.layout.activity_login);
 
         recyclerView = findViewById(R.id.recyclerView);
         String str_result = null;
+        String upvote_result = null;
+        String downvote_result = null;
         try {
             String userID = getIntent().getStringExtra("USERID");
             str_result = (String) new LoadUserCredentialsPost(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
+            upvote_result = (String) new LoadUpvoteList(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
+            downvote_result = (String) new LoadDownvoteList(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -176,8 +295,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Document postXML = null;
+        Document upvoteXML = null;
+        Document downvoteXML = null;
+
         try {
             postXML = loadXMLFromString(str_result);
+            upvoteXML = loadXMLFromString(upvote_result);
+            downvoteXML = loadXMLFromString(downvote_result);
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -200,11 +324,29 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        //try {
-            //loadIntoRecyclerView(str_result);
-        //} catch (JSONException e) {
-            //e.printStackTrace();
-        //}
+        if (upvoteXML != null) {
+            upvoteXML.getDocumentElement().normalize();
+            NodeList nList = upvoteXML.getElementsByTagName("post");
+
+            for (int x = 0; x < nList.getLength(); x++) {
+                Element Post = (Element) (nList.item(x));
+                upvotedPosts.add(Post.getAttribute("postID"));
+            }
+        }
+
+        VoteLists.upvotedPosts = upvotedPosts;
+
+        if (downvoteXML != null) {
+            downvoteXML.getDocumentElement().normalize();
+            NodeList nList = downvoteXML.getElementsByTagName("post");
+
+            for (int x = 0; x < nList.getLength(); x++) {
+                Element Post = (Element) (nList.item(x));
+                downvotedPosts.add(Post.getAttribute("postID"));
+            }
+        }
+
+        VoteLists.downvotedPosts = downvotedPosts;
 
         MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time, votecount, postID, topicID, userID);
         final int upvote_id = 0;
@@ -227,8 +369,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                     if (upvote_result.equals("")) {
                         Toast.makeText(getApplicationContext(), "Failed To Upvote Post At This Time", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+                    } else if (upvote_result.equals("upvoted")) {
+                        Toast.makeText(getApplicationContext(), "You have already upvoted this post.", Toast.LENGTH_SHORT).show();
+                    } else {
                         Toast.makeText(getApplicationContext(), "Successfully Upvoted Post", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -246,8 +389,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                     if (downvote_result.equals("")) {
                         Toast.makeText(getApplicationContext(), "Failed To Downvote Post At This Time", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+                    } else if (downvote_result.equals("downvoted")) {
+                        Toast.makeText(getApplicationContext(), "You have already downvoted this post.", Toast.LENGTH_SHORT).show();
+                    } else {
                         Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -269,6 +413,7 @@ public class MainActivity extends AppCompatActivity {
         final Button settings = findViewById(R.id.settings);
         final Button logout = findViewById(R.id.logout);
         final Button createPost = findViewById(R.id.createPost);
+        final Button topicPage = findViewById(R.id.topicPage);
 
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -286,6 +431,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setContentView(R.layout.activity_createpost);
                 Intent intent = new Intent(getApplicationContext(), CreatePostActivity.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                startActivity(intent);
+            }
+        });
+
+        topicPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_topic_post);
+                Intent intent = new Intent(getApplicationContext(), TopicPostActivity.class);
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
@@ -311,6 +468,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         builder.setIcon(android.R.drawable.ic_dialog_alert);
+
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override

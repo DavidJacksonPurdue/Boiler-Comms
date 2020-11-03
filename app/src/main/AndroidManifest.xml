@@ -22,6 +22,9 @@
             android:label="viewComments"
             android:exported="true"/>
         <activity
+            android:name=".data.TopicPostActivity"
+            android:label="topicPost" />
+        <activity
             android:name=".ui.login.EditUserProfile"
             android:label="userProfileEdit" />
         <activity
