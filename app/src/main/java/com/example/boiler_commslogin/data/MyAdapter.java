@@ -82,6 +82,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             holder.image.setImageBitmap(decodedByte);
         }
+        else {
+            holder.image.setImageBitmap(null);
+        }
     }
 
     @Override
