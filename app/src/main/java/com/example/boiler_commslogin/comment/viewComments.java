@@ -1,14 +1,15 @@
-package com.example.boiler_commslogin;
+package com.example.boiler_commslogin.comment;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.boiler_commslogin.data.model.LoadUserCredentials;
+import com.example.boiler_commslogin.R;
+import com.example.boiler_commslogin.comment.Item;
+//import com.example.boiler_commslogin.comment.R;
 import com.multilevelview.MultiLevelRecyclerView;
 import com.multilevelview.models.RecyclerViewItem;
 
@@ -29,7 +30,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 public class viewComments extends AppCompatActivity {
 
@@ -42,7 +42,6 @@ public class viewComments extends AppCompatActivity {
 
         MultiLevelRecyclerView multiLevelRecyclerView = (MultiLevelRecyclerView) findViewById(R.id.rv_list);
         multiLevelRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
 
         String str_result = null;
         try {
@@ -63,10 +62,10 @@ public class viewComments extends AppCompatActivity {
         }
         postXML.getDocumentElement().normalize();
         NodeList nList = postXML.getElementsByTagName("comment");
-        List<Item> commentsAsItems = new ArrayList<>();
+        List<com.example.boiler_commslogin.comment.Item> commentsAsItems = new ArrayList<>();
         for(int x = 0; x <nList.getLength(); x++){
             Element commentElement = (Element)(nList.item(x));
-            Item currentComment = new Item(x);
+            com.example.boiler_commslogin.comment.Item currentComment = new com.example.boiler_commslogin.comment.Item(x);
             currentComment.setCommentID(Integer.parseInt(commentElement.getAttribute("commentID")));
             currentComment.setPostID(Integer.parseInt(commentElement.getAttribute("postID")));
             if(!(commentElement.getAttribute("parentCommentID").equals(""))) {
@@ -80,7 +79,7 @@ public class viewComments extends AppCompatActivity {
         }
 
 
-        List<Item> itemList = (List<Item>) recursivlyPopulateComments(commentsAsItems, -1, 0);
+        List<com.example.boiler_commslogin.comment.Item> itemList = (List<com.example.boiler_commslogin.comment.Item>) recursivlyPopulateComments(commentsAsItems, -1, 0);
 
         MyCommentAdapter myCommentAdapter = new MyCommentAdapter(this, itemList, multiLevelRecyclerView);
 
@@ -106,10 +105,10 @@ public class viewComments extends AppCompatActivity {
     //depth y axis (parent comments)
     //levelNumber xaxis Child comments
 
-    private List<?> recursivlyPopulateComments(List<Item> commentsList, int goalID, int level) {
+    private List<?> recursivlyPopulateComments(List<com.example.boiler_commslogin.comment.Item> commentsList, int goalID, int level) {
         List<RecyclerViewItem> itemList = new ArrayList<>();
         for(int x = 0; x < commentsList.size(); x++){
-            Item item = new Item(level);
+            com.example.boiler_commslogin.comment.Item item = new Item(level);
             item.setTitle(String.format(Locale.ENGLISH, commentsList.get(x).getUserName(), x));
             item.setBody(String.format(Locale.ENGLISH, commentsList.get(x).getBody(), x));
             item.setCommentID(commentsList.get(x).getCommentID());

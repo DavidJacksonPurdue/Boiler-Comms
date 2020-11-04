@@ -14,11 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".viewMyUserComments"
+            android:name=".comment.viewMyUserComments"
             android:label="viewMyComments"
             android:exported="true"/>
         <activity
-            android:name=".viewComments"
+            android:name=".comment.viewComments"
             android:label="viewComments"
             android:exported="true"/>
         <activity

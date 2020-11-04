@@ -1,34 +1,36 @@
-package com.example.boiler_commslogin;
+package com.example.boiler_commslogin.comment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.multilevelview.MultiLevelRecyclerView;
+import com.example.boiler_commslogin.R;
+import com.example.boiler_commslogin.data.MainActivity;
+import com.example.boiler_commslogin.data.PublicProfilePage;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static java.lang.Boolean.FALSE;
-
 public class viewMyUserComments extends AppCompatActivity {
     RecyclerView recyclerView;
+    Button back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_users_comments);
         recyclerView = findViewById(R.id.userCommentsRecyclerView);
-
+        back = findViewById(R.id.CommentsBackButton);
         String str_result = null;
         try {
             str_result= (String)new loadMyComments(this).execute("0").get(2000, TimeUnit.MILLISECONDS);;
@@ -77,7 +79,18 @@ public class viewMyUserComments extends AppCompatActivity {
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_public_profile);
+                Intent intent = new Intent(getApplicationContext(), PublicProfilePage.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("PUBLIC_USER", getIntent().getStringExtra("PUBLIC_USER"));
+                startActivity(intent);
+            }
+        });
     }
 
 }
