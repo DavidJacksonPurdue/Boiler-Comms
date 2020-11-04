@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
             URL url = null;
             String userID = (String)objects[0];
             try {
-                url = new URL(Constants.GETPOST + objects[0].toString());
+                url = new URL(Constants.GETSTARTTIMELINE + objects[0].toString());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
