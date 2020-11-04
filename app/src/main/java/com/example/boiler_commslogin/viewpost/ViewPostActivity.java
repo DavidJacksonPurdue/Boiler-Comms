@@ -1,22 +1,29 @@
 package com.example.boiler_commslogin.viewpost;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.boiler_commslogin.R;
+import com.example.boiler_commslogin.comment.sendComment;
+import com.example.boiler_commslogin.comment.viewComments;
+import com.example.boiler_commslogin.comment.viewMyUserComments;
 import com.example.boiler_commslogin.createpost.CreatePost;
 import com.example.boiler_commslogin.createpost.topicModel;
 import com.example.boiler_commslogin.data.MainActivity;
@@ -36,6 +43,8 @@ import java.util.concurrent.TimeoutException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import static com.example.boiler_commslogin.comment.MyCommentAdapter.hideKeyboard;
 
 public class ViewPostActivity extends AppCompatActivity {
 
@@ -60,7 +69,7 @@ public class ViewPostActivity extends AppCompatActivity {
     TextView postTopic;
     ImageView postImage;
     TextView postText;
-    TextView commentText;
+    EditText commentText;
     TextView postDate;
     Button postCommentButton;
     Button viewCommentButton;
@@ -149,7 +158,7 @@ public class ViewPostActivity extends AppCompatActivity {
         postTopic = (TextView) findViewById(R.id.postTopic);
         //postImage set above
         postText = (TextView) findViewById(R.id.postText);
-        commentText = (TextView) findViewById(R.id.commentText);
+        commentText = (EditText) findViewById(R.id.commentText);
         postCommentButton = (Button) findViewById(R.id.postCommentButton);
         viewCommentButton = (Button) findViewById(R.id.viewCommentButton);
         voteText = (TextView) findViewById(R.id.voteText);
@@ -176,14 +185,68 @@ public class ViewPostActivity extends AppCompatActivity {
         postCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!commentText.getText().toString().equals("")) {
 
+                }
+            }
+        });
+
+        postCommentButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v) {
+                //mMultiLevelRecyclerView.toggleItemsGroup(getAdapterPosition());
+
+                String text = commentText.getText().toString();
+                if (!text.equals("")) {
+                    //hideKeyboard(((Activity) getApplicationContext()));
+                    int newParentID = -1;
+                    String textBody = commentText.getText().toString();
+                    Log.d("madeIT", textBody);
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    LocalDateTime now = LocalDateTime.now();
+                    String commentTime = dtf.format(now);
+                    String str_result = null;
+
+                    try {
+                        str_result= (String)new sendComment(getApplicationContext()).execute("0",newParentID, textBody, "0", commentTime).get(2000, TimeUnit.MILLISECONDS);
+
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    }
+                    Log.d("str_result",str_result);
+                    commentText.setText("");
+                            /*Item newComment = new Item(mItem.getLevel() + 1);
+                            newComment.setCommentID(Integer.parseInt(str_result));
+                            newComment.setParentID(newParentID);
+                            newComment.setParentID(0);
+                            newComment.setBody(textBody);
+                            newComment.setTitle("you posted:");
+
+                            mMultiLevelRecyclerView.openTill(mItem.getLevel());
+                            notifyDataSetChanged();*/
+                    Intent myIntent = new Intent(getApplicationContext(), viewComments.class);
+                    //myIntent.putExtra("key", value); //Optional parameters
+                    startActivity(myIntent);
+                }
             }
         });
 
         viewCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                setContentView(R.layout.activity_view_comments);
+                Intent intent = new Intent(getApplicationContext(), viewComments.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("POSTID", postID);
+                Log.d("ViewPost PostID", "" + postID);
+                startActivity(intent);
             }
         });
 
@@ -208,10 +271,7 @@ public class ViewPostActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (saved) {
-                    saved = false;
-                    saveButton.setBackgroundResource(R.drawable.ic_baseline_bookmark_border_24);
-                } else {
+                if (!saved) {
                     saved = true;
                     saveButton.setBackgroundResource(R.drawable.ic_baseline_bookmark_24);
                 }

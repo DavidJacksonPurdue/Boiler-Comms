@@ -28,5 +28,4 @@ public abstract class Constants {
     public static final String GETSTARTTIMELINE = ROOT_URL + "getStartTimeline.php?q=";
     public static final String GET_POST_BY_POSTID = ROOT_URL + "getPostByPostID.php?q=";
     public static final String SAVE_POST = ROOT_URL + "insertSavedPost.php?q=";
-    public static final String GET_SAVED_POST = ROOT_URL + "getSavedPost.php?q=";
 }

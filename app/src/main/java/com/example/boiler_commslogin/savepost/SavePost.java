@@ -68,8 +68,7 @@ public class SavePost extends AsyncTask {
             e.printStackTrace();
         }
         result = content.toString();
-        System.out.println(content.toString());
 
-        return result;
+        return "Success";
     }
 }

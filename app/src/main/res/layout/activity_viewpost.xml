@@ -137,7 +137,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <TextView
+    <EditText
         android:id="@+id/commentText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
