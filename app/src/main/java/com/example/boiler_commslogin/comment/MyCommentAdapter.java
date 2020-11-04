@@ -1,4 +1,4 @@
-package com.example.boiler_commslogin;
+package com.example.boiler_commslogin.comment;
 
 
 import android.app.Activity;
@@ -9,17 +9,15 @@ import android.view.ViewGroup;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.boiler_commslogin.comment.Item;
+import com.example.boiler_commslogin.R;
 import com.multilevelview.MultiLevelAdapter;
 import com.multilevelview.MultiLevelRecyclerView;
-import com.multilevelview.models.RecyclerViewItem;
 
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
@@ -27,7 +25,6 @@ import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,12 +33,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.multilevelview.MultiLevelAdapter;
-import com.multilevelview.MultiLevelRecyclerView;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -51,11 +42,11 @@ public class MyCommentAdapter extends MultiLevelAdapter {
 
     private Holder mViewHolder;
     private Context mContext;
-    private List<Item> mListItems = new ArrayList<>();
-    private Item mItem;
+    private List<com.example.boiler_commslogin.comment.Item> mListItems = new ArrayList<>();
+    private com.example.boiler_commslogin.comment.Item mItem;
     private MultiLevelRecyclerView mMultiLevelRecyclerView;
 
-    MyCommentAdapter(Context mContext, List<Item> mListItems, MultiLevelRecyclerView mMultiLevelRecyclerView) {
+    MyCommentAdapter(Context mContext, List<com.example.boiler_commslogin.comment.Item> mListItems, MultiLevelRecyclerView mMultiLevelRecyclerView) {
         super(mListItems);
         this.mListItems = mListItems;
         this.mContext = mContext;

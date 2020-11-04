@@ -39,6 +39,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.boiler_commslogin.R;
+import com.example.boiler_commslogin.comment.viewComments;
+import com.example.boiler_commslogin.comment.viewMyUserComments;
 import com.example.boiler_commslogin.data.MainActivity;
 import com.example.boiler_commslogin.data.PasswordHasher;
 import com.example.boiler_commslogin.data.model.LoadUserCredentials;
@@ -210,6 +212,19 @@ public class PublicProfilePage extends AppCompatActivity {
             public void onClick(View v) {
                 setContentView(R.layout.activity_other_timeline);
                 Intent intent = new Intent(getApplicationContext(), OtherTimeline.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("PUBLIC_USER", getIntent().getStringExtra("PUBLIC_USER"));
+                intent.putExtra("TIMELINE_TYPE", post_timeline_type);
+                startActivity(intent);
+            }
+        });
+        comments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_view_comments);
+                Intent intent = new Intent(getApplicationContext(), viewMyUserComments.class);
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));

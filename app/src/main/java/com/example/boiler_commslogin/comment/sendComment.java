@@ -1,9 +1,11 @@
-package com.example.boiler_commslogin;
+package com.example.boiler_commslogin.comment;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
+
+import com.example.boiler_commslogin.Constants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +15,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-public class loadMyComments extends AsyncTask {
+public class sendComment extends AsyncTask {
     private TextView statusField,roleField;
     private Context context;
     private int byGetOrPost;
@@ -21,11 +23,8 @@ public class loadMyComments extends AsyncTask {
     String comments;
 
     //flag 0 means get and 1 means post.(By default it is get.)
-    public loadMyComments(Context context) {
+    public sendComment(Context context) {
         this.context = context;
-    }
-    public String getComments(){
-        return comments;
     }
 
     @Override
@@ -33,7 +32,7 @@ public class loadMyComments extends AsyncTask {
         URL url = null;
         String userID = (String)objects[0];
         try {
-            url = new URL(Constants.GETMYCOMMENTS + objects[0].toString());
+            url = new URL(Constants.SENDCOMMENT + objects[0].toString() + "_" + objects[1].toString() + "_" + objects[2].toString() + "_" + objects[3].toString() + "_" + objects[4].toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -84,9 +83,4 @@ public class loadMyComments extends AsyncTask {
         return content.toString();
     }
 
-    protected void onPostExecute(String result){
-        comments = result;
-        this.statusField.setText("Login Successful");
-        this.roleField.setText(result);
-    }
 }
