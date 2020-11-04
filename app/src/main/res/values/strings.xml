@@ -30,5 +30,8 @@
     <string name="liked_posts">"Liked Posts"</string>
     <string name="comments">"Comments"</string>
     <string name="topic">"Topic"</string>
+    <string name="profile">"View Profile"</string>
+    <string name="saved">"Saved Posts"</string>
+    <string name="follow">"Follow"</string>
     <string name="todo">TODO</string>
 </resources>

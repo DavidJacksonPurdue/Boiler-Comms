@@ -63,6 +63,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        holder.setIsRecyclable(false);
         holder.username.setText(username.get(position));
         holder.topic.setText(topic.get(position));
         holder.body.setText(body.get(position));
@@ -71,7 +72,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         holder.topicId.setText(topicId.get(position));
         holder.postId.setText(postId.get(position));
         holder.userId.setText(userId.get(position));
-        String img = image.get(position).toString();
+        String img = image.get(position);
         if (votecount.get(position).equals("null")) {
             holder.votecount.setText("0");
         }
@@ -83,6 +84,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             holder.image.setImageBitmap(decodedByte);
+        }
+        else {
+            holder.image.setImageBitmap(null);
         }
     }
 
