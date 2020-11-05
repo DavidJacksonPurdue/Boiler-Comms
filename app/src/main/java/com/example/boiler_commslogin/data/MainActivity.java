@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class LoadUpvoteList extends AsyncTask {
+    public static class LoadUpvoteList extends AsyncTask {
         //private TextView statusField,roleField;
         private Context context;
         String upvoteList;
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class LoadDownvoteList extends AsyncTask {
+    public static class LoadDownvoteList extends AsyncTask {
         //private TextView statusField,roleField;
         private Context context;
         String downvoteList;
@@ -356,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
         final int downvote_id = 1;
         final int user_pos = 2;
         final int title_pos = 3;
+        final int topic_pos = 4;
         myAdapter.setListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void onItemSelected(int position, View view, ArrayList<Object> object) {
@@ -428,6 +429,15 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                     intent.putExtra("POSTID", (String) object.get(0));
                     startActivity(intent);
+                }else if (position == topic_pos) {
+                    setContentView(R.layout.activity_topic_post);
+                    Intent intent = new Intent(getApplicationContext(), TopicPostActivity.class);
+                    intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                    intent.putExtra("USERNAME", intent.getStringExtra("USERNAME"));
+                    intent.putExtra("PASSWORD", intent.getStringExtra("PASSWORD"));
+                    intent.putExtra("TOPICID", object.get(0).toString());
+                    startActivity(intent);
+
                 }
             }
         });
@@ -472,6 +482,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("TOPICID", "1");
                 startActivity(intent);
             }
         });

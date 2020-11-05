@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
@@ -122,6 +123,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             final int downvote_id = 1;
             final int user_pos = 2;
             final int title_pos = 3;
+            final int topic_pos = 4;
 
             upvote.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -193,6 +195,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                             title.add(image);
                         }
                         listener.onItemSelected(title_pos, v, title);
+                    }
+                }
+            });
+
+            topic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        ArrayList<Object> topic = new ArrayList<>();
+                        topic.add(topicId.getText().toString());
+                        listener.onItemSelected(topic_pos, v, topic);
                     }
                 }
             });

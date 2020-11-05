@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.boiler_commslogin.viewpost.ViewPostActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -13,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -159,15 +161,21 @@ public class TopicPostActivity extends AppCompatActivity {
         final int upvote_id = 0;
         final int downvote_id = 1;
         final int user_pos = 2;
-        final int topic_pos = 3;
+        final int title_pos = 3;
+        final int topic_pos = 4;
         myAdapter.setListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void onItemSelected(int position, View view, ArrayList<Object> object) {
                 if (position == upvote_id) {
+
+                    Log.d("Upvote List", VoteLists.upvotedPosts.toString());
+                    Log.d("Downvote List", VoteLists.downvotedPosts.toString());
                     // include functionality for upvote button
                     String upvote_result = "";
                     try {
-                        upvote_result = (String) new UpvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                        String postID = (String) object.get(0);
+                        String userID = getIntent().getStringExtra("USERID");
+                        upvote_result = (String) new UpvoteTask(getApplicationContext()).execute(postID, userID).get(2000, TimeUnit.MILLISECONDS);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (TimeoutException e) {
@@ -175,19 +183,27 @@ public class TopicPostActivity extends AppCompatActivity {
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     }
+
+                    Log.d("Upvote Result", upvote_result);
                     if (upvote_result.equals("")) {
                         Toast.makeText(getApplicationContext(), "Failed To Upvote Post At This Time", Toast.LENGTH_SHORT).show();
                     } else if (upvote_result.equals("upvoted")) {
                         Toast.makeText(getApplicationContext(), "You have already upvoted this post.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Successfully Upvoted Post", Toast.LENGTH_SHORT).show();
+                        VoteLists.upvotedPosts.add(object.toArray()[0].toString());
                     }
                 }
                 else if (position == downvote_id) {
+
+                    Log.d("Upvote List", VoteLists.upvotedPosts.toString());
+                    Log.d("Downvote List", VoteLists.downvotedPosts.toString());
                     // include downvote functionality
                     String downvote_result = "";
                     try {
-                        downvote_result = (String) new DownvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                        String postID = (String) object.get(0);
+                        String userID = getIntent().getStringExtra("USERID");
+                        downvote_result = (String) new DownvoteTask(getApplicationContext()).execute(postID, userID).get(2000, TimeUnit.MILLISECONDS);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (TimeoutException e) {
@@ -201,6 +217,7 @@ public class TopicPostActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "You have already downvoted this post.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
+                        VoteLists.downvotedPosts.add(object.toArray()[0].toString());
                     }
                 } else if (position == user_pos) {
                     setContentView(R.layout.activity_public_profile);
@@ -209,6 +226,13 @@ public class TopicPostActivity extends AppCompatActivity {
                     intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                     intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                     intent.putExtra("PUBLIC_USER", object.get(0).toString());
+                    startActivity(intent);
+                } else if (position == title_pos) {
+                    Intent intent = new Intent(getApplicationContext(), ViewPostActivity.class);
+                    intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                    intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                    intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                    intent.putExtra("POSTID", (String) object.get(0));
                     startActivity(intent);
                 }
                 else if (position == topic_pos) {
@@ -377,10 +401,15 @@ public class TopicPostActivity extends AppCompatActivity {
                     @Override
                     public void onItemSelected(int position, View view, ArrayList<Object> object) {
                         if (position == upvote_id) {
+
+                            Log.d("Upvote List", VoteLists.upvotedPosts.toString());
+                            Log.d("Downvote List", VoteLists.downvotedPosts.toString());
                             // include functionality for upvote button
                             String upvote_result = "";
                             try {
-                                upvote_result = (String) new UpvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                                String postID = (String) object.get(0);
+                                String userID = getIntent().getStringExtra("USERID");
+                                upvote_result = (String) new UpvoteTask(getApplicationContext()).execute(postID, userID).get(2000, TimeUnit.MILLISECONDS);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             } catch (TimeoutException e) {
@@ -388,19 +417,27 @@ public class TopicPostActivity extends AppCompatActivity {
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
                             }
+
+                            Log.d("Upvote Result", upvote_result);
                             if (upvote_result.equals("")) {
                                 Toast.makeText(getApplicationContext(), "Failed To Upvote Post At This Time", Toast.LENGTH_SHORT).show();
                             } else if (upvote_result.equals("upvoted")) {
                                 Toast.makeText(getApplicationContext(), "You have already upvoted this post.", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), "Successfully Upvoted Post", Toast.LENGTH_SHORT).show();
+                                VoteLists.upvotedPosts.add(object.toArray()[0].toString());
                             }
                         }
                         else if (position == downvote_id) {
+
+                            Log.d("Upvote List", VoteLists.upvotedPosts.toString());
+                            Log.d("Downvote List", VoteLists.downvotedPosts.toString());
                             // include downvote functionality
                             String downvote_result = "";
                             try {
-                                downvote_result = (String) new DownvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                                String postID = (String) object.get(0);
+                                String userID = getIntent().getStringExtra("USERID");
+                                downvote_result = (String) new DownvoteTask(getApplicationContext()).execute(postID, userID).get(2000, TimeUnit.MILLISECONDS);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             } catch (TimeoutException e) {
@@ -414,6 +451,7 @@ public class TopicPostActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "You have already downvoted this post.", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
+                                VoteLists.downvotedPosts.add(object.toArray()[0].toString());
                             }
                         } else if (position == user_pos) {
                             setContentView(R.layout.activity_public_profile);
@@ -431,6 +469,13 @@ public class TopicPostActivity extends AppCompatActivity {
                             intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                             intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                             intent.putExtra("TOPICID", object.get(0).toString());
+                            startActivity(intent);
+                        } else if (position == title_pos) {
+                            Intent intent = new Intent(getApplicationContext(), ViewPostActivity.class);
+                            intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                            intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                            intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                            intent.putExtra("POSTID", (String) object.get(0));
                             startActivity(intent);
                         }
                     }
