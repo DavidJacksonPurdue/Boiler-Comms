@@ -135,7 +135,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                         upvoteList.add(userId.getText().toString());
 
                         if (!VoteLists.upvotedPosts.contains(postId.getText().toString()) && !VoteLists.downvotedPosts.contains(postId.getText().toString())) {
-                            VoteLists.downvotedPosts.add(postId.getText().toString());
+                            //VoteLists.downvotedPosts.add(postId.getText().toString());
                             votecount.setText(Integer.toString(Integer.parseInt(votecount.getText().toString()) + 1));
                         }
 
@@ -159,7 +159,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                         downvoteList.add(userId.getText().toString());
 
                         if (!VoteLists.upvotedPosts.contains(postId.getText().toString()) && !VoteLists.downvotedPosts.contains(postId.getText().toString())) {
-                            VoteLists.upvotedPosts.add(postId.getText().toString());
+                            //VoteLists.upvotedPosts.add(postId.getText().toString());
                             votecount.setText(Integer.toString(Integer.parseInt(votecount.getText().toString()) - 1));
                         }
 

@@ -21,13 +21,18 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.boiler_commslogin.R;
+import com.example.boiler_commslogin.comment.MyCommentAdapter;
 import com.example.boiler_commslogin.comment.sendComment;
 import com.example.boiler_commslogin.comment.viewComments;
 import com.example.boiler_commslogin.comment.viewMyUserComments;
 import com.example.boiler_commslogin.createpost.CreatePost;
 import com.example.boiler_commslogin.createpost.topicModel;
+import com.example.boiler_commslogin.data.DownvoteTask;
 import com.example.boiler_commslogin.data.MainActivity;
+import com.example.boiler_commslogin.data.MyAdapter;
+import com.example.boiler_commslogin.data.UpvoteTask;
 import com.example.boiler_commslogin.data.VoteLists;
+import com.example.boiler_commslogin.savepost.SavePost;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,6 +42,7 @@ import org.xml.sax.InputSource;
 import java.io.StringReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -59,9 +65,8 @@ public class ViewPostActivity extends AppCompatActivity {
     String text;
     String votes;
     String date;
-    boolean upvoted = false;
-    boolean downvoted = false;
-    boolean saved = false;
+    String saved = "";
+    boolean isSaved = false;
 
     Button backButton;
     TextView postName;
@@ -87,17 +92,10 @@ public class ViewPostActivity extends AppCompatActivity {
         password = getIntent().getStringExtra("PASSWORD");
         postID = getIntent().getStringExtra("POSTID");
 
-        if (VoteLists.upvotedPosts.contains(this.postID)) {
-            upvoted = true;
-        }
-
-        if (VoteLists.downvotedPosts.contains(this.postID)) {
-            downvoted = true;
-        }
-
         //Get post data and populate fields with post data
         try {
             String str_result = null;
+            //str_result = (String) new ViewPost(getApplicationContext()).execute(this.postID, this.userID).get(2000, TimeUnit.MILLISECONDS);
             str_result = (String) new ViewPost(getApplicationContext()).execute(this.postID).get(2000, TimeUnit.MILLISECONDS);
 
             if (!str_result.equals("error")) {
@@ -120,6 +118,7 @@ public class ViewPostActivity extends AppCompatActivity {
                         author = post.getAttribute("userName");
                         votes = post.getAttribute("voteTotal");
                         image = post.getAttribute("postImage");
+                        //saved = post.getAttribute("savedPostID");
                     }
                 }
 
@@ -174,20 +173,19 @@ public class ViewPostActivity extends AppCompatActivity {
         voteText.setText(votes);
         postDate.setText(date);
 
+        if (!saved.equals("")) {
+            saveButton.setBackgroundResource(R.drawable.ic_baseline_bookmark_24);
+            isSaved = true;
+        } else {
+            saveButton.setBackgroundResource(R.drawable.ic_baseline_bookmark_border_24);
+            isSaved = false;
+        }
+
         //Setup click listeners for buttons
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 returnIntent();
-            }
-        });
-
-        postCommentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!commentText.getText().toString().equals("")) {
-
-                }
             }
         });
 
@@ -199,7 +197,6 @@ public class ViewPostActivity extends AppCompatActivity {
 
                 String text = commentText.getText().toString();
                 if (!text.equals("")) {
-                    //hideKeyboard(((Activity) getApplicationContext()));
                     int newParentID = -1;
                     String textBody = commentText.getText().toString();
                     Log.d("madeIT", textBody);
@@ -209,7 +206,7 @@ public class ViewPostActivity extends AppCompatActivity {
                     String str_result = null;
 
                     try {
-                        str_result= (String)new sendComment(getApplicationContext()).execute("0",newParentID, textBody, "0", commentTime).get(2000, TimeUnit.MILLISECONDS);
+                        str_result= (String)new sendComment(getApplicationContext()).execute(postID,newParentID, textBody, "0", commentTime).get(2000, TimeUnit.MILLISECONDS);
 
                     } catch (ExecutionException e) {
                         e.printStackTrace();
@@ -253,8 +250,38 @@ public class ViewPostActivity extends AppCompatActivity {
         upvoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!upvoted && !downvoted) {
+                if (!VoteLists.upvotedPosts.contains(postID) && !VoteLists.downvotedPosts.contains(postID)) {
+                    upvoteButton.setEnabled(false);
+                    downvoteButton.setEnabled(false);
 
+                    if (!VoteLists.upvotedPosts.contains(postID) && !VoteLists.downvotedPosts.contains(postID)) {
+                        //VoteLists.downvotedPosts.add(postId.getText().toString());
+                        voteText.setText(Integer.toString(Integer.parseInt(voteText.getText().toString()) + 1));
+                    }
+
+                    upvoteButton.setEnabled(true);
+                    downvoteButton.setEnabled(true);
+
+                    String upvote_result = "";
+                    try {
+                        upvote_result = (String) new UpvoteTask(getApplicationContext()).execute(postID, userID).get(2000, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+
+                    Log.d("Upvote Result", upvote_result);
+                    if (upvote_result.equals("")) {
+                        Toast.makeText(getApplicationContext(), "Failed To Upvote Post At This Time", Toast.LENGTH_SHORT).show();
+                    } else if (upvote_result.equals("upvoted")) {
+                        Toast.makeText(getApplicationContext(), "You have already upvoted this post.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Successfully Upvoted Post", Toast.LENGTH_SHORT).show();
+                        VoteLists.upvotedPosts.add(postID);
+                    }
                 }
             }
         });
@@ -262,8 +289,37 @@ public class ViewPostActivity extends AppCompatActivity {
         downvoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!upvoted && !downvoted) {
+                if (!VoteLists.upvotedPosts.contains(postID) && !VoteLists.downvotedPosts.contains(postID)) {
+                    upvoteButton.setEnabled(false);
+                    downvoteButton.setEnabled(false);
 
+                    if (!VoteLists.upvotedPosts.contains(postID) && !VoteLists.downvotedPosts.contains(postID)) {
+                        //VoteLists.downvotedPosts.add(postId.getText().toString());
+                        voteText.setText(Integer.toString(Integer.parseInt(voteText.getText().toString()) - 1));
+                    }
+
+                    upvoteButton.setEnabled(true);
+                    downvoteButton.setEnabled(true);
+
+                    String downvote_result = "";
+                    try {
+                        downvote_result = (String) new DownvoteTask(getApplicationContext()).execute(postID, userID).get(2000, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (downvote_result.equals("")) {
+                        Toast.makeText(getApplicationContext(), "Failed To Downvote Post At This Time", Toast.LENGTH_SHORT).show();
+                    } else if (downvote_result.equals("downvoted")) {
+                        Toast.makeText(getApplicationContext(), "You have already downvoted this post.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
+                        VoteLists.downvotedPosts.add(postID);
+                    }
                 }
             }
         });
@@ -271,9 +327,23 @@ public class ViewPostActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!saved) {
-                    saved = true;
-                    saveButton.setBackgroundResource(R.drawable.ic_baseline_bookmark_24);
+                if (!isSaved) {
+                    String str_result = "";
+                    try {
+                        str_result= (String) new SavePost(getApplicationContext()).execute(userID, postID).get(2000, TimeUnit.MILLISECONDS);
+
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (str_result.equals("Success")) {
+                        isSaved = true;
+                        saveButton.setBackgroundResource(R.drawable.ic_baseline_bookmark_24);
+                    }
                 }
             }
         });

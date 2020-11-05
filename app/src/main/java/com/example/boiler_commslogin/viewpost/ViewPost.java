@@ -34,7 +34,9 @@ public class ViewPost extends AsyncTask {
     protected Object doInBackground(Object[] objects) {
         URL url = null;
         String postID = (String) objects[0];
+        //String userID = (String) objects[1];
         try {
+            //url = new URL(Constants.GET_POST_BY_POSTID + userID + "_" + postID);
             url = new URL(Constants.GET_POST_BY_POSTID + postID);
         } catch (MalformedURLException e) {
             e.printStackTrace();

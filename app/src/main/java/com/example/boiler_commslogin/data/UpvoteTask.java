@@ -28,8 +28,9 @@ public class UpvoteTask extends AsyncTask{
 
     @Override
     protected Object doInBackground(Object[] objects) {
-        if (!VoteLists.upvotedPosts.contains((String)objects[0]) && !VoteLists.downvotedPosts.contains((String)objects[0])) {
 
+        if (!VoteLists.upvotedPosts.contains((String)objects[0]) && !VoteLists.downvotedPosts.contains((String)objects[0])) {
+            //Log.d("I'm in here");
             try {
                 /* Get the parameters and store them */
                 String postID = (String) objects[0];

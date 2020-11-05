@@ -283,9 +283,12 @@ public class MainActivity extends AppCompatActivity {
         String downvote_result = null;
         try {
             String userID = getIntent().getStringExtra("USERID");
+            Log.d("User ID", userID);
             str_result = (String) new LoadUserCredentialsPost(this).execute(userID).get(5000, TimeUnit.MILLISECONDS);
             upvote_result = (String) new LoadUpvoteList(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
+            Log.d("Upvote Result", upvote_result);
             downvote_result = (String) new LoadDownvoteList(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
+            Log.d("Downvote Result", downvote_result);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -357,10 +360,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(int position, View view, ArrayList<Object> object) {
                 if (position == upvote_id) {
+
+                    Log.d("Upvote List", VoteLists.upvotedPosts.toString());
+                    Log.d("Downvote List", VoteLists.downvotedPosts.toString());
                     // include functionality for upvote button
                     String upvote_result = "";
                     try {
-                        upvote_result = (String) new UpvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                        String postID = (String) object.get(0);
+                        String userID = getIntent().getStringExtra("USERID");
+                        upvote_result = (String) new UpvoteTask(getApplicationContext()).execute(postID, userID).get(2000, TimeUnit.MILLISECONDS);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (TimeoutException e) {
@@ -368,19 +376,27 @@ public class MainActivity extends AppCompatActivity {
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     }
+
+                    Log.d("Upvote Result", upvote_result);
                     if (upvote_result.equals("")) {
                         Toast.makeText(getApplicationContext(), "Failed To Upvote Post At This Time", Toast.LENGTH_SHORT).show();
                     } else if (upvote_result.equals("upvoted")) {
                         Toast.makeText(getApplicationContext(), "You have already upvoted this post.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Successfully Upvoted Post", Toast.LENGTH_SHORT).show();
+                        VoteLists.upvotedPosts.add(object.toArray()[0].toString());
                     }
                 }
                 else if (position == downvote_id) {
+
+                    Log.d("Upvote List", VoteLists.upvotedPosts.toString());
+                    Log.d("Downvote List", VoteLists.downvotedPosts.toString());
                     // include downvote functionality
                     String downvote_result = "";
                     try {
-                        downvote_result = (String) new DownvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                        String postID = (String) object.get(0);
+                        String userID = getIntent().getStringExtra("USERID");
+                        downvote_result = (String) new DownvoteTask(getApplicationContext()).execute(postID, userID).get(2000, TimeUnit.MILLISECONDS);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (TimeoutException e) {
@@ -394,6 +410,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "You have already downvoted this post.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
+                        VoteLists.downvotedPosts.add(object.toArray()[0].toString());
                     }
                 }
                 else if (position == user_pos) {
@@ -410,11 +427,6 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                     intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                     intent.putExtra("POSTID", (String) object.get(0));
-                    if (object.size() == 2) {
-                        intent.putExtra("IMAGE", true);
-                    } else {
-                        intent.putExtra("IMAGE", false);
-                    }
                     startActivity(intent);
                 }
             }
