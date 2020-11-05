@@ -34,6 +34,9 @@
             android:name=".sign_up.SignUpActivity"
             android:label="signup" />
         <activity
+            android:name=".viewpost.ViewPostActivity"
+            android:label="viewPost" />
+        <activity
             android:name=".createpost.CreatePostActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity

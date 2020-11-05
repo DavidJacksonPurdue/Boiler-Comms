@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -13,9 +14,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.boiler_commslogin.R;
 import com.example.boiler_commslogin.comment.Item;
 //import com.example.boiler_commslogin.comment.R;
-import com.example.boiler_commslogin.data.OtherTimeline;
-import com.multilevelview.MultiLevelRecyclerView;
-import com.multilevelview.models.RecyclerViewItem;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -29,6 +27,10 @@ import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import com.example.boiler_commslogin.comment.MultiLevelRecyclerView;
+import com.example.boiler_commslogin.comment.MultiLevelAdapter;
+import com.example.boiler_commslogin.data.OtherTimeline;
+import com.example.boiler_commslogin.viewpost.ViewPostActivity;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -37,20 +39,33 @@ import static java.lang.Boolean.FALSE;
 
 public class viewComments extends AppCompatActivity {
 
+    String userID;
+    String username;
+    String password;
+    String postID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_comments);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        Button button = (Button) findViewById(R.id.CommentsGoBackToPost);
         setSupportActionBar(toolbar);
+
+        Button button = (Button) findViewById(R.id.CommentsGoBackToPost);
 
         MultiLevelRecyclerView multiLevelRecyclerView = (MultiLevelRecyclerView) findViewById(R.id.rv_list);
         multiLevelRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        Log.d("Made it here", "0");
+        //Get postID
+        userID = getIntent().getStringExtra("USERID");
+        username = getIntent().getStringExtra("USERNAME");
+        password = getIntent().getStringExtra("PASSWORD");
+        postID = getIntent().getStringExtra("POSTID");
+        Log.d("ViewComments PostID", postID);
 
         String str_result = null;
         try {
-            str_result= (String)new loadComments(this).execute("5").get(2000, TimeUnit.MILLISECONDS);;
+            str_result= (String)new loadComments(this).execute(postID).get(2000, TimeUnit.MILLISECONDS);;
 
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -94,28 +109,27 @@ public class viewComments extends AppCompatActivity {
         }else {
             itemList = (List<com.example.boiler_commslogin.comment.Item>) recursivlyPopulateComments(commentsAsItems, -1, 0);
         }
+
         MyCommentAdapter myCommentAdapter = new MyCommentAdapter(this, itemList, multiLevelRecyclerView);
-
         multiLevelRecyclerView.setAdapter(myCommentAdapter);
-
 
         //If you want to already opened Multi-RecyclerView just call openTill where is parameter is
         // position to corresponding each level.
         multiLevelRecyclerView.setToggleItemOnClick(FALSE);
+        multiLevelRecyclerView.openTill(2,1,0,0);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setContentView(R.layout.activity_other_timeline);
-                Intent intent = new Intent(getApplicationContext(), OtherTimeline.class);
+                //setContentView(R.layout.activity_other_timeline);
+                Intent intent = new Intent(getApplicationContext(), ViewPostActivity.class);
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                intent.putExtra("POST_ID", getIntent().getStringExtra("POST_ID"));
+                intent.putExtra("POSTID", postID);
                 startActivity(intent);
             }
         });
-
 
     }
 
@@ -141,6 +155,7 @@ public class viewComments extends AppCompatActivity {
             item.setCommentID(commentsList.get(x).getCommentID());
             item.setParentID(commentsList.get(x).getParentID());
             item.setPostID(commentsList.get(x).getPostID());
+
             if(commentsList.get(x).getParentID() == goalID){
                 item.addChildren((List<RecyclerViewItem>) recursivlyPopulateComments(commentsList, commentsList.remove(x).getCommentID(), level + 1));
                 x--;
