@@ -95,8 +95,8 @@ public class ViewPostActivity extends AppCompatActivity {
         //Get post data and populate fields with post data
         try {
             String str_result = null;
-            //str_result = (String) new ViewPost(getApplicationContext()).execute(this.postID, this.userID).get(2000, TimeUnit.MILLISECONDS);
-            str_result = (String) new ViewPost(getApplicationContext()).execute(this.postID).get(2000, TimeUnit.MILLISECONDS);
+            str_result = (String) new ViewPost(getApplicationContext()).execute(this.postID, this.userID).get(2000, TimeUnit.MILLISECONDS);
+            //str_result = (String) new ViewPost(getApplicationContext()).execute(this.postID).get(2000, TimeUnit.MILLISECONDS);
 
             if (!str_result.equals("error")) {
                 Document postXML = null;
@@ -118,7 +118,7 @@ public class ViewPostActivity extends AppCompatActivity {
                         author = post.getAttribute("userName");
                         votes = post.getAttribute("voteTotal");
                         image = post.getAttribute("postImage");
-                        //saved = post.getAttribute("savedPostID");
+                        saved = post.getAttribute("savedPostID");
                     }
                 }
 
@@ -173,7 +173,7 @@ public class ViewPostActivity extends AppCompatActivity {
         voteText.setText(votes);
         postDate.setText(date);
 
-        if (!saved.equals("")) {
+        if (!saved.equals("false")) {
             saveButton.setBackgroundResource(R.drawable.ic_baseline_bookmark_24);
             isSaved = true;
         } else {
