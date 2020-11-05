@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> downvotedPosts = new ArrayList<>();
 
 
-    public class LoadUserCredentialsPost extends AsyncTask {
+    public static class LoadUserCredentialsPost extends AsyncTask {
         //private TextView statusField,roleField;
         private Context context;
         String userCredentials;
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class LoadUpvoteList extends AsyncTask {
+    public static class LoadUpvoteList extends AsyncTask {
         //private TextView statusField,roleField;
         private Context context;
         String upvoteList;
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class LoadDownvoteList extends AsyncTask {
+    public static class LoadDownvoteList extends AsyncTask {
         //private TextView statusField,roleField;
         private Context context;
         String downvoteList;
@@ -351,6 +351,7 @@ public class MainActivity extends AppCompatActivity {
         final int upvote_id = 0;
         final int downvote_id = 1;
         final int user_pos = 2;
+        final int topic_pos = 3;
         myAdapter.setListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void onItemSelected(int position, View view, ArrayList<Object> object) {
@@ -403,6 +404,15 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("PUBLIC_USER", object.get(0).toString());
                     startActivity(intent);
                 }
+                else if (position == topic_pos) {
+                    setContentView(R.layout.activity_topic_post);
+                    Intent intent = new Intent(getApplicationContext(), TopicPostActivity.class);
+                    intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                    intent.putExtra("USERNAME", intent.getStringExtra("USERNAME"));
+                    intent.putExtra("PASSWORD", intent.getStringExtra("PASSWORD"));
+                    intent.putExtra("TOPICID", object.get(0).toString());
+                    startActivity(intent);
+                }
             }
         });
 
@@ -446,6 +456,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("TOPICID", "1");
                 startActivity(intent);
             }
         });

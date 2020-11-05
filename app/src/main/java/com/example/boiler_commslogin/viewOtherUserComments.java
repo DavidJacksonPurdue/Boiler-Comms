@@ -3,7 +3,6 @@ package com.example.boiler_commslogin;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,14 +11,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static java.lang.Boolean.FALSE;
-
-public class viewMyUserComments extends AppCompatActivity {
+public class viewOtherUserComments extends AppCompatActivity {
     RecyclerView recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -11,22 +11,22 @@
         style="@android:style/Widget.DeviceDefault.AutoCompleteTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:hint="Topic Name (e.g General)"
         app:layout_constraintBottom_toTopOf="@+id/topicRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.365" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/topicRecyclerView"
-        android:layout_width="413dp"
-        android:layout_height="521dp"
-        android:layout_marginTop="200dp"
+        android:layout_width="408dp"
+        android:layout_height="480dp"
+        android:layout_marginTop="92dp"
+        android:foregroundGravity="center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -36,13 +36,29 @@
         android:id="@+id/back_button_topic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:text="Go Home"
-        app:layout_constraintBottom_toTopOf="@+id/topicRecyclerView"
-        app:layout_constraintEnd_toStartOf="@+id/topicSearch"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.598" />
+        app:layout_constraintTop_toBottomOf="@+id/topicRecyclerView" />
+
+    <TextView
+        android:id="@+id/topicNameTitle"
+        android:layout_width="370dp"
+        android:layout_height="62dp"
+        android:text="Topic"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/topicRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topicSearch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

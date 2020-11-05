@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.boiler_commslogin.R;
@@ -56,6 +57,8 @@ public class TopicPostActivity extends AppCompatActivity {
     Context context = this;
     ArrayList<String> topicNames = new ArrayList<>();
     ArrayList<String> topicIDNumbers = new ArrayList();
+    ArrayList<String> upvotedPosts = new ArrayList<>();
+    ArrayList<String> downvotedPosts = new ArrayList<>();
 
 
     public static Document loadXMLFromString(String xml) throws Exception
@@ -71,17 +74,22 @@ public class TopicPostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_post);
+        String thisUserID = getIntent().getStringExtra("USERID");
 
 
         // Find and store the recycler view
         recyclerView = findViewById(R.id.topicRecyclerView);
         String str_result = null;
+        String upvote_result = null;
+        String downvote_result = null;
         // Temporary topic ID
+        String topicId = getIntent().getStringExtra("TOPICID");
 
         // Retrive all of the posts from the database with the associated topic id
-        String topicId = "1";
         try {
             str_result = (String) new getPostsByTopicModel(this).execute(topicId).get(2000, TimeUnit.MILLISECONDS);
+            upvote_result = (String) new MainActivity.LoadUpvoteList(this).execute(thisUserID).get(2000, TimeUnit.MILLISECONDS);
+            downvote_result = (String) new MainActivity.LoadDownvoteList(this).execute(thisUserID).get(2000, TimeUnit.MILLISECONDS);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -91,13 +99,21 @@ public class TopicPostActivity extends AppCompatActivity {
         }
 
 
-        // Try and load those posts into the recycler view
+        // UPDATE THE TEXT VIEW
+
+
         Document postXML = null;
+        Document upvoteXML = null;
+        Document downvoteXML = null;
+
         try {
             postXML = loadXMLFromString(str_result);
-        } catch (Exception e) {
+            upvoteXML = loadXMLFromString(upvote_result);
+            downvoteXML = loadXMLFromString(downvote_result);
+        }catch(Exception e){
             e.printStackTrace();
         }
+
         if (postXML != null) {
             postXML.getDocumentElement().normalize();
             NodeList nList = postXML.getElementsByTagName("post");
@@ -115,10 +131,35 @@ public class TopicPostActivity extends AppCompatActivity {
                 image.add(Post.getAttribute("postImage"));
             }
         }
+
+        if (upvoteXML != null) {
+            upvoteXML.getDocumentElement().normalize();
+            NodeList nList = upvoteXML.getElementsByTagName("post");
+
+            for (int x = 0; x < nList.getLength(); x++) {
+                Element Post = (Element) (nList.item(x));
+                upvotedPosts.add(Post.getAttribute("postID"));
+            }
+        }
+
+        VoteLists.upvotedPosts = upvotedPosts;
+
+        if (downvoteXML != null) {
+            downvoteXML.getDocumentElement().normalize();
+            NodeList nList = downvoteXML.getElementsByTagName("post");
+
+            for (int x = 0; x < nList.getLength(); x++) {
+                Element Post = (Element) (nList.item(x));
+                downvotedPosts.add(Post.getAttribute("postID"));
+            }
+        }
+
+        VoteLists.downvotedPosts = downvotedPosts;
         final MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time, votecount, postID, topicID, userID);
         final int upvote_id = 0;
         final int downvote_id = 1;
         final int user_pos = 2;
+        final int topic_pos = 3;
         myAdapter.setListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void onItemSelected(int position, View view, ArrayList<Object> object) {
@@ -136,10 +177,13 @@ public class TopicPostActivity extends AppCompatActivity {
                     }
                     if (upvote_result.equals("")) {
                         Toast.makeText(getApplicationContext(), "Failed To Upvote Post At This Time", Toast.LENGTH_SHORT).show();
+                    } else if (upvote_result.equals("upvoted")) {
+                        Toast.makeText(getApplicationContext(), "You have already upvoted this post.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Successfully Upvoted Post", Toast.LENGTH_SHORT).show();
                     }
-                } else if (position == downvote_id) {
+                }
+                else if (position == downvote_id) {
                     // include downvote functionality
                     String downvote_result = "";
                     try {
@@ -153,6 +197,8 @@ public class TopicPostActivity extends AppCompatActivity {
                     }
                     if (downvote_result.equals("")) {
                         Toast.makeText(getApplicationContext(), "Failed To Downvote Post At This Time", Toast.LENGTH_SHORT).show();
+                    } else if (downvote_result.equals("downvoted")) {
+                        Toast.makeText(getApplicationContext(), "You have already downvoted this post.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
                     }
@@ -163,6 +209,15 @@ public class TopicPostActivity extends AppCompatActivity {
                     intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                     intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                     intent.putExtra("PUBLIC_USER", object.get(0).toString());
+                    startActivity(intent);
+                }
+                else if (position == topic_pos) {
+                    setContentView(R.layout.activity_topic_post);
+                    Intent intent = new Intent(getApplicationContext(), TopicPostActivity.class);
+                    intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                    intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                    intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                    intent.putExtra("TOPICID", object.get(0).toString());
                     startActivity(intent);
                 }
             }
@@ -199,6 +254,18 @@ public class TopicPostActivity extends AppCompatActivity {
             }
         }
 
+        // UPDATE THE TOPIC TEXT
+        String topicName = "Topic";
+        for (int i = 0; i < topicIDNumbers.size(); i++) {
+            topicIDNumbers.get(i);
+            if (topicId.equals(topicIDNumbers.get(i))) {
+                System.out.println("woo");
+                topicName = topicNames.get(i);
+            }
+        }
+        TextView titleText = findViewById(R.id.topicNameTitle);
+        titleText.setText(topicName);
+
 
         /***
          * CREATE CODE FOR AUTOFILL LISTENER
@@ -209,15 +276,17 @@ public class TopicPostActivity extends AppCompatActivity {
         autoCompleteTextView.setThreshold(1);
         autoCompleteTextView.setAdapter(adapter);
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            String thisUserID = getIntent().getStringExtra("USERID");
             String pos;
+            TextView titleText = findViewById(R.id.postNameText);
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView titleText = findViewById(R.id.topicNameTitle);
                 // Get the topic Id from the selected dropdown list
                 for (int i = 0; i < topicNames.size(); i++) {
                     if (parent.getItemAtPosition(position).equals(topicNames.get(i))) {
-                        System.out.println(topicNames.get(i));
-                        ;
+                        titleText.setText(topicNames.get(i));
                         pos = topicIDNumbers.get(i);
                         break;
                     }
@@ -233,9 +302,16 @@ public class TopicPostActivity extends AppCompatActivity {
                 userID.clear();
                 topicID.clear();
                 postID.clear();
+
+
                 String str_result = null;
+                String upvote_result = null;
+                String downvote_result = null;
+
                 try {
                     str_result = (String) new getPostsByTopicModel(context).execute(pos).get(2000, TimeUnit.MILLISECONDS);
+                    upvote_result = (String) new MainActivity.LoadUpvoteList(context).execute(thisUserID).get(2000, TimeUnit.MILLISECONDS);
+                    downvote_result = (String) new MainActivity.LoadDownvoteList(context).execute(thisUserID).get(2000, TimeUnit.MILLISECONDS);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -244,13 +320,18 @@ public class TopicPostActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                // Try and load those posts into the recycler view
                 Document postXML = null;
+                Document upvoteXML = null;
+                Document downvoteXML = null;
+
                 try {
                     postXML = loadXMLFromString(str_result);
-                } catch (Exception e) {
+                    upvoteXML = loadXMLFromString(upvote_result);
+                    downvoteXML = loadXMLFromString(downvote_result);
+                }catch(Exception e){
                     e.printStackTrace();
                 }
+
                 if (postXML != null) {
                     postXML.getDocumentElement().normalize();
                     NodeList nList = postXML.getElementsByTagName("post");
@@ -268,6 +349,30 @@ public class TopicPostActivity extends AppCompatActivity {
                         image.add(Post.getAttribute("postImage"));
                     }
                 }
+
+                if (upvoteXML != null) {
+                    upvoteXML.getDocumentElement().normalize();
+                    NodeList nList = upvoteXML.getElementsByTagName("post");
+
+                    for (int x = 0; x < nList.getLength(); x++) {
+                        Element Post = (Element) (nList.item(x));
+                        upvotedPosts.add(Post.getAttribute("postID"));
+                    }
+                }
+
+                VoteLists.upvotedPosts = upvotedPosts;
+
+                if (downvoteXML != null) {
+                    downvoteXML.getDocumentElement().normalize();
+                    NodeList nList = downvoteXML.getElementsByTagName("post");
+
+                    for (int x = 0; x < nList.getLength(); x++) {
+                        Element Post = (Element) (nList.item(x));
+                        downvotedPosts.add(Post.getAttribute("postID"));
+                    }
+                }
+
+                VoteLists.downvotedPosts = downvotedPosts;
                 myAdapter.setListener(new MyAdapter.OnItemClickListener() {
                     @Override
                     public void onItemSelected(int position, View view, ArrayList<Object> object) {
@@ -285,10 +390,13 @@ public class TopicPostActivity extends AppCompatActivity {
                             }
                             if (upvote_result.equals("")) {
                                 Toast.makeText(getApplicationContext(), "Failed To Upvote Post At This Time", Toast.LENGTH_SHORT).show();
+                            } else if (upvote_result.equals("upvoted")) {
+                                Toast.makeText(getApplicationContext(), "You have already upvoted this post.", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), "Successfully Upvoted Post", Toast.LENGTH_SHORT).show();
                             }
-                        } else if (position == downvote_id) {
+                        }
+                        else if (position == downvote_id) {
                             // include downvote functionality
                             String downvote_result = "";
                             try {
@@ -302,6 +410,8 @@ public class TopicPostActivity extends AppCompatActivity {
                             }
                             if (downvote_result.equals("")) {
                                 Toast.makeText(getApplicationContext(), "Failed To Downvote Post At This Time", Toast.LENGTH_SHORT).show();
+                            } else if (downvote_result.equals("downvoted")) {
+                                Toast.makeText(getApplicationContext(), "You have already downvoted this post.", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
                             }
@@ -312,6 +422,15 @@ public class TopicPostActivity extends AppCompatActivity {
                             intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                             intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                             intent.putExtra("PUBLIC_USER", object.get(0).toString());
+                            startActivity(intent);
+                        }
+                        else if (position == topic_pos) {
+                            setContentView(R.layout.activity_topic_post);
+                            Intent intent = new Intent(getApplicationContext(), TopicPostActivity.class);
+                            intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                            intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                            intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                            intent.putExtra("TOPICID", object.get(0).toString());
                             startActivity(intent);
                         }
                     }

@@ -22,6 +22,7 @@
             android:label="viewComments"
             android:exported="true"/>
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".data.TopicPostActivity"
             android:label="topicPost" />
         <activity
