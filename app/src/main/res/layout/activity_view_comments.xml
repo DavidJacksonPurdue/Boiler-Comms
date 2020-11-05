@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".viewComments">
+    tools:context=".comment.viewComments">
 
-    <com.multilevelview.MultiLevelRecyclerView
+    <com.example.boiler_commslogin.comment.MultiLevelRecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,6 +23,14 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/CommentsGoBackToPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go to Post"
+        app:layout_constraintEnd_toEndOf="@+id/toolbar"
         app:layout_constraintTop_toTopOf="parent" />
 
 

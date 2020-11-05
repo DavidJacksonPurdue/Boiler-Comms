@@ -85,8 +85,8 @@
 
     <ImageView
         android:id="@+id/image"
-        android:layout_width="123dp"
-        android:layout_height="108dp"
+        android:layout_width="97dp"
+        android:layout_height="56dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.516"

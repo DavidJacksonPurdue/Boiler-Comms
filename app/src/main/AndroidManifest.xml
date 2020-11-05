@@ -14,11 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".viewMyUserComments"
+            android:name=".comment.viewMyUserComments"
             android:label="viewMyComments"
             android:exported="true"/>
         <activity
-            android:name=".viewComments"
+            android:name=".comment.viewComments"
             android:label="viewComments"
             android:exported="true"/>
         <activity
@@ -34,6 +34,9 @@
         <activity
             android:name=".sign_up.SignUpActivity"
             android:label="signup" />
+        <activity
+            android:name=".viewpost.ViewPostActivity"
+            android:label="viewPost" />
         <activity
             android:name=".createpost.CreatePostActivity"
             android:windowSoftInputMode="adjustPan" />

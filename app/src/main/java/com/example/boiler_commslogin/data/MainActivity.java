@@ -20,6 +20,7 @@ import com.example.boiler_commslogin.R;
 import com.example.boiler_commslogin.createpost.CreatePostActivity;
 import com.example.boiler_commslogin.ui.login.EditUserProfile;
 import com.example.boiler_commslogin.ui.login.LoginActivity;
+import com.example.boiler_commslogin.viewpost.ViewPostActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> downvotedPosts = new ArrayList<>();
 
 
-    public static class LoadUserCredentialsPost extends AsyncTask {
+    public class LoadUserCredentialsPost extends AsyncTask {
         //private TextView statusField,roleField;
         private Context context;
         String userCredentials;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             URL url = null;
             String userID = (String)objects[0];
             try {
-                url = new URL(Constants.GETPOST + objects[0].toString());
+                url = new URL(Constants.GETSTARTTIMELINE + objects[0].toString());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static class LoadUpvoteList extends AsyncTask {
+    public class LoadUpvoteList extends AsyncTask {
         //private TextView statusField,roleField;
         private Context context;
         String upvoteList;
@@ -195,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static class LoadDownvoteList extends AsyncTask {
+    public class LoadDownvoteList extends AsyncTask {
         //private TextView statusField,roleField;
         private Context context;
         String downvoteList;
@@ -282,9 +283,12 @@ public class MainActivity extends AppCompatActivity {
         String downvote_result = null;
         try {
             String userID = getIntent().getStringExtra("USERID");
+            Log.d("User ID", userID);
             str_result = (String) new LoadUserCredentialsPost(this).execute(userID).get(5000, TimeUnit.MILLISECONDS);
             upvote_result = (String) new LoadUpvoteList(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
+            Log.d("Upvote Result", upvote_result);
             downvote_result = (String) new LoadDownvoteList(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);
+            Log.d("Downvote Result", downvote_result);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -351,15 +355,20 @@ public class MainActivity extends AppCompatActivity {
         final int upvote_id = 0;
         final int downvote_id = 1;
         final int user_pos = 2;
-        final int topic_pos = 3;
+        final int title_pos = 3;
         myAdapter.setListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void onItemSelected(int position, View view, ArrayList<Object> object) {
                 if (position == upvote_id) {
+
+                    Log.d("Upvote List", VoteLists.upvotedPosts.toString());
+                    Log.d("Downvote List", VoteLists.downvotedPosts.toString());
                     // include functionality for upvote button
                     String upvote_result = "";
                     try {
-                        upvote_result = (String) new UpvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                        String postID = (String) object.get(0);
+                        String userID = getIntent().getStringExtra("USERID");
+                        upvote_result = (String) new UpvoteTask(getApplicationContext()).execute(postID, userID).get(2000, TimeUnit.MILLISECONDS);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (TimeoutException e) {
@@ -367,19 +376,27 @@ public class MainActivity extends AppCompatActivity {
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     }
+
+                    Log.d("Upvote Result", upvote_result);
                     if (upvote_result.equals("")) {
                         Toast.makeText(getApplicationContext(), "Failed To Upvote Post At This Time", Toast.LENGTH_SHORT).show();
                     } else if (upvote_result.equals("upvoted")) {
                         Toast.makeText(getApplicationContext(), "You have already upvoted this post.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Successfully Upvoted Post", Toast.LENGTH_SHORT).show();
+                        VoteLists.upvotedPosts.add(object.toArray()[0].toString());
                     }
                 }
                 else if (position == downvote_id) {
+
+                    Log.d("Upvote List", VoteLists.upvotedPosts.toString());
+                    Log.d("Downvote List", VoteLists.downvotedPosts.toString());
                     // include downvote functionality
                     String downvote_result = "";
                     try {
-                        downvote_result = (String) new DownvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                        String postID = (String) object.get(0);
+                        String userID = getIntent().getStringExtra("USERID");
+                        downvote_result = (String) new DownvoteTask(getApplicationContext()).execute(postID, userID).get(2000, TimeUnit.MILLISECONDS);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (TimeoutException e) {
@@ -393,6 +410,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "You have already downvoted this post.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
+                        VoteLists.downvotedPosts.add(object.toArray()[0].toString());
                     }
                 }
                 else if (position == user_pos) {
@@ -403,14 +421,12 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                     intent.putExtra("PUBLIC_USER", object.get(0).toString());
                     startActivity(intent);
-                }
-                else if (position == topic_pos) {
-                    setContentView(R.layout.activity_topic_post);
-                    Intent intent = new Intent(getApplicationContext(), TopicPostActivity.class);
+                } else if (position == title_pos) {
+                    Intent intent = new Intent(getApplicationContext(), ViewPostActivity.class);
                     intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
-                    intent.putExtra("USERNAME", intent.getStringExtra("USERNAME"));
-                    intent.putExtra("PASSWORD", intent.getStringExtra("PASSWORD"));
-                    intent.putExtra("TOPICID", object.get(0).toString());
+                    intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                    intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                    intent.putExtra("POSTID", (String) object.get(0));
                     startActivity(intent);
                 }
             }
@@ -456,7 +472,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                intent.putExtra("TOPICID", "1");
                 startActivity(intent);
             }
         });

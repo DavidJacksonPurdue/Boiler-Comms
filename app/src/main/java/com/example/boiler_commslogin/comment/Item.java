@@ -1,8 +1,6 @@
-package com.example.boiler_commslogin;
+package com.example.boiler_commslogin.comment;
 
 import android.util.Log;
-
-import com.example.boiler_commslogin.comment.RecyclerViewItem;
 
 public class Item extends RecyclerViewItem {
 

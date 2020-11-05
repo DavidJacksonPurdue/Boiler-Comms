@@ -1,6 +1,7 @@
 package com.example.boiler_commslogin.data;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.boiler_commslogin.R;
+import com.example.boiler_commslogin.viewpost.ViewPostActivity;
 
 import java.util.ArrayList;
 
@@ -79,6 +81,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         }
         if(!img.equals("null")) {
             String base64Image = img.split(",")[1];
+            Log.d("MyAdapter: Base64", base64Image);
             byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             holder.image.setImageBitmap(decodedByte);
@@ -118,7 +121,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             final int upvote_id = 0;
             final int downvote_id = 1;
             final int user_pos = 2;
-            final int topic_pos = 3;
+            final int title_pos = 3;
 
             upvote.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -132,7 +135,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                         upvoteList.add(userId.getText().toString());
 
                         if (!VoteLists.upvotedPosts.contains(postId.getText().toString()) && !VoteLists.downvotedPosts.contains(postId.getText().toString())) {
-                            VoteLists.downvotedPosts.add(postId.getText().toString());
+                            //VoteLists.downvotedPosts.add(postId.getText().toString());
                             votecount.setText(Integer.toString(Integer.parseInt(votecount.getText().toString()) + 1));
                         }
 
@@ -156,7 +159,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                         downvoteList.add(userId.getText().toString());
 
                         if (!VoteLists.upvotedPosts.contains(postId.getText().toString()) && !VoteLists.downvotedPosts.contains(postId.getText().toString())) {
-                            VoteLists.upvotedPosts.add(postId.getText().toString());
+                            //VoteLists.upvotedPosts.add(postId.getText().toString());
                             votecount.setText(Integer.toString(Integer.parseInt(votecount.getText().toString()) - 1));
                         }
 
@@ -180,13 +183,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 }
             });
 
-            topic.setOnClickListener(new View.OnClickListener() {
+            title.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
-                        ArrayList<Object> topic = new ArrayList<>();
-                        topic.add(topicId.getText().toString());
-                        listener.onItemSelected(topic_pos, v, topic);
+                        ArrayList<Object> title = new ArrayList<>();
+                        title.add(postId.getText().toString());
+                        if (image != null) {
+                            title.add(image);
+                        }
+                        listener.onItemSelected(title_pos, v, title);
                     }
                 }
             });
