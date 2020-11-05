@@ -39,6 +39,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.boiler_commslogin.R;
+import com.example.boiler_commslogin.comment.viewComments;
+import com.example.boiler_commslogin.comment.viewMyUserComments;
 import com.example.boiler_commslogin.data.MainActivity;
 import com.example.boiler_commslogin.data.PasswordHasher;
 import com.example.boiler_commslogin.data.model.LoadUserCredentials;
@@ -101,19 +103,13 @@ public class PublicProfilePage extends AppCompatActivity {
         final Button viewPosts = findViewById(R.id.view_posts);
         final Button likedPosts = findViewById(R.id.view_likes);
         final Button comments = findViewById(R.id.view_comments);
+        final Button savedPosts = findViewById(R.id.saved_posts);
+        final Button followButton = findViewById(R.id.follow_button);
+        final int post_timeline_type = 0;
+        final int upvote_timeline_type = 2;
+        final int saved_timeline_type = 3;
+        final int comment_timeline_type = 4;
 
-        //Get the userID of the user we're trying to load
-        //String user = null;
-
-        //try {
-        //    user = (String) new GetUserID(this).execute(getIntent().getStringExtra("PUBLIC_USER")).get(3000, TimeUnit.MILLISECONDS);
-        //} catch (ExecutionException e) {
-        //    e.printStackTrace();
-        //} catch (InterruptedException e) {
-        //    e.printStackTrace();
-        //} catch (TimeoutException e) {
-        //    e.printStackTrace();
-        //}
         //Download public profile from user
         String str_result = null;
 
@@ -157,6 +153,11 @@ public class PublicProfilePage extends AppCompatActivity {
         profileFirstName.setText(firstName);
         profileLastName.setText(lastName);
 
+        if (getIntent().getStringExtra("PUBLIC_USER").equals(getIntent().getStringExtra("USERID"))) {
+            savedPosts.setVisibility(View.VISIBLE);
+            followButton.setVisibility(View.INVISIBLE);
+        }
+
         if (img != null) {
             if (!img.equals("null")) {
                 String base64Image = img.split(",")[1];
@@ -174,6 +175,61 @@ public class PublicProfilePage extends AppCompatActivity {
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                startActivity(intent);
+            }
+        });
+
+        savedPosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_other_timeline);
+                Intent intent = new Intent(getApplicationContext(), OtherTimeline.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("PUBLIC_USER", getIntent().getStringExtra("PUBLIC_USER"));
+                intent.putExtra("TIMELINE_TYPE", saved_timeline_type);
+                startActivity(intent);
+            }
+        });
+
+        likedPosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_other_timeline);
+                Intent intent = new Intent(getApplicationContext(), OtherTimeline.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("PUBLIC_USER", getIntent().getStringExtra("PUBLIC_USER"));
+                intent.putExtra("TIMELINE_TYPE", upvote_timeline_type);
+                startActivity(intent);
+            }
+        });
+
+        viewPosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_other_timeline);
+                Intent intent = new Intent(getApplicationContext(), OtherTimeline.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("PUBLIC_USER", getIntent().getStringExtra("PUBLIC_USER"));
+                intent.putExtra("TIMELINE_TYPE", post_timeline_type);
+                startActivity(intent);
+            }
+        });
+        comments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_view_comments);
+                Intent intent = new Intent(getApplicationContext(), viewMyUserComments.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("PUBLIC_USER", getIntent().getStringExtra("PUBLIC_USER"));
+                intent.putExtra("TIMELINE_TYPE", post_timeline_type);
                 startActivity(intent);
             }
         });

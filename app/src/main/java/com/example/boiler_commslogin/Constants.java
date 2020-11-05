@@ -23,4 +23,9 @@ public abstract class Constants {
     public static final String GET_TOPICS = ROOT_URL + "getTopics.php";
     public static final String GET_UPVOTED = ROOT_URL + "getUpvoteList.php?q=";
     public static final String GET_DOWNVOTED = ROOT_URL + "getDownvoteList.php?q=";
+    public static final String GETSAVED = ROOT_URL + "getSavedPost.php?q=";
+    public static final String GETLIKED = ROOT_URL + "getPostUpvote.php?q=";
+    public static final String GETSTARTTIMELINE = ROOT_URL + "getStartTimeline.php?q=";
+    public static final String GET_POST_BY_POSTID = ROOT_URL + "getPostByPostID.php?q=";
+    public static final String SAVE_POST = ROOT_URL + "insertSavedPost.php?q=";
 }

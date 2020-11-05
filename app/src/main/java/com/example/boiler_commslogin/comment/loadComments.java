@@ -1,9 +1,11 @@
-package com.example.boiler_commslogin;
+package com.example.boiler_commslogin.comment;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
+
+import com.example.boiler_commslogin.Constants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
