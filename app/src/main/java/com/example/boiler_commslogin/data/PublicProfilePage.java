@@ -53,6 +53,7 @@ import com.example.boiler_commslogin.sign_up.verifyUser;
 import com.example.boiler_commslogin.ui.login.EditUserProfile;
 import com.example.boiler_commslogin.ui.login.LoginViewModel;
 import com.example.boiler_commslogin.ui.login.LoginViewModelFactory;
+import com.example.boiler_commslogin.viewOtherUserComments;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -388,7 +389,7 @@ public class PublicProfilePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setContentView(R.layout.activity_view_comments);
-                Intent intent = new Intent(getApplicationContext(), viewMyUserComments.class);
+                Intent intent = new Intent(getApplicationContext(), viewOtherUserComments.class);
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
