@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.boiler_commslogin.viewpost.ViewPostActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -13,11 +14,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.boiler_commslogin.R;
@@ -56,10 +59,14 @@ public class TopicPostActivity extends AppCompatActivity {
     Context context = this;
     ArrayList<String> topicNames = new ArrayList<>();
     ArrayList<String> topicIDNumbers = new ArrayList();
+    ArrayList<String> upvotedPosts = new ArrayList<>();
+    ArrayList<String> downvotedPosts = new ArrayList<>();
 
 
     public static Document loadXMLFromString(String xml) throws Exception
     {
+        xml = xml.replaceAll("[^\\x20-\\x7e]","");
+        xml = xml.replaceAll("[^\\u0000-\\uFFFF]", "");
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));
@@ -71,17 +78,22 @@ public class TopicPostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_post);
+        String thisUserID = getIntent().getStringExtra("USERID");
 
 
         // Find and store the recycler view
         recyclerView = findViewById(R.id.topicRecyclerView);
         String str_result = null;
+        String upvote_result = null;
+        String downvote_result = null;
         // Temporary topic ID
+        String topicId = getIntent().getStringExtra("TOPICID");
 
         // Retrive all of the posts from the database with the associated topic id
-        String topicId = "1";
         try {
             str_result = (String) new getPostsByTopicModel(this).execute(topicId).get(2000, TimeUnit.MILLISECONDS);
+            upvote_result = (String) new MainActivity.LoadUpvoteList(this).execute(thisUserID).get(2000, TimeUnit.MILLISECONDS);
+            downvote_result = (String) new MainActivity.LoadDownvoteList(this).execute(thisUserID).get(2000, TimeUnit.MILLISECONDS);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -91,13 +103,21 @@ public class TopicPostActivity extends AppCompatActivity {
         }
 
 
-        // Try and load those posts into the recycler view
+        // UPDATE THE TEXT VIEW
+
+
         Document postXML = null;
+        Document upvoteXML = null;
+        Document downvoteXML = null;
+
         try {
             postXML = loadXMLFromString(str_result);
-        } catch (Exception e) {
+            upvoteXML = loadXMLFromString(upvote_result);
+            downvoteXML = loadXMLFromString(downvote_result);
+        }catch(Exception e){
             e.printStackTrace();
         }
+
         if (postXML != null) {
             postXML.getDocumentElement().normalize();
             NodeList nList = postXML.getElementsByTagName("post");
@@ -115,18 +135,49 @@ public class TopicPostActivity extends AppCompatActivity {
                 image.add(Post.getAttribute("postImage"));
             }
         }
+
+        if (upvoteXML != null) {
+            upvoteXML.getDocumentElement().normalize();
+            NodeList nList = upvoteXML.getElementsByTagName("post");
+
+            for (int x = 0; x < nList.getLength(); x++) {
+                Element Post = (Element) (nList.item(x));
+                upvotedPosts.add(Post.getAttribute("postID"));
+            }
+        }
+
+        VoteLists.upvotedPosts = upvotedPosts;
+
+        if (downvoteXML != null) {
+            downvoteXML.getDocumentElement().normalize();
+            NodeList nList = downvoteXML.getElementsByTagName("post");
+
+            for (int x = 0; x < nList.getLength(); x++) {
+                Element Post = (Element) (nList.item(x));
+                downvotedPosts.add(Post.getAttribute("postID"));
+            }
+        }
+
+        VoteLists.downvotedPosts = downvotedPosts;
         final MyAdapter myAdapter = new MyAdapter(this, username, topic, title, body, image, time, votecount, postID, topicID, userID);
         final int upvote_id = 0;
         final int downvote_id = 1;
         final int user_pos = 2;
+        final int title_pos = 3;
+        final int topic_pos = 4;
         myAdapter.setListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void onItemSelected(int position, View view, ArrayList<Object> object) {
                 if (position == upvote_id) {
+
+                    Log.d("Upvote List", VoteLists.upvotedPosts.toString());
+                    Log.d("Downvote List", VoteLists.downvotedPosts.toString());
                     // include functionality for upvote button
                     String upvote_result = "";
                     try {
-                        upvote_result = (String) new UpvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                        String postID = (String) object.get(0);
+                        String userID = getIntent().getStringExtra("USERID");
+                        upvote_result = (String) new UpvoteTask(getApplicationContext()).execute(postID, userID).get(2000, TimeUnit.MILLISECONDS);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (TimeoutException e) {
@@ -134,16 +185,27 @@ public class TopicPostActivity extends AppCompatActivity {
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     }
+
+                    Log.d("Upvote Result", upvote_result);
                     if (upvote_result.equals("")) {
                         Toast.makeText(getApplicationContext(), "Failed To Upvote Post At This Time", Toast.LENGTH_SHORT).show();
+                    } else if (upvote_result.equals("upvoted")) {
+                        Toast.makeText(getApplicationContext(), "You have already upvoted this post.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Successfully Upvoted Post", Toast.LENGTH_SHORT).show();
+                        VoteLists.upvotedPosts.add(object.toArray()[0].toString());
                     }
-                } else if (position == downvote_id) {
+                }
+                else if (position == downvote_id) {
+
+                    Log.d("Upvote List", VoteLists.upvotedPosts.toString());
+                    Log.d("Downvote List", VoteLists.downvotedPosts.toString());
                     // include downvote functionality
                     String downvote_result = "";
                     try {
-                        downvote_result = (String) new DownvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                        String postID = (String) object.get(0);
+                        String userID = getIntent().getStringExtra("USERID");
+                        downvote_result = (String) new DownvoteTask(getApplicationContext()).execute(postID, userID).get(2000, TimeUnit.MILLISECONDS);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (TimeoutException e) {
@@ -153,8 +215,11 @@ public class TopicPostActivity extends AppCompatActivity {
                     }
                     if (downvote_result.equals("")) {
                         Toast.makeText(getApplicationContext(), "Failed To Downvote Post At This Time", Toast.LENGTH_SHORT).show();
+                    } else if (downvote_result.equals("downvoted")) {
+                        Toast.makeText(getApplicationContext(), "You have already downvoted this post.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
+                        VoteLists.downvotedPosts.add(object.toArray()[0].toString());
                     }
                 } else if (position == user_pos) {
                     setContentView(R.layout.activity_public_profile);
@@ -163,6 +228,22 @@ public class TopicPostActivity extends AppCompatActivity {
                     intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                     intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                     intent.putExtra("PUBLIC_USER", object.get(0).toString());
+                    startActivity(intent);
+                } else if (position == title_pos) {
+                    Intent intent = new Intent(getApplicationContext(), ViewPostActivity.class);
+                    intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                    intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                    intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                    intent.putExtra("POSTID", (String) object.get(0));
+                    startActivity(intent);
+                }
+                else if (position == topic_pos) {
+                    setContentView(R.layout.activity_topic_post);
+                    Intent intent = new Intent(getApplicationContext(), TopicPostActivity.class);
+                    intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                    intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                    intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                    intent.putExtra("TOPICID", object.get(0).toString());
                     startActivity(intent);
                 }
             }
@@ -199,6 +280,18 @@ public class TopicPostActivity extends AppCompatActivity {
             }
         }
 
+        // UPDATE THE TOPIC TEXT
+        String topicName = "Topic";
+        for (int i = 0; i < topicIDNumbers.size(); i++) {
+            topicIDNumbers.get(i);
+            if (topicId.equals(topicIDNumbers.get(i))) {
+                System.out.println("woo");
+                topicName = topicNames.get(i);
+            }
+        }
+        TextView titleText = findViewById(R.id.topicNameTitle);
+        titleText.setText(topicName);
+
 
         /***
          * CREATE CODE FOR AUTOFILL LISTENER
@@ -209,15 +302,17 @@ public class TopicPostActivity extends AppCompatActivity {
         autoCompleteTextView.setThreshold(1);
         autoCompleteTextView.setAdapter(adapter);
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            String thisUserID = getIntent().getStringExtra("USERID");
             String pos;
+            TextView titleText = findViewById(R.id.postNameText);
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView titleText = findViewById(R.id.topicNameTitle);
                 // Get the topic Id from the selected dropdown list
                 for (int i = 0; i < topicNames.size(); i++) {
                     if (parent.getItemAtPosition(position).equals(topicNames.get(i))) {
-                        System.out.println(topicNames.get(i));
-                        ;
+                        titleText.setText(topicNames.get(i));
                         pos = topicIDNumbers.get(i);
                         break;
                     }
@@ -233,9 +328,16 @@ public class TopicPostActivity extends AppCompatActivity {
                 userID.clear();
                 topicID.clear();
                 postID.clear();
+
+
                 String str_result = null;
+                String upvote_result = null;
+                String downvote_result = null;
+
                 try {
                     str_result = (String) new getPostsByTopicModel(context).execute(pos).get(2000, TimeUnit.MILLISECONDS);
+                    upvote_result = (String) new MainActivity.LoadUpvoteList(context).execute(thisUserID).get(2000, TimeUnit.MILLISECONDS);
+                    downvote_result = (String) new MainActivity.LoadDownvoteList(context).execute(thisUserID).get(2000, TimeUnit.MILLISECONDS);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -244,13 +346,18 @@ public class TopicPostActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                // Try and load those posts into the recycler view
                 Document postXML = null;
+                Document upvoteXML = null;
+                Document downvoteXML = null;
+
                 try {
                     postXML = loadXMLFromString(str_result);
-                } catch (Exception e) {
+                    upvoteXML = loadXMLFromString(upvote_result);
+                    downvoteXML = loadXMLFromString(downvote_result);
+                }catch(Exception e){
                     e.printStackTrace();
                 }
+
                 if (postXML != null) {
                     postXML.getDocumentElement().normalize();
                     NodeList nList = postXML.getElementsByTagName("post");
@@ -268,14 +375,43 @@ public class TopicPostActivity extends AppCompatActivity {
                         image.add(Post.getAttribute("postImage"));
                     }
                 }
+
+                if (upvoteXML != null) {
+                    upvoteXML.getDocumentElement().normalize();
+                    NodeList nList = upvoteXML.getElementsByTagName("post");
+
+                    for (int x = 0; x < nList.getLength(); x++) {
+                        Element Post = (Element) (nList.item(x));
+                        upvotedPosts.add(Post.getAttribute("postID"));
+                    }
+                }
+
+                VoteLists.upvotedPosts = upvotedPosts;
+
+                if (downvoteXML != null) {
+                    downvoteXML.getDocumentElement().normalize();
+                    NodeList nList = downvoteXML.getElementsByTagName("post");
+
+                    for (int x = 0; x < nList.getLength(); x++) {
+                        Element Post = (Element) (nList.item(x));
+                        downvotedPosts.add(Post.getAttribute("postID"));
+                    }
+                }
+
+                VoteLists.downvotedPosts = downvotedPosts;
                 myAdapter.setListener(new MyAdapter.OnItemClickListener() {
                     @Override
                     public void onItemSelected(int position, View view, ArrayList<Object> object) {
                         if (position == upvote_id) {
+
+                            Log.d("Upvote List", VoteLists.upvotedPosts.toString());
+                            Log.d("Downvote List", VoteLists.downvotedPosts.toString());
                             // include functionality for upvote button
                             String upvote_result = "";
                             try {
-                                upvote_result = (String) new UpvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                                String postID = (String) object.get(0);
+                                String userID = getIntent().getStringExtra("USERID");
+                                upvote_result = (String) new UpvoteTask(getApplicationContext()).execute(postID, userID).get(2000, TimeUnit.MILLISECONDS);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             } catch (TimeoutException e) {
@@ -283,16 +419,27 @@ public class TopicPostActivity extends AppCompatActivity {
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
                             }
+
+                            Log.d("Upvote Result", upvote_result);
                             if (upvote_result.equals("")) {
                                 Toast.makeText(getApplicationContext(), "Failed To Upvote Post At This Time", Toast.LENGTH_SHORT).show();
+                            } else if (upvote_result.equals("upvoted")) {
+                                Toast.makeText(getApplicationContext(), "You have already upvoted this post.", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), "Successfully Upvoted Post", Toast.LENGTH_SHORT).show();
+                                VoteLists.upvotedPosts.add(object.toArray()[0].toString());
                             }
-                        } else if (position == downvote_id) {
+                        }
+                        else if (position == downvote_id) {
+
+                            Log.d("Upvote List", VoteLists.upvotedPosts.toString());
+                            Log.d("Downvote List", VoteLists.downvotedPosts.toString());
                             // include downvote functionality
                             String downvote_result = "";
                             try {
-                                downvote_result = (String) new DownvoteTask(getApplicationContext()).execute(object.toArray()).get(2000, TimeUnit.MILLISECONDS);
+                                String postID = (String) object.get(0);
+                                String userID = getIntent().getStringExtra("USERID");
+                                downvote_result = (String) new DownvoteTask(getApplicationContext()).execute(postID, userID).get(2000, TimeUnit.MILLISECONDS);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             } catch (TimeoutException e) {
@@ -302,8 +449,11 @@ public class TopicPostActivity extends AppCompatActivity {
                             }
                             if (downvote_result.equals("")) {
                                 Toast.makeText(getApplicationContext(), "Failed To Downvote Post At This Time", Toast.LENGTH_SHORT).show();
+                            } else if (downvote_result.equals("downvoted")) {
+                                Toast.makeText(getApplicationContext(), "You have already downvoted this post.", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
+                                VoteLists.downvotedPosts.add(object.toArray()[0].toString());
                             }
                         } else if (position == user_pos) {
                             setContentView(R.layout.activity_public_profile);
@@ -312,6 +462,22 @@ public class TopicPostActivity extends AppCompatActivity {
                             intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                             intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                             intent.putExtra("PUBLIC_USER", object.get(0).toString());
+                            startActivity(intent);
+                        }
+                        else if (position == topic_pos) {
+                            setContentView(R.layout.activity_topic_post);
+                            Intent intent = new Intent(getApplicationContext(), TopicPostActivity.class);
+                            intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                            intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                            intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                            intent.putExtra("TOPICID", object.get(0).toString());
+                            startActivity(intent);
+                        } else if (position == title_pos) {
+                            Intent intent = new Intent(getApplicationContext(), ViewPostActivity.class);
+                            intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                            intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                            intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                            intent.putExtra("POSTID", (String) object.get(0));
                             startActivity(intent);
                         }
                     }

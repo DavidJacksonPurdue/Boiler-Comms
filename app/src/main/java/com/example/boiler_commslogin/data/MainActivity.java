@@ -34,6 +34,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -100,16 +101,13 @@ public class MainActivity extends AppCompatActivity {
             con.setReadTimeout(5000);
             int status = 0;
             BufferedReader in = null;
-            StringBuilder content = new StringBuilder();
+            StringWriter content = new StringWriter();
             try {
+                int n = 0;
+                char[] buffer = new char[1];
                 in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String inputLine;
-                while (true) {
-                    inputLine = in.readLine();
-                    if(inputLine == null){
-                        break;
-                    }
-                    content.append(inputLine);
+                while (-1 != (n = in.read(buffer))) {
+                    content.write(buffer,0,n);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -129,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class LoadUpvoteList extends AsyncTask {
+    public static class LoadUpvoteList extends AsyncTask {
         //private TextView statusField,roleField;
         private Context context;
         String upvoteList;
@@ -196,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class LoadDownvoteList extends AsyncTask {
+    public static class LoadDownvoteList extends AsyncTask {
         //private TextView statusField,roleField;
         private Context context;
         String downvoteList;
@@ -265,6 +263,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static Document loadXMLFromString(String xml) throws Exception
     {
+        xml = xml.replaceAll("[^\\x20-\\x7e]","");
+        xml = xml.replaceAll("[^\\u0000-\\uFFFF]", "");
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));
@@ -356,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
         final int downvote_id = 1;
         final int user_pos = 2;
         final int title_pos = 3;
+        final int topic_pos = 4;
         myAdapter.setListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void onItemSelected(int position, View view, ArrayList<Object> object) {
@@ -428,6 +429,15 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                     intent.putExtra("POSTID", (String) object.get(0));
                     startActivity(intent);
+                }else if (position == topic_pos) {
+                    setContentView(R.layout.activity_topic_post);
+                    Intent intent = new Intent(getApplicationContext(), TopicPostActivity.class);
+                    intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                    intent.putExtra("USERNAME", intent.getStringExtra("USERNAME"));
+                    intent.putExtra("PASSWORD", intent.getStringExtra("PASSWORD"));
+                    intent.putExtra("TOPICID", object.get(0).toString());
+                    startActivity(intent);
+
                 }
             }
         });
@@ -472,6 +482,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("TOPICID", "1");
                 startActivity(intent);
             }
         });

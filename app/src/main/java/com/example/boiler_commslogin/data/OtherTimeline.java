@@ -21,6 +21,7 @@ import com.example.boiler_commslogin.R;
 import com.example.boiler_commslogin.createpost.CreatePostActivity;
 import com.example.boiler_commslogin.ui.login.EditUserProfile;
 import com.example.boiler_commslogin.ui.login.LoginActivity;
+import com.example.boiler_commslogin.viewpost.ViewPostActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,13 +32,17 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -98,16 +103,13 @@ public class OtherTimeline extends AppCompatActivity {
             con.setReadTimeout(5000);
             int status = 0;
             BufferedReader in = null;
-            StringBuilder content = new StringBuilder();
+            StringWriter content = new StringWriter();
             try {
+                int n = 0;
+                char[] buffer = new char[1];
                 in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String inputLine;
-                while (true) {
-                    inputLine = in.readLine();
-                    if(inputLine == null){
-                        break;
-                    }
-                    content.append(inputLine);
+                while (-1 != (n = in.read(buffer))) {
+                    content.write(buffer,0,n);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -159,16 +161,13 @@ public class OtherTimeline extends AppCompatActivity {
             con.setReadTimeout(5000);
             int status = 0;
             BufferedReader in = null;
-            StringBuilder content = new StringBuilder();
+            StringWriter content = new StringWriter();
             try {
+                int n = 0;
+                char[] buffer = new char[1];
                 in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String inputLine;
-                while (true) {
-                    inputLine = in.readLine();
-                    if(inputLine == null){
-                        break;
-                    }
-                    content.append(inputLine);
+                while (-1 != (n = in.read(buffer))) {
+                    content.write(buffer,0,n);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -201,7 +200,7 @@ public class OtherTimeline extends AppCompatActivity {
             URL url = null;
             String userID = (String)objects[0];
             try {
-                url = new URL(Constants.GETSAVED + objects[0].toString());
+                url = new URL(Constants.GETLIKED + objects[0].toString());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -220,16 +219,13 @@ public class OtherTimeline extends AppCompatActivity {
             con.setReadTimeout(5000);
             int status = 0;
             BufferedReader in = null;
-            StringBuilder content = new StringBuilder();
+            StringWriter content = new StringWriter();
             try {
+                int n = 0;
+                char[] buffer = new char[1];
                 in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String inputLine;
-                while (true) {
-                    inputLine = in.readLine();
-                    if(inputLine == null){
-                        break;
-                    }
-                    content.append(inputLine);
+                while (-1 != (n = in.read(buffer))) {
+                    content.write(buffer,0,n);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -274,6 +270,8 @@ public class OtherTimeline extends AppCompatActivity {
 
     public static Document loadXMLFromString(String xml) throws Exception
     {
+        xml = xml.replaceAll("[^\\x20-\\x7e]","");
+        xml = xml.replaceAll("[^\\u0000-\\uFFFF]", "");
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));
@@ -311,6 +309,7 @@ public class OtherTimeline extends AppCompatActivity {
         } catch (TimeoutException e) {
             e.printStackTrace();
         }
+        System.out.println(str_result);
 
         Document postXML = null;
         try {
@@ -347,6 +346,8 @@ public class OtherTimeline extends AppCompatActivity {
         final int upvote_id = 0;
         final int downvote_id = 1;
         final int user_pos = 2;
+        final int title_pos = 3;
+        final int topic_pos = 4;
         myAdapter.setListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void onItemSelected(int position, View view, ArrayList<Object> object) {
@@ -365,8 +366,12 @@ public class OtherTimeline extends AppCompatActivity {
                     if (upvote_result.equals("")) {
                         Toast.makeText(getApplicationContext(), "Failed To Upvote Post At This Time", Toast.LENGTH_SHORT).show();
                     }
+                    else if (upvote_result.equals("upvoted")) {
+                        Toast.makeText(getApplicationContext(), "You have already upvoted this post.", Toast.LENGTH_SHORT).show();
+                    }
                     else {
                         Toast.makeText(getApplicationContext(), "Successfully Upvoted Post", Toast.LENGTH_SHORT).show();
+                        VoteLists.upvotedPosts.add(object.toArray()[0].toString());
                     }
                 }
                 else if (position == downvote_id) {
@@ -384,8 +389,12 @@ public class OtherTimeline extends AppCompatActivity {
                     if (downvote_result.equals("")) {
                         Toast.makeText(getApplicationContext(), "Failed To Downvote Post At This Time", Toast.LENGTH_SHORT).show();
                     }
+                    else if (downvote_result.equals("downvoted")) {
+                        Toast.makeText(getApplicationContext(), "You have already downvoted this post.", Toast.LENGTH_SHORT).show();
+                    }
                     else {
                         Toast.makeText(getApplicationContext(), "Successfully Downvoted Post", Toast.LENGTH_SHORT).show();
+                        VoteLists.downvotedPosts.add(object.toArray()[0].toString());
                     }
                 }
                 else if (position == user_pos) {
@@ -395,6 +404,23 @@ public class OtherTimeline extends AppCompatActivity {
                     intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                     intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                     intent.putExtra("PUBLIC_USER", object.get(0).toString());
+                    startActivity(intent);
+                }
+                else if (position == title_pos) {
+                    Intent intent = new Intent(getApplicationContext(), ViewPostActivity.class);
+                    intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                    intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                    intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                    intent.putExtra("POSTID", (String) object.get(0));
+                    startActivity(intent);
+                }
+                else if (position == topic_pos) {
+                    setContentView(R.layout.activity_topic_post);
+                    Intent intent = new Intent(getApplicationContext(), TopicPostActivity.class);
+                    intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                    intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                    intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                    intent.putExtra("TOPICID", object.get(0).toString());
                     startActivity(intent);
                 }
             }

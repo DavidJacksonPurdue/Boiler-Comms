@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -38,6 +39,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.boiler_commslogin.Constants;
 import com.example.boiler_commslogin.R;
 import com.example.boiler_commslogin.comment.viewComments;
 import com.example.boiler_commslogin.comment.viewMyUserComments;
@@ -51,6 +53,7 @@ import com.example.boiler_commslogin.sign_up.verifyUser;
 import com.example.boiler_commslogin.ui.login.EditUserProfile;
 import com.example.boiler_commslogin.ui.login.LoginViewModel;
 import com.example.boiler_commslogin.ui.login.LoginViewModelFactory;
+import com.example.boiler_commslogin.viewOtherUserComments;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,6 +65,7 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -73,7 +77,138 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+
 public class PublicProfilePage extends AppCompatActivity {
+    public class CheckValidFollow extends AsyncTask {
+        //private TextView statusField,roleField;
+        private Context context;
+        String userCredentials;
+
+        //flag 0 means get and 1 means post.(By default it is get.)
+        public CheckValidFollow(Context context) {
+            this.context = context;
+        }
+        public String getUserCredentials(){
+            return userCredentials;
+        }
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            URL url = null;
+            String userID = (String)objects[0];
+            try {
+                url = new URL(Constants.CHECK_FOLLOW + objects[0].toString() + "_" + objects[1].toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            HttpURLConnection con = null;
+            try {
+                con = (HttpURLConnection) url.openConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                con.setRequestMethod("GET");
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+            }
+            con.setConnectTimeout(5000);
+            con.setReadTimeout(5000);
+            int status = 0;
+            try {
+                status = con.getResponseCode();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            BufferedReader in = null;
+            StringBuilder content = new StringBuilder();
+            if (status <= 299) {
+                try {
+                    in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String inputLine;
+                    while (true) {
+                        inputLine = in.readLine();
+                        if (inputLine == null) {
+                            break;
+                        }
+                        content.append(inputLine);
+                    }
+                    con.disconnect();
+                } catch (IOException e) {
+                    con.disconnect();
+                    content.delete(0,content.length());
+                    content.append("ERROR");
+                    e.printStackTrace();
+                }
+                try {
+                    if (in != null) {
+                        in.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (content.toString().equals("FALSE")) {
+                try {
+                    url = new URL(Constants.FOLLOW_USER + objects[0].toString() + "_" + objects[1].toString());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    con = (HttpURLConnection) url.openConnection();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    con.setRequestMethod("GET");
+                } catch (ProtocolException e) {
+                    e.printStackTrace();
+                }
+                con.setConnectTimeout(5000);
+                con.setReadTimeout(5000);
+                status = 0;
+                in = null;
+                try {
+                    status = con.getResponseCode();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                content = new StringBuilder();
+                if (status <= 299) {
+                    try {
+                        in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                        String inputLine;
+                        while (true) {
+                            inputLine = in.readLine();
+                            if (inputLine == null) {
+                                break;
+                            }
+                            content.append(inputLine);
+                        }
+                        con.disconnect();
+                    } catch (IOException e) {
+                        con.disconnect();
+                        content.delete(0, content.length());
+                        content.append("ERROR");
+                        e.printStackTrace();
+                    }
+                    try {
+                        if (in != null) {
+                            in.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return "PASS";
+                }
+                return "FAIL";
+            }
+            else {
+                return "PASSFAIL";
+            }
+        }
+    }
+
+
     public static final String UPLOAD_KEY = "image";
 
     private int PICK_IMAGE_REQUEST = 1;
@@ -155,7 +290,9 @@ public class PublicProfilePage extends AppCompatActivity {
 
         if (getIntent().getStringExtra("PUBLIC_USER").equals(getIntent().getStringExtra("USERID"))) {
             savedPosts.setVisibility(View.VISIBLE);
+            savedPosts.setClickable(true);
             followButton.setVisibility(View.INVISIBLE);
+            savedPosts.setClickable(false);
         }
 
         if (img != null) {
@@ -166,6 +303,34 @@ public class PublicProfilePage extends AppCompatActivity {
                 profilePic.setImageBitmap(decodedByte);
             }
         }
+
+        followButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Object[] objects = new Object[2];
+                objects[0] = getIntent().getStringExtra("PUBLIC_USER");
+                objects[1] = getIntent().getStringExtra("USERID");
+                String follow_result = "";
+                try {
+                    follow_result = (String) new CheckValidFollow(getApplicationContext()).execute(objects).get(2000, TimeUnit.MILLISECONDS);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
+                if (follow_result.equals("FAIL")) {
+                    Toast.makeText(getApplicationContext(), "Failed to follow user at this time", Toast.LENGTH_SHORT).show();
+                }
+                else if (follow_result.equals("PASS")) {
+                    Toast.makeText(getApplicationContext(), "Followed User", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "You're Already Following this User", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,7 +389,7 @@ public class PublicProfilePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setContentView(R.layout.activity_view_comments);
-                Intent intent = new Intent(getApplicationContext(), viewMyUserComments.class);
+                Intent intent = new Intent(getApplicationContext(), viewOtherUserComments.class);
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));

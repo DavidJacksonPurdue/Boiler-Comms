@@ -1,4 +1,4 @@
-package com.example.boiler_commslogin.comment;
+package com.example.boiler_commslogin;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,8 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.boiler_commslogin.R;
-import com.example.boiler_commslogin.data.MainActivity;
+import com.example.boiler_commslogin.comment.MyUserCommentsAdapter;
+import com.example.boiler_commslogin.comment.loadMyComments;
+import com.example.boiler_commslogin.comment.viewComments;
 import com.example.boiler_commslogin.data.PublicProfilePage;
 
 import org.w3c.dom.Document;
@@ -22,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class viewMyUserComments extends AppCompatActivity {
+public class viewOtherUserComments extends AppCompatActivity {
     RecyclerView recyclerView;
     Button back;
     @Override
@@ -31,9 +32,10 @@ public class viewMyUserComments extends AppCompatActivity {
         setContentView(R.layout.activity_view_users_comments);
         recyclerView = findViewById(R.id.userCommentsRecyclerView);
         back = findViewById(R.id.CommentsBackButton);
+        String userID = getIntent().getStringExtra("PUBLIC_USER");
         String str_result = null;
         try {
-            str_result= (String)new loadMyComments(this).execute(getIntent().getStringExtra("USERID")).get(2000, TimeUnit.MILLISECONDS);;
+            str_result= (String)new loadMyComments(this).execute(userID).get(2000, TimeUnit.MILLISECONDS);;
 
         } catch (ExecutionException e) {
             e.printStackTrace();
