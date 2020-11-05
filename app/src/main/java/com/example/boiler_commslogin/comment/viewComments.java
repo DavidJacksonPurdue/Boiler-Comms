@@ -3,13 +3,17 @@ package com.example.boiler_commslogin.comment;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.boiler_commslogin.R;
 import com.example.boiler_commslogin.comment.Item;
 //import com.example.boiler_commslogin.comment.R;
+import com.example.boiler_commslogin.data.OtherTimeline;
 import com.multilevelview.MultiLevelRecyclerView;
 import com.multilevelview.models.RecyclerViewItem;
 
@@ -38,6 +42,7 @@ public class viewComments extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_comments);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Button button = (Button) findViewById(R.id.CommentsGoBackToPost);
         setSupportActionBar(toolbar);
 
         MultiLevelRecyclerView multiLevelRecyclerView = (MultiLevelRecyclerView) findViewById(R.id.rv_list);
@@ -45,7 +50,7 @@ public class viewComments extends AppCompatActivity {
 
         String str_result = null;
         try {
-            str_result= (String)new loadComments(this).execute("0").get(2000, TimeUnit.MILLISECONDS);;
+            str_result= (String)new loadComments(this).execute("5").get(2000, TimeUnit.MILLISECONDS);;
 
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -78,9 +83,17 @@ public class viewComments extends AppCompatActivity {
             commentsAsItems.add(currentComment);
         }
 
-
-        List<com.example.boiler_commslogin.comment.Item> itemList = (List<com.example.boiler_commslogin.comment.Item>) recursivlyPopulateComments(commentsAsItems, -1, 0);
-
+        List<com.example.boiler_commslogin.comment.Item> itemList = new ArrayList<>();
+        if(commentsAsItems.size() == 0){
+            Item newItem = new Item(0);
+            newItem.setBody("No Comments Yet");
+            newItem.setTitle("");
+            newItem.setUserName("");
+            newItem.setDate("");
+            itemList.add(0, newItem);
+        }else {
+            itemList = (List<com.example.boiler_commslogin.comment.Item>) recursivlyPopulateComments(commentsAsItems, -1, 0);
+        }
         MyCommentAdapter myCommentAdapter = new MyCommentAdapter(this, itemList, multiLevelRecyclerView);
 
         multiLevelRecyclerView.setAdapter(myCommentAdapter);
@@ -89,7 +102,21 @@ public class viewComments extends AppCompatActivity {
         //If you want to already opened Multi-RecyclerView just call openTill where is parameter is
         // position to corresponding each level.
         multiLevelRecyclerView.setToggleItemOnClick(FALSE);
-        multiLevelRecyclerView.openTill(2,1,0,0);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_other_timeline);
+                Intent intent = new Intent(getApplicationContext(), OtherTimeline.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("POST_ID", getIntent().getStringExtra("POST_ID"));
+                startActivity(intent);
+            }
+        });
+
+
     }
 
 
@@ -113,6 +140,7 @@ public class viewComments extends AppCompatActivity {
             item.setBody(String.format(Locale.ENGLISH, commentsList.get(x).getBody(), x));
             item.setCommentID(commentsList.get(x).getCommentID());
             item.setParentID(commentsList.get(x).getParentID());
+            item.setPostID(commentsList.get(x).getPostID());
             if(commentsList.get(x).getParentID() == goalID){
                 item.addChildren((List<RecyclerViewItem>) recursivlyPopulateComments(commentsList, commentsList.remove(x).getCommentID(), level + 1));
                 x--;
