@@ -61,6 +61,7 @@ public class TopicPostActivity extends AppCompatActivity {
     ArrayList<String> topicIDNumbers = new ArrayList();
     ArrayList<String> upvotedPosts = new ArrayList<>();
     ArrayList<String> downvotedPosts = new ArrayList<>();
+    int currentTopicIndex = 0;
 
 
     public static Document loadXMLFromString(String xml) throws Exception
@@ -79,6 +80,8 @@ public class TopicPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_post);
         String thisUserID = getIntent().getStringExtra("USERID");
+        Button followTopic = findViewById(R.id.followTopic);
+
 
 
         // Find and store the recycler view
@@ -333,7 +336,7 @@ public class TopicPostActivity extends AppCompatActivity {
                 String str_result = null;
                 String upvote_result = null;
                 String downvote_result = null;
-
+                currentTopicIndex = Integer.parseInt(pos);
                 try {
                     str_result = (String) new getPostsByTopicModel(context).execute(pos).get(2000, TimeUnit.MILLISECONDS);
                     upvote_result = (String) new MainActivity.LoadUpvoteList(context).execute(thisUserID).get(2000, TimeUnit.MILLISECONDS);
@@ -500,6 +503,33 @@ public class TopicPostActivity extends AppCompatActivity {
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                 startActivity(intent);
+            }
+        });
+
+
+
+
+        followTopic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String result = null;
+                try {
+                    String userID = getIntent().getStringExtra("USERID");
+                    String topicID = getIntent().getStringExtra("TOPICID");
+
+                    result = (String) new FollowTopic(getApplicationContext()).execute(userID, currentTopicIndex).get(2000, TimeUnit.MILLISECONDS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+                if (result.contains("Error")) {
+                    Toast.makeText(getApplicationContext(), "Topic is already being followed", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Topic is now being followed", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
