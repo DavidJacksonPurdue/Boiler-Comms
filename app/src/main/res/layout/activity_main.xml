@@ -75,4 +75,16 @@
         app:layout_constraintStart_toEndOf="@+id/settings"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.467" />
+
+    <Button
+        android:id="@+id/userPosts"
+        android:layout_width="78dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="8dp"
+        android:text="View User Posts"
+        android:textSize="8sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.034"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

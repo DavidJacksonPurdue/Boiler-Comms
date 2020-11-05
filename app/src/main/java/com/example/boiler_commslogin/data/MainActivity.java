@@ -414,6 +414,7 @@ public class MainActivity extends AppCompatActivity {
         final Button logout = findViewById(R.id.logout);
         final Button createPost = findViewById(R.id.createPost);
         final Button topicPage = findViewById(R.id.topicPage);
+        final Button userPosts = findViewById(R.id.userPosts);
 
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -442,6 +443,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setContentView(R.layout.activity_topic_post);
+                Intent intent = new Intent(getApplicationContext(), TopicPostActivity.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                startActivity(intent);
+            }
+        });
+
+        userPosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_main);
                 Intent intent = new Intent(getApplicationContext(), TopicPostActivity.class);
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
@@ -480,4 +493,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }
