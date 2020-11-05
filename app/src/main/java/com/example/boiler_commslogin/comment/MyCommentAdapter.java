@@ -156,7 +156,7 @@ public class MyCommentAdapter extends MultiLevelAdapter {
                             String commentTime = dtf.format(now);
                             String str_result = null;
                             try {
-                                str_result= (String)new sendComment(mContext).execute("0",newParentID, textBody, "0", commentTime).get(2000, TimeUnit.MILLISECONDS);
+                                str_result= (String)new sendComment(mContext).execute(Integer.toString(mItem.getPostID()),newParentID, textBody, ((Activity) mContext).getIntent().getStringExtra("USERID"), commentTime).get(2000, TimeUnit.MILLISECONDS);
 
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
@@ -177,6 +177,11 @@ public class MyCommentAdapter extends MultiLevelAdapter {
                             mMultiLevelRecyclerView.openTill(mItem.getLevel());
                             notifyDataSetChanged();*/
                             Intent myIntent = new Intent(mContext, viewComments.class);
+                            myIntent.putExtra("USERID", ((Activity) mContext).getIntent().getStringExtra("USERID"));
+                            myIntent.putExtra("USERNAME", ((Activity) mContext).getIntent().getStringExtra("USERNAME"));
+                            myIntent.putExtra("PASSWORD", ((Activity) mContext).getIntent().getStringExtra("PASSWORD"));
+                            myIntent.putExtra("POSTID", Integer.toString(mItem.getPostID()));
+                            Log.d("mItem", "" + mItem.getPostID());
                             //myIntent.putExtra("key", value); //Optional parameters
                             mContext.startActivity(myIntent);
                         }

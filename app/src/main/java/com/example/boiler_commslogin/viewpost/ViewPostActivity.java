@@ -206,7 +206,7 @@ public class ViewPostActivity extends AppCompatActivity {
                     String str_result = null;
 
                     try {
-                        str_result= (String)new sendComment(getApplicationContext()).execute(postID,newParentID, textBody, "0", commentTime).get(2000, TimeUnit.MILLISECONDS);
+                        str_result= (String)new sendComment(getApplicationContext()).execute(postID,newParentID, textBody, userID, commentTime).get(2000, TimeUnit.MILLISECONDS);
 
                     } catch (ExecutionException e) {
                         e.printStackTrace();
@@ -226,9 +226,13 @@ public class ViewPostActivity extends AppCompatActivity {
 
                             mMultiLevelRecyclerView.openTill(mItem.getLevel());
                             notifyDataSetChanged();*/
-                    Intent myIntent = new Intent(getApplicationContext(), viewComments.class);
+                    Intent intent = new Intent(getApplicationContext(), viewComments.class);
+                    intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                    intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                    intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                    intent.putExtra("POSTID", postID);
                     //myIntent.putExtra("key", value); //Optional parameters
-                    startActivity(myIntent);
+                    startActivity(intent);
                 }
             }
         });
@@ -242,7 +246,7 @@ public class ViewPostActivity extends AppCompatActivity {
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                 intent.putExtra("POSTID", postID);
-                Log.d("ViewPost PostID", "" + postID);
+                //Log.d("ViewPost PostID", "" + postID);
                 startActivity(intent);
             }
         });

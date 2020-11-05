@@ -113,7 +113,6 @@ public class viewComments extends AppCompatActivity {
         MyCommentAdapter myCommentAdapter = new MyCommentAdapter(this, itemList, multiLevelRecyclerView);
         multiLevelRecyclerView.setAdapter(myCommentAdapter);
 
-
         //If you want to already opened Multi-RecyclerView just call openTill where is parameter is
         // position to corresponding each level.
         multiLevelRecyclerView.setToggleItemOnClick(FALSE);
@@ -155,6 +154,8 @@ public class viewComments extends AppCompatActivity {
             item.setBody(String.format(Locale.ENGLISH, commentsList.get(x).getBody(), x));
             item.setCommentID(commentsList.get(x).getCommentID());
             item.setParentID(commentsList.get(x).getParentID());
+            item.setPostID(commentsList.get(x).getPostID());
+
             if(commentsList.get(x).getParentID() == goalID){
                 item.addChildren((List<RecyclerViewItem>) recursivlyPopulateComments(commentsList, commentsList.remove(x).getCommentID(), level + 1));
                 x--;

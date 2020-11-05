@@ -31,6 +31,12 @@ public class sendComment extends AsyncTask {
     protected Object doInBackground(Object[] objects) {
         URL url = null;
         String userID = (String)objects[0];
+        Log.d("Send comment: objects 0", objects[0].toString());
+        Log.d("Send comment: objects 1", objects[1].toString());
+        Log.d("Send comment: objects 2", objects[2].toString());
+        Log.d("Send comment: objects 3", objects[3].toString());
+        Log.d("Send comment: objects 4", objects[4].toString());
+
         try {
             url = new URL(Constants.SENDCOMMENT + objects[0].toString() + "_" + objects[1].toString() + "_" + objects[2].toString() + "_" + objects[3].toString() + "_" + objects[4].toString());
         } catch (MalformedURLException e) {
