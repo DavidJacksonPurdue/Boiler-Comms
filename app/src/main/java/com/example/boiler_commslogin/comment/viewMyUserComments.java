@@ -33,7 +33,7 @@ public class viewMyUserComments extends AppCompatActivity {
         back = findViewById(R.id.CommentsBackButton);
         String str_result = null;
         try {
-            str_result= (String)new loadMyComments(this).execute("0").get(2000, TimeUnit.MILLISECONDS);;
+            str_result= (String)new loadMyComments(this).execute(getIntent().getStringExtra("USERID")).get(2000, TimeUnit.MILLISECONDS);;
 
         } catch (ExecutionException e) {
             e.printStackTrace();

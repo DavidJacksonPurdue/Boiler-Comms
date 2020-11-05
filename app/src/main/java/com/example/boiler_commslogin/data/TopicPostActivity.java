@@ -60,6 +60,8 @@ public class TopicPostActivity extends AppCompatActivity {
 
     public static Document loadXMLFromString(String xml) throws Exception
     {
+        xml = xml.replaceAll("[^\\x20-\\x7e]","");
+        xml = xml.replaceAll("[^\\u0000-\\uFFFF]", "");
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));

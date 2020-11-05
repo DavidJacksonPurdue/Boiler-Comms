@@ -8,6 +8,7 @@ import com.example.boiler_commslogin.Constants;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -44,16 +45,13 @@ public class getPostsByTopicModel extends AsyncTask {
         con.setConnectTimeout(5000);
         con.setReadTimeout(5000);
         BufferedReader in = null;
-        StringBuilder content = new StringBuilder();
+        StringWriter content = new StringWriter();
         try {
+            int n = 0;
+            char[] buffer = new char[1];
             in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            while (true) {
-                inputLine = in.readLine();
-                if (inputLine == null) {
-                    break;
-                }
-                content.append(inputLine);
+            while (-1 != (n = in.read(buffer))) {
+                content.write(buffer,0,n);
             }
         } catch (IOException e) {
             e.printStackTrace();

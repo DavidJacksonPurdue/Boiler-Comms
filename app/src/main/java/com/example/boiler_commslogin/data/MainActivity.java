@@ -33,6 +33,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -99,16 +100,13 @@ public class MainActivity extends AppCompatActivity {
             con.setReadTimeout(5000);
             int status = 0;
             BufferedReader in = null;
-            StringBuilder content = new StringBuilder();
+            StringWriter content = new StringWriter();
             try {
+                int n = 0;
+                char[] buffer = new char[1];
                 in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String inputLine;
-                while (true) {
-                    inputLine = in.readLine();
-                    if(inputLine == null){
-                        break;
-                    }
-                    content.append(inputLine);
+                while (-1 != (n = in.read(buffer))) {
+                    content.write(buffer,0,n);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -264,6 +262,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static Document loadXMLFromString(String xml) throws Exception
     {
+        xml = xml.replaceAll("[^\\x20-\\x7e]","");
+        xml = xml.replaceAll("[^\\u0000-\\uFFFF]", "");
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));
