@@ -2,8 +2,6 @@ package com.example.boiler_commslogin.comment;
 
 import android.util.Log;
 
-import com.multilevelview.models.RecyclerViewItem;
-
 public class Item extends RecyclerViewItem {
 
     String title="";
