@@ -32,6 +32,6 @@
     <string name="topic">"Topic"</string>
     <string name="profile">"View Profile"</string>
     <string name="saved">"Saved Posts"</string>
-    <string name="follow">"Follow"</string>
+    <string name="follow">"Follow/Unfollow"</string>
     <string name="todo">TODO</string>
 </resources>

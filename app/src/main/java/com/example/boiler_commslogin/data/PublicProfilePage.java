@@ -148,62 +148,13 @@ public class PublicProfilePage extends AppCompatActivity {
                 }
             }
             if (content.toString().equals("FALSE")) {
-                try {
-                    url = new URL(Constants.FOLLOW_USER + objects[0].toString() + "_" + objects[1].toString());
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    con = (HttpURLConnection) url.openConnection();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    con.setRequestMethod("GET");
-                } catch (ProtocolException e) {
-                    e.printStackTrace();
-                }
-                con.setConnectTimeout(5000);
-                con.setReadTimeout(5000);
-                status = 0;
-                in = null;
-                try {
-                    status = con.getResponseCode();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                content = new StringBuilder();
-                if (status <= 299) {
-                    try {
-                        in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                        String inputLine;
-                        while (true) {
-                            inputLine = in.readLine();
-                            if (inputLine == null) {
-                                break;
-                            }
-                            content.append(inputLine);
-                        }
-                        con.disconnect();
-                    } catch (IOException e) {
-                        con.disconnect();
-                        content.delete(0, content.length());
-                        content.append("ERROR");
-                        e.printStackTrace();
-                    }
-                    try {
-                        if (in != null) {
-                            in.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return "PASS";
-                }
-                return "FAIL";
+                    return "INS";
+            }
+            else if (content.toString().equals("TRUE")) {
+                return "DEL";
             }
             else {
-                return "PASSFAIL";
+                return "FAIL";
             }
         }
     }
@@ -323,11 +274,11 @@ public class PublicProfilePage extends AppCompatActivity {
                 if (follow_result.equals("FAIL")) {
                     Toast.makeText(getApplicationContext(), "Failed to follow user at this time", Toast.LENGTH_SHORT).show();
                 }
-                else if (follow_result.equals("PASS")) {
+                else if (follow_result.equals("INS")) {
                     Toast.makeText(getApplicationContext(), "Followed User", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "You're Already Following this User", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "You're No Longer Following this User", Toast.LENGTH_SHORT).show();
                 }
             }
         });
