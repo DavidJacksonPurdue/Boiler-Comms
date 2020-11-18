@@ -33,5 +33,6 @@
     <string name="profile">"View Profile"</string>
     <string name="saved">"Saved Posts"</string>
     <string name="follow">"Follow/Unfollow"</string>
+    <string name="block">"Block/Unblock"</string>
     <string name="todo">TODO</string>
 </resources>
