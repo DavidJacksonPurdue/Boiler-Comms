@@ -62,6 +62,8 @@ public class TopicPostActivity extends AppCompatActivity {
     ArrayList<String> upvotedPosts = new ArrayList<>();
     ArrayList<String> downvotedPosts = new ArrayList<>();
     int currentTopicIndex = 0;
+    final String anonUser = "0";
+    final String deletedUser = "-1";
 
 
     public static Document loadXMLFromString(String xml) throws Exception
@@ -225,13 +227,15 @@ public class TopicPostActivity extends AppCompatActivity {
                         VoteLists.downvotedPosts.add(object.toArray()[0].toString());
                     }
                 } else if (position == user_pos) {
-                    setContentView(R.layout.activity_public_profile);
-                    Intent intent = new Intent(getApplicationContext(), PublicProfilePage.class);
-                    intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
-                    intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
-                    intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                    intent.putExtra("PUBLIC_USER", object.get(0).toString());
-                    startActivity(intent);
+                    if (!(object.get(0).toString().equals(anonUser) || object.get(0).toString().equals(deletedUser))) {
+                        setContentView(R.layout.activity_public_profile);
+                        Intent intent = new Intent(getApplicationContext(), PublicProfilePage.class);
+                        intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                        intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                        intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                        intent.putExtra("PUBLIC_USER", object.get(0).toString());
+                        startActivity(intent);
+                    }
                 } else if (position == title_pos) {
                     Intent intent = new Intent(getApplicationContext(), ViewPostActivity.class);
                     intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
@@ -459,13 +463,15 @@ public class TopicPostActivity extends AppCompatActivity {
                                 VoteLists.downvotedPosts.add(object.toArray()[0].toString());
                             }
                         } else if (position == user_pos) {
-                            setContentView(R.layout.activity_public_profile);
-                            Intent intent = new Intent(getApplicationContext(), PublicProfilePage.class);
-                            intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
-                            intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
-                            intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                            intent.putExtra("PUBLIC_USER", object.get(0).toString());
-                            startActivity(intent);
+                            if (!(object.get(0).toString().equals(anonUser) || object.get(0).toString().equals(deletedUser))) {
+                                setContentView(R.layout.activity_public_profile);
+                                Intent intent = new Intent(getApplicationContext(), PublicProfilePage.class);
+                                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                                intent.putExtra("PUBLIC_USER", object.get(0).toString());
+                                startActivity(intent);
+                            }
                         }
                         else if (position == topic_pos) {
                             setContentView(R.layout.activity_topic_post);

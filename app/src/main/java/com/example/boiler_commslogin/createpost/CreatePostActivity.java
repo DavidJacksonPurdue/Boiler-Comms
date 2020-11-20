@@ -15,6 +15,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,8 +47,10 @@ public class CreatePostActivity extends AppCompatActivity {
 
     Button loadButton;
     Button postButton;
+    CheckBox anonymousCheckbox;
 
     public static final int PICK_IMAGE = 100;
+    final String anonUser = "0";
     Uri imageURI;
 
     @Override
@@ -62,6 +65,7 @@ public class CreatePostActivity extends AppCompatActivity {
 
         loadButton = (Button) findViewById(R.id.loadButton);
         postButton = (Button) findViewById(R.id.postButton);
+        anonymousCheckbox = (CheckBox) findViewById(R.id.anonymousCheck);
 
         //Load button functionality
         loadButton.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +94,13 @@ public class CreatePostActivity extends AppCompatActivity {
                     LocalDateTime now = LocalDateTime.now();
                     String postDate = dtf.format(now);
                     String str_result = null;
+
+                    /** Check to see if the anonymous post checkbox has been checked **/
+                    if (anonymousCheckbox.isChecked()) {
+                        // Set the id to the id of an anonymous user
+                        userID = anonUser;
+                    }
+
                     if (imageURI != null) {
                         String base64image = uriToBitmap(imageURI);
                         Log.d("imageIsHere", base64image);
@@ -106,7 +117,7 @@ public class CreatePostActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Post created successfully", Toast.LENGTH_LONG).show();
                         setContentView(R.layout.activity_main);
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putExtra("USERID", userID);
+                        intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                         intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                         intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                         startActivity(intent);
