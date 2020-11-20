@@ -9,10 +9,10 @@
     <LinearLayout
         android:id="@+id/text_box"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginRight="10dp"
+        android:layout_height="130dp"
         android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
@@ -29,26 +29,42 @@
 
         <LinearLayout
             android:id="@+id/reply_box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="63dp"
             android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/replyEditText"
-            android:maxLength="280"
-            android:layout_width="240dp"
-            android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/replyEditText"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:maxLength="280" />
 
-        <Button
-            android:id="@+id/replyCommentButton"
-            android:layout_width="wrap_content"
-            android:layout_height="33dp"
-            android:text="SEND"
-            android:textColor="#3F51B5"
-            android:textSize="10sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/replyCommentButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="33dp"
+                    android:text="SEND"
+                    android:textColor="#3F51B5"
+                    android:textSize="10sp" />
+
+                <CheckBox
+                    android:id="@+id/anonCommentCheck"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Anonymous"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 
