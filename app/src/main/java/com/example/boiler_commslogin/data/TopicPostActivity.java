@@ -525,10 +525,14 @@ public class TopicPostActivity extends AppCompatActivity {
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
-                if (result.contains("Error")) {
-                    Toast.makeText(getApplicationContext(), "Topic is already being followed", Toast.LENGTH_SHORT).show();
-                } else {
+                if (result.contains("TRUE")) {
+                    Toast.makeText(getApplicationContext(), "Topic is no longer being followed", Toast.LENGTH_SHORT).show();
+                }
+                else if (result.contains("FALSE")) {
                     Toast.makeText(getApplicationContext(), "Topic is now being followed", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Can not follow topic at this time", Toast.LENGTH_SHORT).show();
                 }
             }
         });
