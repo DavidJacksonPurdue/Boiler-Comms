@@ -32,5 +32,8 @@ public abstract class Constants {
     public static final String FOLLOW_USER = ROOT_URL + "followUser.php?q=";
     public static final String GETFOLLOWTOPIC = ROOT_URL + "followTopic.php?q=";
     public static final String BLOCK_USER = ROOT_URL + "blockAndUnblock.php?q=";
+    public static final String FOLLOW_LIST = ROOT_URL + "getFollowUserList.php?q=";
+    public static final String TOPIC_LIST = ROOT_URL + "getFollowTopicList.php?q=";
+    public static final String BLOCK_LIST = ROOT_URL + "getBlockList.php?q=";
 
 }

@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -270,6 +271,10 @@ public class PublicProfilePage extends AppCompatActivity {
         final Button savedPosts = findViewById(R.id.saved_posts);
         final Button followButton = findViewById(R.id.follow_button);
         final Button blockButton = findViewById(R.id.block_button);
+        final ImageButton dmButton = findViewById(R.id.message_button);
+        final Button viewFollowedUsers = findViewById(R.id.user_list);
+        final Button viewFollowedTopics = findViewById(R.id.topic_list);
+        final Button viewBlockedUsers = findViewById(R.id.block_list);
         final int post_timeline_type = 0;
         final int upvote_timeline_type = 2;
         final int saved_timeline_type = 3;
@@ -325,6 +330,14 @@ public class PublicProfilePage extends AppCompatActivity {
             savedPosts.setClickable(false);
             blockButton.setVisibility(View.INVISIBLE);
             blockButton.setClickable(false);
+            dmButton.setVisibility(View.INVISIBLE);
+            dmButton.setClickable(false);
+            viewBlockedUsers.setVisibility(View.VISIBLE);
+            viewBlockedUsers.setClickable(true);
+            viewFollowedTopics.setVisibility(View.VISIBLE);
+            viewFollowedTopics.setClickable(true);
+            viewFollowedUsers.setVisibility(View.VISIBLE);
+            viewFollowedUsers.setClickable(true);
         }
 
         if (img != null) {
@@ -389,6 +402,52 @@ public class PublicProfilePage extends AppCompatActivity {
                 else {
                     Toast.makeText(getApplicationContext(), "You're No Longer Blocking this User", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        dmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Open DM page goes here
+            }
+        });
+
+        viewBlockedUsers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_view_list);
+                Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("LIST_TYPE", 2);
+                startActivity(intent);
+            }
+        });
+
+        viewFollowedTopics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_view_list);
+                Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("LIST_TYPE", 1);
+                startActivity(intent);
+            }
+        });
+
+        viewFollowedUsers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_view_list);
+                Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("LIST_TYPE", 0);
+                startActivity(intent);
             }
         });
 
