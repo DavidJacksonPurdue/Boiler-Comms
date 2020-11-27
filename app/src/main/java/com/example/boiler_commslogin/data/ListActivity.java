@@ -64,7 +64,15 @@ public class ListActivity extends AppCompatActivity {
         protected Object doInBackground(Object[] objects) {
             URL url = null;
             try {
-                url = new URL(Constants.CHECK_FOLLOW + objects[0].toString() + "_" + objects[1].toString());
+                if (objects[2].toString().equals("0")) {
+                    url = new URL(Constants.CHECK_FOLLOW + objects[0].toString() + "_" + objects[1].toString());
+                }
+                else if (objects[2].toString().equals("1")) {
+                    url = new URL(Constants.GETFOLLOWTOPIC + objects[1].toString() + "_" + objects[0].toString());
+                }
+                else if (objects[2].toString().equals("2")) {
+                    url = new URL(Constants.BLOCK_USER + objects[1].toString() + "_" + objects[0].toString());
+                }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -115,10 +123,7 @@ public class ListActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            if (content.toString().equals("FALSE")) {
-                return "INS";
-            }
-            else if (content.toString().equals("TRUE")) {
+            if (content.toString().equals("TRUE")) {
                 return "DEL";
             }
             else {
@@ -299,7 +304,26 @@ public class ListActivity extends AppCompatActivity {
                     }
                 }
                 else if (position == unfollow_id) {
-                    //Implement unfollowing from page
+                    Object[] objects = new Object[3];
+                    objects[0] = object.get(0).toString();
+                    objects[1] = getIntent().getStringExtra("USERID");
+                    objects[2] = (Integer) list_type;
+                    String unfollow_result = "";
+                    try {
+                        unfollow_result = (String) new UnfollowOrUnblock(getApplicationContext()).execute(objects).get(3000, TimeUnit.MILLISECONDS);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    }
+                    if (unfollow_result.equals("DEL")) {
+                        Toast.makeText(getApplicationContext(), "Sucessfully Unfollwed/Unblocked", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Failed to Unfollow/Unblock at this time", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

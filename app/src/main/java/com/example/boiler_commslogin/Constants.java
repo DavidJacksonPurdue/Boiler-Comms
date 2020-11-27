@@ -29,7 +29,7 @@ public abstract class Constants {
     public static final String GET_POST_BY_POSTID = ROOT_URL + "getPostByPostID.php?q=";
     public static final String SAVE_POST = ROOT_URL + "insertSavedPost.php?q=";
     public static final String CHECK_FOLLOW = ROOT_URL + "checkvalidFollow.php?q=";
-    public static final String FOLLOW_USER = ROOT_URL + "followUser.php?q=";
+    //This constant is no longer in use: public static final String FOLLOW_USER = ROOT_URL + "followUser.php?q=";
     public static final String GETFOLLOWTOPIC = ROOT_URL + "followTopic.php?q=";
     public static final String BLOCK_USER = ROOT_URL + "blockAndUnblock.php?q=";
     public static final String FOLLOW_LIST = ROOT_URL + "getFollowUserList.php?q=";

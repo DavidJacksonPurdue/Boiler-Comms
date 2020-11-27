@@ -59,6 +59,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> 
         holder.userId.setText(userId.get(position));
     }
 
+    public void deleteItem(int position) {
+        username.remove(position);
+        userId.remove(position);
+        notifyItemRemoved(position);
+    }
+
     @Override
     public int getItemCount() {
         return username.size();
@@ -69,7 +75,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> 
         TextView username, userId;
         Button unfollow;
 
-        public MyViewHolder(@NonNull View itemView) {
+        public MyViewHolder(@NonNull final View itemView) {
             super(itemView);
             username = itemView.findViewById(R.id.username_list);
             userId = itemView.findViewById(R.id.user_id_list);
@@ -85,6 +91,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> 
                         ArrayList<Object> unfollow_list = new ArrayList<>();
                         unfollow_list.add(userId.getText().toString());
                         listener.onItemSelected(unfollow_id, v, unfollow_list);
+                        deleteItem(getAdapterPosition());
+                        itemView.setVisibility(View.GONE);
                     }
                 }
             }));
