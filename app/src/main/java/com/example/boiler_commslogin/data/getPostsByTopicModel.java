@@ -26,7 +26,7 @@ public class getPostsByTopicModel extends AsyncTask {
         URL url = null;
         String topicID = (String)objects[0];
         try {
-            url = new URL(Constants.GETPOSTTOPIC + objects[0].toString());
+            url = new URL(Constants.GETPOSTTOPIC + objects[0].toString() + "_" + objects[1].toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

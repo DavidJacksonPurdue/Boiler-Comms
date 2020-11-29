@@ -83,9 +83,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         if(!img.equals("null")) {
             String base64Image = img.split(",")[1];
             Log.d("MyAdapter: Base64", base64Image);
-            byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            holder.image.setImageBitmap(decodedByte);
+            byte[] decodedString = null;
+            try {
+                decodedString = Base64.decode(base64Image, Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                holder.image.setImageBitmap(decodedByte);
+            }
+            catch (IllegalArgumentException e) {
+                //replace this with an image that indicates failed to load image
+                holder.image.setImageBitmap(null);
+            }
         }
         else {
             holder.image.setImageBitmap(null);
