@@ -70,6 +70,8 @@ public class OtherTimeline extends AppCompatActivity {
     final int upvote_timeline_type = 2;
     final int saved_timeline_type = 3;
     final int comment_timeline_type = 4;
+    final String anonUser = "0";
+    final String deletedUser = "-1";
 
     public class LoadUserCredentialsPost extends AsyncTask {
         //private TextView statusField,roleField;
@@ -398,13 +400,15 @@ public class OtherTimeline extends AppCompatActivity {
                     }
                 }
                 else if (position == user_pos) {
-                    setContentView(R.layout.activity_public_profile);
-                    Intent intent = new Intent(getApplicationContext(), PublicProfilePage.class);
-                    intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
-                    intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
-                    intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                    intent.putExtra("PUBLIC_USER", object.get(0).toString());
-                    startActivity(intent);
+                    if (!(object.get(0).toString().equals(anonUser) || object.get(0).toString().equals(deletedUser))) {
+                        setContentView(R.layout.activity_public_profile);
+                        Intent intent = new Intent(getApplicationContext(), PublicProfilePage.class);
+                        intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                        intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                        intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                        intent.putExtra("PUBLIC_USER", object.get(0).toString());
+                        startActivity(intent);
+                    }
                 }
                 else if (position == title_pos) {
                     Intent intent = new Intent(getApplicationContext(), ViewPostActivity.class);

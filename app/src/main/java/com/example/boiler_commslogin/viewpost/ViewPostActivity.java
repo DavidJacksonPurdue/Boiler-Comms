@@ -12,6 +12,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -67,6 +68,7 @@ public class ViewPostActivity extends AppCompatActivity {
     String date;
     String saved = "";
     boolean isSaved = false;
+    String anonUser = "0";
 
     Button backButton;
     TextView postName;
@@ -82,6 +84,7 @@ public class ViewPostActivity extends AppCompatActivity {
     Button upvoteButton;
     Button downvoteButton;
     Button saveButton;
+    CheckBox anonComment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +168,7 @@ public class ViewPostActivity extends AppCompatActivity {
         downvoteButton = (Button) findViewById(R.id.downvoteButton);
         saveButton = (Button) findViewById(R.id.saveButton);
         postDate = (TextView) findViewById(R.id.postDate);
+        anonComment = (CheckBox) findViewById(R.id.anonCommentViewCheck);
 
         postName.setText(name);
         postAuthor.setText(author);
@@ -204,9 +208,13 @@ public class ViewPostActivity extends AppCompatActivity {
                     LocalDateTime now = LocalDateTime.now();
                     String commentTime = dtf.format(now);
                     String str_result = null;
+                    String tempUserID = userID;
+                    if (anonComment.isChecked()) {
+                        tempUserID = anonUser;
+                    }
 
                     try {
-                        str_result= (String)new sendComment(getApplicationContext()).execute(postID,newParentID, textBody, userID, commentTime).get(2000, TimeUnit.MILLISECONDS);
+                        str_result= (String)new sendComment(getApplicationContext()).execute(postID,newParentID, textBody, tempUserID, commentTime).get(2000, TimeUnit.MILLISECONDS);
 
                     } catch (ExecutionException e) {
                         e.printStackTrace();
@@ -226,6 +234,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
                             mMultiLevelRecyclerView.openTill(mItem.getLevel());
                             notifyDataSetChanged();*/
+                    Toast.makeText(getApplicationContext(), "successfully commented", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getApplicationContext(), viewComments.class);
                     intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                     intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
@@ -233,6 +242,8 @@ public class ViewPostActivity extends AppCompatActivity {
                     intent.putExtra("POSTID", postID);
                     //myIntent.putExtra("key", value); //Optional parameters
                     startActivity(intent);
+                }else{
+                    Toast.makeText(getApplicationContext(), "unable to comment: comment empty", Toast.LENGTH_SHORT).show();
                 }
             }
         });

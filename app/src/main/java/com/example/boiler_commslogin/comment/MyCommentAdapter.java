@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.boiler_commslogin.comment.Item;
 import com.example.boiler_commslogin.R;
 
 import java.time.LocalDateTime;
@@ -24,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,6 +42,7 @@ public class MyCommentAdapter extends MultiLevelAdapter {
     private List<com.example.boiler_commslogin.comment.Item> mListItems = new ArrayList<>();
     private com.example.boiler_commslogin.comment.Item mItem;
     private MultiLevelRecyclerView mMultiLevelRecyclerView;
+    final String anonUser = "0";
 
     MyCommentAdapter(Context mContext, List<com.example.boiler_commslogin.comment.Item> mListItems, MultiLevelRecyclerView mMultiLevelRecyclerView) {
         super(mListItems);
@@ -104,6 +105,7 @@ public class MyCommentAdapter extends MultiLevelAdapter {
         LinearLayout mTextBox, mExpandButton;
         Button mReplyButton;
         EditText mReply;
+        CheckBox mAnon;
 
         Holder(View itemView) {
             super(itemView);
@@ -114,6 +116,7 @@ public class MyCommentAdapter extends MultiLevelAdapter {
             mExpandButton = (LinearLayout) itemView.findViewById(R.id.expand_field);
             mReplyButton = (Button) itemView.findViewById(R.id.replyCommentButton);
             mReply = (EditText) itemView.findViewById(R.id.replyEditText);
+            mAnon = (CheckBox) itemView.findViewById(R.id.anonCommentCheck);
             // The following code snippets are only necessary if you set multiLevelRecyclerView.removeItemClickListeners(); in MainActivity.java
             // this enables more than one click event on an item (e.g. Click Event on the item itself and click event on the expand button)
             /*itemView.setOnClickListener(new View.OnClickListener() {
@@ -155,8 +158,12 @@ public class MyCommentAdapter extends MultiLevelAdapter {
                             LocalDateTime now = LocalDateTime.now();
                             String commentTime = dtf.format(now);
                             String str_result = null;
+                            String userID = ((Activity) mContext).getIntent().getStringExtra("USERID");
+                            if (mAnon.isChecked()) {
+                                userID = anonUser;
+                            }
                             try {
-                                str_result= (String)new sendComment(mContext).execute(Integer.toString(mItem.getPostID()),newParentID, textBody, ((Activity) mContext).getIntent().getStringExtra("USERID"), commentTime).get(2000, TimeUnit.MILLISECONDS);
+                                str_result= (String)new sendComment(mContext).execute(Integer.toString(mItem.getPostID()),newParentID, textBody, userID, commentTime).get(2000, TimeUnit.MILLISECONDS);
 
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
@@ -176,6 +183,7 @@ public class MyCommentAdapter extends MultiLevelAdapter {
 
                             mMultiLevelRecyclerView.openTill(mItem.getLevel());
                             notifyDataSetChanged();*/
+                            Toast.makeText(mContext, "successfully commented", Toast.LENGTH_SHORT).show();
                             Intent myIntent = new Intent(mContext, viewComments.class);
                             myIntent.putExtra("USERID", ((Activity) mContext).getIntent().getStringExtra("USERID"));
                             myIntent.putExtra("USERNAME", ((Activity) mContext).getIntent().getStringExtra("USERNAME"));
@@ -184,6 +192,8 @@ public class MyCommentAdapter extends MultiLevelAdapter {
                             Log.d("mItem", "" + mItem.getPostID());
                             //myIntent.putExtra("key", value); //Optional parameters
                             mContext.startActivity(myIntent);
+                        }else{
+                            Toast.makeText(mContext, "unable to comment: comment empty", Toast.LENGTH_SHORT).show();
                         }
                     }
             });
