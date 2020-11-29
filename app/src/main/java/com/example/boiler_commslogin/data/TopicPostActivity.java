@@ -61,7 +61,7 @@ public class TopicPostActivity extends AppCompatActivity {
     ArrayList<String> topicIDNumbers = new ArrayList();
     ArrayList<String> upvotedPosts = new ArrayList<>();
     ArrayList<String> downvotedPosts = new ArrayList<>();
-    int currentTopicIndex = 0;
+    int currentTopicIndex = 1;
 
 
     public static Document loadXMLFromString(String xml) throws Exception

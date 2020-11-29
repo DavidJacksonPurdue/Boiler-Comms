@@ -31,5 +31,8 @@ public abstract class Constants {
     public static final String CHECK_FOLLOW = ROOT_URL + "checkvalidFollow.php?q=";
     public static final String FOLLOW_USER = ROOT_URL + "followUser.php?q=";
     public static final String GETFOLLOWTOPIC = ROOT_URL + "followTopic.php?q=";
+    public static final String GETALLDMS = ROOT_URL + "getMostRecentDMs.php?q=";
+    public static final String GETSPECIFICDMS = ROOT_URL + "getSpecificDM.php?q=";
+    public static final String SENDDM = ROOT_URL + "sendDM.php?q=";
 
 }

@@ -449,7 +449,7 @@ public class OtherTimeline extends AppCompatActivity {
         }
         else if (getIntent().getIntExtra("TIMELINE_TYPE", 0) == upvote_timeline_type) {
             if (username.size() > 0) {
-                String title_string = username.get(0) + "'s Upvoted Posts";
+                String title_string = "Upvoted Posts";
                 timelineTitle.setText(title_string);
             }
             else {

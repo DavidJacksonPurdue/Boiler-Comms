@@ -18,6 +18,14 @@
             android:label="viewMyComments"
             android:exported="true"/>
         <activity
+            android:name=".directMessage.viewDM"
+            android:label="viewMySpecificDMs"
+            android:exported="true"/>
+        <activity
+            android:name=".directMessage.viewAllDMs"
+            android:label="viewMyDMs"
+            android:exported="true"/>
+        <activity
             android:name=".comment.viewComments"
             android:label="viewComments"
             android:exported="true"/>

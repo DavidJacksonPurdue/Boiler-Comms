@@ -176,6 +176,7 @@ public class MyCommentAdapter extends MultiLevelAdapter {
 
                             mMultiLevelRecyclerView.openTill(mItem.getLevel());
                             notifyDataSetChanged();*/
+                            Toast.makeText(mContext, "successfully commented", Toast.LENGTH_SHORT).show();
                             Intent myIntent = new Intent(mContext, viewComments.class);
                             myIntent.putExtra("USERID", ((Activity) mContext).getIntent().getStringExtra("USERID"));
                             myIntent.putExtra("USERNAME", ((Activity) mContext).getIntent().getStringExtra("USERNAME"));
@@ -184,6 +185,8 @@ public class MyCommentAdapter extends MultiLevelAdapter {
                             Log.d("mItem", "" + mItem.getPostID());
                             //myIntent.putExtra("key", value); //Optional parameters
                             mContext.startActivity(myIntent);
+                        }else{
+                            Toast.makeText(mContext, "unable to comment: comment empty", Toast.LENGTH_SHORT).show();
                         }
                     }
             });

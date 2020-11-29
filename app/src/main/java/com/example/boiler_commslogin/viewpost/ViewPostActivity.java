@@ -226,6 +226,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
                             mMultiLevelRecyclerView.openTill(mItem.getLevel());
                             notifyDataSetChanged();*/
+                    Toast.makeText(getApplicationContext(), "successfully commented", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getApplicationContext(), viewComments.class);
                     intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                     intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
@@ -233,6 +234,8 @@ public class ViewPostActivity extends AppCompatActivity {
                     intent.putExtra("POSTID", postID);
                     //myIntent.putExtra("key", value); //Optional parameters
                     startActivity(intent);
+                }else{
+                    Toast.makeText(getApplicationContext(), "unable to comment: comment empty", Toast.LENGTH_SHORT).show();
                 }
             }
         });
