@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -159,6 +160,84 @@ public class PublicProfilePage extends AppCompatActivity {
         }
     }
 
+    public class BlockAndUnblock extends AsyncTask {
+        private Context context;
+        String userCredentials;
+
+        public BlockAndUnblock(Context context) {
+            this.context = context;
+        }
+        public String getUserCredentials(){
+            return userCredentials;
+        }
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            URL url = null;
+            String userID = (String)objects[0];
+            try {
+                url = new URL(Constants.BLOCK_USER + objects[0].toString() + "_" + objects[1].toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            HttpURLConnection con = null;
+            try {
+                con = (HttpURLConnection) url.openConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                con.setRequestMethod("GET");
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+            }
+            con.setConnectTimeout(5000);
+            con.setReadTimeout(5000);
+            int status = 0;
+            try {
+                status = con.getResponseCode();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            BufferedReader in = null;
+            StringBuilder content = new StringBuilder();
+            if (status <= 299) {
+                try {
+                    in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String inputLine;
+                    while (true) {
+                        inputLine = in.readLine();
+                        if (inputLine == null) {
+                            break;
+                        }
+                        content.append(inputLine);
+                    }
+                    con.disconnect();
+                } catch (IOException e) {
+                    con.disconnect();
+                    content.delete(0,content.length());
+                    content.append("ERROR");
+                    e.printStackTrace();
+                }
+                try {
+                    if (in != null) {
+                        in.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (content.toString().equals("FALSE")) {
+                return "INS";
+            }
+            else if (content.toString().equals("TRUE")) {
+                return "DEL";
+            }
+            else {
+                return "FAIL";
+            }
+        }
+    }
+
 
     public static final String UPLOAD_KEY = "image";
 
@@ -191,6 +270,11 @@ public class PublicProfilePage extends AppCompatActivity {
         final Button comments = findViewById(R.id.view_comments);
         final Button savedPosts = findViewById(R.id.saved_posts);
         final Button followButton = findViewById(R.id.follow_button);
+        final Button blockButton = findViewById(R.id.block_button);
+        final ImageButton dmButton = findViewById(R.id.message_button);
+        final Button viewFollowedUsers = findViewById(R.id.user_list);
+        final Button viewFollowedTopics = findViewById(R.id.topic_list);
+        final Button viewBlockedUsers = findViewById(R.id.block_list);
         final int post_timeline_type = 0;
         final int upvote_timeline_type = 2;
         final int saved_timeline_type = 3;
@@ -244,6 +328,16 @@ public class PublicProfilePage extends AppCompatActivity {
             savedPosts.setClickable(true);
             followButton.setVisibility(View.INVISIBLE);
             savedPosts.setClickable(false);
+            blockButton.setVisibility(View.INVISIBLE);
+            blockButton.setClickable(false);
+            dmButton.setVisibility(View.INVISIBLE);
+            dmButton.setClickable(false);
+            viewBlockedUsers.setVisibility(View.VISIBLE);
+            viewBlockedUsers.setClickable(true);
+            viewFollowedTopics.setVisibility(View.VISIBLE);
+            viewFollowedTopics.setClickable(true);
+            viewFollowedUsers.setVisibility(View.VISIBLE);
+            viewFollowedUsers.setClickable(true);
         }
 
         if (img != null) {
@@ -280,6 +374,80 @@ public class PublicProfilePage extends AppCompatActivity {
                 else {
                     Toast.makeText(getApplicationContext(), "You're No Longer Following this User", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        blockButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Object[] objects = new Object[2];
+                objects[0] = getIntent().getStringExtra("USERID");
+                objects[1] = getIntent().getStringExtra("PUBLIC_USER");
+                String block_result = "";
+                try {
+                    block_result = (String) new BlockAndUnblock(getApplicationContext()).execute(objects).get(3000, TimeUnit.MILLISECONDS);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
+                if (block_result.equals("FAIL")) {
+                    Toast.makeText(getApplicationContext(), "Failed to block user at this time", Toast.LENGTH_SHORT).show();
+                }
+                else if (block_result.equals("INS")) {
+                    Toast.makeText(getApplicationContext(), "Blocked User", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "You're No Longer Blocking this User", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        dmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Open DM page goes here
+            }
+        });
+
+        viewBlockedUsers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_view_list);
+                Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("LIST_TYPE", 2);
+                startActivity(intent);
+            }
+        });
+
+        viewFollowedTopics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_view_list);
+                Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("LIST_TYPE", 1);
+                startActivity(intent);
+            }
+        });
+
+        viewFollowedUsers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_view_list);
+                Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                intent.putExtra("LIST_TYPE", 0);
+                startActivity(intent);
             }
         });
 
