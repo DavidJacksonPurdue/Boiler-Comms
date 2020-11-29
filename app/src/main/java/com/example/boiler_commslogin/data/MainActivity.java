@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,6 +48,8 @@ import java.util.concurrent.TimeoutException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import static java.lang.Thread.sleep;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -276,8 +279,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-        //setContentView(R.layout.activity_login);
 
         recyclerView = findViewById(R.id.recyclerView);
         String str_result = null;
@@ -533,5 +536,7 @@ public class MainActivity extends AppCompatActivity {
                 dialog.getButton(-2).setVisibility(View.VISIBLE);
             }
         });
+
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
     }
 }

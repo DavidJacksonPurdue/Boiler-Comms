@@ -20,6 +20,7 @@ import com.example.boiler_commslogin.R
 import com.example.boiler_commslogin.data.LoginModel
 import com.example.boiler_commslogin.data.MainActivity
 import com.example.boiler_commslogin.sign_up.SignUpActivity
+import java.util.concurrent.TimeUnit
 
 
 class LoginActivity : AppCompatActivity() {
@@ -34,7 +35,6 @@ class LoginActivity : AppCompatActivity() {
         val username = findViewById<EditText>(R.id.username)
         val password = findViewById<EditText>(R.id.password)
         val login = findViewById<Button>(R.id.login)
-        val loading = findViewById<ProgressBar>(R.id.loading)
         val signUp = findViewById<Button>(R.id.sign_up)
 
         loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
@@ -57,7 +57,6 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.loginResult.observe(this@LoginActivity, Observer {
             val loginResult = it ?: return@Observer
 
-            loading.visibility = View.GONE
             if (loginResult.error != null) {
                 showLoginFailed(loginResult.error)
             }
@@ -97,7 +96,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             login.setOnClickListener {
-                loading.visibility = View.VISIBLE
+
                 val result = LoginModel(applicationContext).execute(username.getText().toString(), password.getText().toString()).get()
                 Log.d("resultoutputIguess", result.toString())
                 Log.d("password_value", password.getText().toString())
@@ -117,7 +116,6 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(intent)
                 } else {
                     Toast.makeText(applicationContext, "Login Failed", Toast.LENGTH_LONG).show()
-                    loading.visibility = View.INVISIBLE
                 }
             }
 

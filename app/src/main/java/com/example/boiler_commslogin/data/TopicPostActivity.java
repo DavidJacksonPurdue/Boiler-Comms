@@ -85,7 +85,6 @@ public class TopicPostActivity extends AppCompatActivity {
         Button followTopic = findViewById(R.id.followTopic);
 
 
-
         // Find and store the recycler view
         recyclerView = findViewById(R.id.topicRecyclerView);
         String str_result = null;
@@ -543,6 +542,6 @@ public class TopicPostActivity extends AppCompatActivity {
             }
         });
 
-
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
     }
 }
