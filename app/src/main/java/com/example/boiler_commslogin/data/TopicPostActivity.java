@@ -85,7 +85,6 @@ public class TopicPostActivity extends AppCompatActivity {
         Button followTopic = findViewById(R.id.followTopic);
 
 
-
         // Find and store the recycler view
         recyclerView = findViewById(R.id.topicRecyclerView);
         String str_result = null;
@@ -93,10 +92,13 @@ public class TopicPostActivity extends AppCompatActivity {
         String downvote_result = null;
         // Temporary topic ID
         String topicId = getIntent().getStringExtra("TOPICID");
+        Object[] obs = new Object[2];
+        obs[0] = topicId;
+        obs[1] = getIntent().getStringExtra("USERID");
 
         // Retrive all of the posts from the database with the associated topic id
         try {
-            str_result = (String) new getPostsByTopicModel(this).execute(topicId).get(2000, TimeUnit.MILLISECONDS);
+            str_result = (String) new getPostsByTopicModel(this).execute(obs).get(2000, TimeUnit.MILLISECONDS);
             upvote_result = (String) new MainActivity.LoadUpvoteList(this).execute(thisUserID).get(2000, TimeUnit.MILLISECONDS);
             downvote_result = (String) new MainActivity.LoadDownvoteList(this).execute(thisUserID).get(2000, TimeUnit.MILLISECONDS);
         } catch (ExecutionException e) {
@@ -341,8 +343,11 @@ public class TopicPostActivity extends AppCompatActivity {
                 String upvote_result = null;
                 String downvote_result = null;
                 currentTopicIndex = Integer.parseInt(pos);
+                Object[] obs2 = new Object[2];
+                obs2[0] = pos;
+                obs2[1] = getIntent().getStringExtra("USERID");
                 try {
-                    str_result = (String) new getPostsByTopicModel(context).execute(pos).get(2000, TimeUnit.MILLISECONDS);
+                    str_result = (String) new getPostsByTopicModel(context).execute(obs2).get(2000, TimeUnit.MILLISECONDS);
                     upvote_result = (String) new MainActivity.LoadUpvoteList(context).execute(thisUserID).get(2000, TimeUnit.MILLISECONDS);
                     downvote_result = (String) new MainActivity.LoadDownvoteList(context).execute(thisUserID).get(2000, TimeUnit.MILLISECONDS);
                 } catch (ExecutionException e) {
@@ -543,6 +548,6 @@ public class TopicPostActivity extends AppCompatActivity {
             }
         });
 
-
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
     }
 }
