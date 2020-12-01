@@ -355,6 +355,7 @@ public class EditUserProfile extends AppCompatActivity {
                 dialog.getButton(-2).setVisibility(View.VISIBLE);
             }
         });
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
     }
 
     private void updateUiWithUser(EditLoggedInUserView model) {

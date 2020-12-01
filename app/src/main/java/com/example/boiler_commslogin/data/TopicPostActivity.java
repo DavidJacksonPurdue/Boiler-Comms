@@ -516,9 +516,7 @@ public class TopicPostActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
-
+        
 
         followTopic.setOnClickListener(new View.OnClickListener() {
             @Override

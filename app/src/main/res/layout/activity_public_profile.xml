@@ -11,12 +11,25 @@
         android:layout_height="39dp"
         android:layout_marginEnd="64dp"
         android:layout_marginRight="64dp"
-        android:text="@string/last_name"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user"
         app:layout_constraintVertical_bias="0.11" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="#CEB888"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
 
     <ImageView
         android:id="@+id/profile_pic"
@@ -28,16 +41,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.153"
-        app:srcCompat="@drawable/ic_emoji_emotions_24px"
-        tools:ignore="ContentDescription,VectorDrawableCompat"
-        tools:srcCompat="@drawable/ic_emoji_emotions_24px" />
+        tools:ignore="ContentDescription,VectorDrawableCompat" />
 
     <TextView
         android:id="@+id/user"
         android:layout_width="281dp"
         android:layout_height="49dp"
         android:gravity="center_horizontal"
-        android:text="@string/prompt_username"
         android:textAlignment="center"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -50,7 +60,6 @@
         android:id="@+id/first_name"
         android:layout_width="112dp"
         android:layout_height="39dp"
-        android:text="@string/first_name"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/last_name"

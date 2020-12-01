@@ -527,5 +527,6 @@ public class PublicProfilePage extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
     }
 }
