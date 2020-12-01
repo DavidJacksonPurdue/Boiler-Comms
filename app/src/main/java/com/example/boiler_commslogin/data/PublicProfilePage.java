@@ -50,6 +50,7 @@ import com.example.boiler_commslogin.data.model.LoadUserCredentials;
 import com.example.boiler_commslogin.data.model.RequestHandler;
 import com.example.boiler_commslogin.data.model.SendUserCredentials;
 import com.example.boiler_commslogin.delete_account.deleteUser;
+import com.example.boiler_commslogin.directMessage.viewDM;
 import com.example.boiler_commslogin.sign_up.verifyUser;
 import com.example.boiler_commslogin.ui.login.EditUserProfile;
 import com.example.boiler_commslogin.ui.login.LoginViewModel;
@@ -409,6 +410,15 @@ public class PublicProfilePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Open DM page goes here
+                setContentView(R.layout.activity_dm_user);
+                Intent intent = new Intent(getApplicationContext(), viewDM.class);
+                intent.putExtra("USERID1", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERID2", getIntent().getStringExtra("PUBLIC_USER"));
+                intent.putExtra("DM_ID", "");
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                //Log.d("ViewPost PostID", "" + postID);
+                startActivity(intent);
             }
         });
 

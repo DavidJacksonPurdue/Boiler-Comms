@@ -256,7 +256,6 @@ public class ViewPostActivity extends AppCompatActivity {
                 intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                intent.putExtra("POSTID", postID);
                 //Log.d("ViewPost PostID", "" + postID);
                 startActivity(intent);
             }

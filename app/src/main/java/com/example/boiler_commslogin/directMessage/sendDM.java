@@ -31,10 +31,23 @@ public class sendDM extends AsyncTask {
     protected Object doInBackground(Object[] objects) {
         URL url = null;
         String userID = (String)objects[0];
-        try {
-            url = new URL(Constants.SENDDM + objects[0].toString() + "_" + objects[1].toString() + "_" + objects[2].toString() + "_" + objects[3].toString() + "_" + objects[4].toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+        Log.d("objects[0]",objects[0].toString());
+        Log.d("objects[1]",objects[1].toString());
+        Log.d("objects[2]",objects[2].toString());
+        Log.d("objects[3]",objects[3].toString());
+        Log.d("objects[4]",objects[4].toString());
+        if(objects[0] == null){
+            try {
+                url = new URL(Constants.SENDDM + "_" + objects[1].toString() + "_" + objects[2].toString() + "_" + objects[3].toString() + "_" + objects[4].toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }else {
+            try {
+                url = new URL(Constants.SENDDM + objects[0].toString() + "_" + objects[1].toString() + "_" + objects[2].toString() + "_" + objects[3].toString() + "_" + objects[4].toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
         }
         Log.d("url", url.toString());
         HttpURLConnection con = null;

@@ -1,18 +1,22 @@
 package com.example.boiler_commslogin.directMessage;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.boiler_commslogin.R;
 import com.example.boiler_commslogin.comment.MyUserCommentsAdapter;
 import com.example.boiler_commslogin.comment.loadMyComments;
 import com.example.boiler_commslogin.comment.viewComments;
+import com.example.boiler_commslogin.data.MainActivity;
 import com.example.boiler_commslogin.data.PublicProfilePage;
 //import com.example.boiler_commslogin.comment.R;
 
@@ -44,10 +48,10 @@ public class viewAllDMs extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerview_newmessage);
         //back = findViewById(R.id.CommentsBackButton);
         String str_result = null;
-        UID = "1";
-        //UID = getIntent().getStringExtra("USERID");
-        //UserName = getIntent().getStringExtra("UserName");
-        UserName = "User2";
+        //UID = "1";
+        UID = getIntent().getStringExtra("USERID");
+        UserName = getIntent().getStringExtra("UserName");
+        //UserName = "User2";
         try {
             str_result= (String)new loadAllDMs(this).execute(UID).get(2000, TimeUnit.MILLISECONDS);;
 
@@ -91,19 +95,33 @@ public class viewAllDMs extends AppCompatActivity {
         allDMAdapter myAdapter = new allDMAdapter(this, dm_IDs, usernames, bodys, times, otherUIDs, UID, UserName);
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        /*back.setOnClickListener(new View.OnClickListener() {
+        Button backButton = findViewById(R.id.leaveDMs);
+        Button refreshButton = findViewById(R.id.refresh2);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                setContentView(R.layout.activity_public_profile);
-                Intent intent = new Intent(getApplicationContext(), PublicProfilePage.class);
-                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
-                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("USERID", UID);
+                intent.putExtra("USERNAME", UserName);
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                intent.putExtra("PUBLIC_USER", getIntent().getStringExtra("PUBLIC_USER"));
                 startActivity(intent);
             }
-        });*/
+        });
+
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_view_all_dms);
+                Intent intent = new Intent(getApplicationContext(), viewAllDMs.class);
+                intent.putExtra("USERID", UID);
+                intent.putExtra("USERNAME", UserName);
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                //Log.d("ViewPost PostID", "" + postID);
+                startActivity(intent);
+            }
+        });
 
     }
 

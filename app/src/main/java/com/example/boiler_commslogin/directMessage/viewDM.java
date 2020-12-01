@@ -69,46 +69,48 @@ public class viewDM extends AppCompatActivity {
 
         mContext = this;
 
-        Log.d("Made it here", "0");
-        String str_result = null;
-        try {
-            str_result= (String)new loadSpecificDM(this).execute(dm_id).get(2000, TimeUnit.MILLISECONDS);;
-
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
-        Document postXML = null;
-        try {
-            postXML = viewComments.loadXMLFromString(str_result);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        postXML.getDocumentElement().normalize();
-        NodeList nList = postXML.getElementsByTagName("dm_message");
-
-        String username;
-        String body;
-        String time;
-        String userID;
         specificDMArray = new ArrayList<>();
-        for(int x = 0; x <nList.getLength(); x++){
-            Element commentElement = (Element)(nList.item(x));
+        Log.d("Made it here", "0");
+        if(!(dm_id.equals(""))) {
+            String str_result = null;
+            try {
+                str_result = (String) new loadSpecificDM(this).execute(dm_id).get(2000, TimeUnit.MILLISECONDS);
 
-            username = commentElement.getAttribute("username");
-            body = commentElement.getAttribute("body");
-            time = commentElement.getAttribute("time");
-            userID = commentElement.getAttribute("userID");
-            specificDM tempDM = null;
-            if(userID.equals(uid1)) {
-                tempDM = new specificDM(username, body, time, 1);
-            }else{
-                tempDM = new specificDM(username, body, time, 0);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
             }
-            specificDMArray.add(tempDM);
+            Document postXML = null;
+            try {
+                postXML = viewComments.loadXMLFromString(str_result);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            postXML.getDocumentElement().normalize();
+            NodeList nList = postXML.getElementsByTagName("dm_message");
+
+            String username;
+            String body;
+            String time;
+            String userID;
+            for (int x = 0; x < nList.getLength(); x++) {
+                Element commentElement = (Element) (nList.item(x));
+
+                username = commentElement.getAttribute("username");
+                body = commentElement.getAttribute("body");
+                time = commentElement.getAttribute("time");
+                userID = commentElement.getAttribute("userID");
+                specificDM tempDM = null;
+                if (userID.equals(uid1)) {
+                    tempDM = new specificDM(username, body, time, 1);
+                } else {
+                    tempDM = new specificDM(username, body, time, 0);
+                }
+                specificDMArray.add(tempDM);
+            }
         }
         mAdapter = new specificDMAdapter(specificDMArray, this);
         recyclerView.setAdapter(mAdapter);
@@ -141,6 +143,37 @@ public class viewDM extends AppCompatActivity {
                 }else{
                     Toast.makeText(getApplicationContext(), "message must not be empty", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+        Button backButton = findViewById(R.id.backToDMs);
+        Button refreshButton = findViewById(R.id.refreshButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_view_all_dms);
+                Intent intent = new Intent(getApplicationContext(), viewAllDMs.class);
+                intent.putExtra("USERID", uid1);
+                intent.putExtra("USERNAME", UserUsername);
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                //Log.d("ViewPost PostID", "" + postID);
+                startActivity(intent);
+            }
+        });
+
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_dm_user);
+                Intent intent = new Intent(getApplicationContext(), viewDM.class);
+                intent.putExtra("USERID", uid1);
+                intent.putExtra("USERID2", uid2);
+                intent.putExtra("DM_ID", dm_id);
+                intent.putExtra("USERNAME", UserUsername);
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                //Log.d("ViewPost PostID", "" + postID);
+                startActivity(intent);
             }
         });
     }
