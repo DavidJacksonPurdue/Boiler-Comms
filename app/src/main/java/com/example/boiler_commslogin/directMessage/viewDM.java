@@ -61,11 +61,6 @@ public class viewDM extends AppCompatActivity {
         dm_id = getIntent().getStringExtra("DM_ID");
         uid2 = getIntent().getStringExtra("USERID2");
         UserUsername = getIntent().getStringExtra("USERNAME");
-        /*uid1 = "1";
-        dm_id = "1";
-        uid2 = "2";
-        UserUsername = "User2";
-        */
 
         mContext = this;
 
@@ -134,6 +129,17 @@ public class viewDM extends AppCompatActivity {
                     } catch (TimeoutException e) {
                         e.printStackTrace();
                     }
+                    Document postXML = null;
+                    try {
+                        postXML = viewComments.loadXMLFromString(str_result);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    postXML.getDocumentElement().normalize();
+                    NodeList nList = postXML.getElementsByTagName("dm");
+                    Element commentElement = (Element) (nList.item(0));
+
+                    dm_id = commentElement.getAttribute("id");
                     currentMessage.setText("");
                     specificDM tempDM = new specificDM(UserUsername, tempMsg, msgTime, 1);
                     specificDMArray.add(tempDM);
@@ -167,7 +173,7 @@ public class viewDM extends AppCompatActivity {
             public void onClick(View v) {
                 setContentView(R.layout.activity_dm_user);
                 Intent intent = new Intent(getApplicationContext(), viewDM.class);
-                intent.putExtra("USERID", uid1);
+                intent.putExtra("USERID1", uid1);
                 intent.putExtra("USERID2", uid2);
                 intent.putExtra("DM_ID", dm_id);
                 intent.putExtra("USERNAME", UserUsername);

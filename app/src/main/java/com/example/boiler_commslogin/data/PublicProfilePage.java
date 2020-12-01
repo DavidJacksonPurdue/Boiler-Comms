@@ -50,6 +50,7 @@ import com.example.boiler_commslogin.data.model.LoadUserCredentials;
 import com.example.boiler_commslogin.data.model.RequestHandler;
 import com.example.boiler_commslogin.data.model.SendUserCredentials;
 import com.example.boiler_commslogin.delete_account.deleteUser;
+import com.example.boiler_commslogin.directMessage.viewAllDMs;
 import com.example.boiler_commslogin.directMessage.viewDM;
 import com.example.boiler_commslogin.sign_up.verifyUser;
 import com.example.boiler_commslogin.ui.login.EditUserProfile;
@@ -276,6 +277,7 @@ public class PublicProfilePage extends AppCompatActivity {
         final Button viewFollowedUsers = findViewById(R.id.user_list);
         final Button viewFollowedTopics = findViewById(R.id.topic_list);
         final Button viewBlockedUsers = findViewById(R.id.block_list);
+        final Button allDMButton = findViewById(R.id.AllDMButton);
         final int post_timeline_type = 0;
         final int upvote_timeline_type = 2;
         final int saved_timeline_type = 3;
@@ -339,6 +341,8 @@ public class PublicProfilePage extends AppCompatActivity {
             viewFollowedTopics.setClickable(true);
             viewFollowedUsers.setVisibility(View.VISIBLE);
             viewFollowedUsers.setClickable(true);
+            allDMButton.setVisibility(View.VISIBLE);
+            allDMButton.setClickable(true);
         }
 
         if (img != null) {
@@ -524,6 +528,18 @@ public class PublicProfilePage extends AppCompatActivity {
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                 intent.putExtra("PUBLIC_USER", getIntent().getStringExtra("PUBLIC_USER"));
                 intent.putExtra("TIMELINE_TYPE", post_timeline_type);
+                startActivity(intent);
+            }
+        });
+        allDMButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_view_all_dms);
+                Intent intent = new Intent(getApplicationContext(), viewAllDMs.class);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("UserName"));
+                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                //Log.d("ViewPost PostID", "" + postID);
                 startActivity(intent);
             }
         });

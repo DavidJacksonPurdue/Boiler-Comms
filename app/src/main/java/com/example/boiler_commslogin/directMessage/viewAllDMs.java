@@ -53,7 +53,7 @@ public class viewAllDMs extends AppCompatActivity {
         UserName = getIntent().getStringExtra("UserName");
         //UserName = "User2";
         try {
-            str_result= (String)new loadAllDMs(this).execute(UID).get(2000, TimeUnit.MILLISECONDS);;
+            str_result= (String)new loadAllDMs(this).execute(getIntent().getStringExtra("USERID")).get(2000, TimeUnit.MILLISECONDS);;
 
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -92,7 +92,7 @@ public class viewAllDMs extends AppCompatActivity {
                 otherUIDs.add(tempUID1);
             }
         }
-        allDMAdapter myAdapter = new allDMAdapter(this, dm_IDs, usernames, bodys, times, otherUIDs, UID, UserName);
+        allDMAdapter myAdapter = new allDMAdapter(this, dm_IDs, usernames, bodys, times, otherUIDs, getIntent().getStringExtra("USERID"), getIntent().getStringExtra("UserName"));
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Button backButton = findViewById(R.id.leaveDMs);
@@ -102,8 +102,8 @@ public class viewAllDMs extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra("USERID", UID);
-                intent.putExtra("USERNAME", UserName);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("UserName"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                 startActivity(intent);
             }
@@ -115,8 +115,8 @@ public class viewAllDMs extends AppCompatActivity {
             public void onClick(View v) {
                 setContentView(R.layout.activity_view_all_dms);
                 Intent intent = new Intent(getApplicationContext(), viewAllDMs.class);
-                intent.putExtra("USERID", UID);
-                intent.putExtra("USERNAME", UserName);
+                intent.putExtra("USERID", getIntent().getStringExtra("USERID"));
+                intent.putExtra("USERNAME", getIntent().getStringExtra("UserName"));
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                 //Log.d("ViewPost PostID", "" + postID);
                 startActivity(intent);
