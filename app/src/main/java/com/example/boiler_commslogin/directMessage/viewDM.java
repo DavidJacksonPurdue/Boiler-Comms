@@ -61,11 +61,6 @@ public class viewDM extends AppCompatActivity {
         dm_id = getIntent().getStringExtra("DM_ID");
         uid2 = getIntent().getStringExtra("USERID2");
         UserUsername = getIntent().getStringExtra("USERNAME");
-        /*uid1 = "1";
-        dm_id = "1";
-        uid2 = "2";
-        UserUsername = "User2";
-        */
 
         mContext = this;
 
@@ -138,11 +133,13 @@ public class viewDM extends AppCompatActivity {
                     mAdapter.notifyItemInserted(specificDMArray.size() - 1);
                     hideKeyboard((Activity) mContext);
                     Toast.makeText(getApplicationContext(), "message sent", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(), "message must not be empty", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
     }
 
 

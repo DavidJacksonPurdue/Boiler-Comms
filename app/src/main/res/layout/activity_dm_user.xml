@@ -8,6 +8,21 @@
     tools:context=".directMessage.viewDM"
     android:background="@android:color/white">
 
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="#CEB888"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+
     <EditText
         android:id="@+id/edittext_chat_log"
         android:layout_width="0dp"
