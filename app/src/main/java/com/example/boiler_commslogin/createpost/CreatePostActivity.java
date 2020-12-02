@@ -44,6 +44,7 @@ public class CreatePostActivity extends AppCompatActivity {
     TextView postTopicText;
     ImageView imageView;
     TextView postText;
+    TextView postLinkText;
 
     Button loadButton;
     Button postButton;
@@ -62,6 +63,7 @@ public class CreatePostActivity extends AppCompatActivity {
         postTopicText = (TextView) findViewById(R.id.postTopicText);
         imageView = (ImageView) findViewById(R.id.imageView);
         postText = (TextView) findViewById(R.id.postText);
+        postLinkText = (TextView) findViewById(R.id.postLinkEntered);
 
         loadButton = (Button) findViewById(R.id.loadButton);
         postButton = (Button) findViewById(R.id.postButton);
@@ -89,6 +91,10 @@ public class CreatePostActivity extends AppCompatActivity {
                     String postName = postNameText.getText().toString();
                     //String postText = (String) postText.getText();
                     String post_text = postText.getText().toString();
+                    String postLink = postLinkText.getText().toString();
+                    if (postLink.equals("")) {
+                        postLink = "null";
+                    }
                     String postImage = "null";
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                     LocalDateTime now = LocalDateTime.now();
@@ -108,10 +114,10 @@ public class CreatePostActivity extends AppCompatActivity {
                         String extension = (String) getApplicationContext().getContentResolver().getType(imageURI);
                         extension = extension.substring(extension.lastIndexOf("/") + 1);
                         Log.d("extension", extension);
-                        str_result = (String) new CreatePost(getApplicationContext()).execute(userID, postID, topicID, postName, post_text, postDate, base64image, extension).get(2000, TimeUnit.MILLISECONDS);
+                        str_result = (String) new CreatePost(getApplicationContext()).execute(userID, postID, topicID, postName, post_text, postLink, postDate, base64image, extension).get(2000, TimeUnit.MILLISECONDS);
                     }
                     else {
-                        str_result = (String) new CreatePost(getApplicationContext()).execute(userID, postID, topicID, postName, post_text, postDate, "<<>>", "<<>>").get(2000, TimeUnit.MILLISECONDS);
+                        str_result = (String) new CreatePost(getApplicationContext()).execute(userID, postID, topicID, postName, post_text, postLink, postDate, "<<>>", "<<>>").get(2000, TimeUnit.MILLISECONDS);
                     }
                     if (str_result.equals("Success")) {
                         Toast.makeText(getApplicationContext(), "Post created successfully", Toast.LENGTH_LONG).show();
