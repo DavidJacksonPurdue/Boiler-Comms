@@ -46,9 +46,10 @@ public class CreatePost extends AsyncTask {
         String topicID = (String) objects[2];
         String postName = (String) objects[3];
         String postText = (String) objects[4];
-        String postDate = (String) objects[5];
-        String filetype = (String) objects[7];
-        String base64Image = "data:image/;" + filetype + ";base64," + ((String) objects[6]);
+        String postLink = (String) objects[5];
+        String postDate = (String) objects[6];
+        String filetype = (String) objects[8];
+        String base64Image = "data:image/;" + filetype + ";base64," + ((String) objects[7]);
         Log.d("b64", base64Image);
         try {
             char delim = 157;

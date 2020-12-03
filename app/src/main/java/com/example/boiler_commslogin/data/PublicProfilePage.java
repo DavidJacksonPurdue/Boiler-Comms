@@ -50,6 +50,9 @@ import com.example.boiler_commslogin.data.model.LoadUserCredentials;
 import com.example.boiler_commslogin.data.model.RequestHandler;
 import com.example.boiler_commslogin.data.model.SendUserCredentials;
 import com.example.boiler_commslogin.delete_account.deleteUser;
+import com.example.boiler_commslogin.directMessage.checkIfCanDM;
+import com.example.boiler_commslogin.directMessage.checkIfFollowCase;
+import com.example.boiler_commslogin.directMessage.loadAllDMs;
 import com.example.boiler_commslogin.directMessage.viewAllDMs;
 import com.example.boiler_commslogin.directMessage.viewDM;
 import com.example.boiler_commslogin.sign_up.verifyUser;
@@ -60,6 +63,9 @@ import com.example.boiler_commslogin.viewOtherUserComments;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -495,16 +501,69 @@ public class PublicProfilePage extends AppCompatActivity {
         dmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Open DM page goes here
-                setContentView(R.layout.activity_dm_user);
-                Intent intent = new Intent(getApplicationContext(), viewDM.class);
-                intent.putExtra("USERID1", getIntent().getStringExtra("USERID"));
-                intent.putExtra("USERID2", getIntent().getStringExtra("PUBLIC_USER"));
-                intent.putExtra("DM_ID", "");
-                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
-                intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
-                //Log.d("ViewPost PostID", "" + postID);
-                startActivity(intent);
+                String str_result1 = "";
+                String followCase = "0";
+                try {
+                    str_result1= (String)new checkIfFollowCase(getApplicationContext()).execute(getIntent().getStringExtra("USERID")).get(2000, TimeUnit.MILLISECONDS);;
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
+                Document postXML1 = null;
+                try {
+                    postXML1 = viewComments.loadXMLFromString(str_result1);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                postXML1.getDocumentElement().normalize();
+                NodeList nList1 = postXML1.getElementsByTagName("block");
+                Element commentElement1 = (Element)(nList1.item(0));
+                if(commentElement1.getAttribute("is_blocked").equals("true")){
+                    followCase = "1";
+                }else{
+                    followCase = "0";
+                }
+
+
+                String str_result2 = "";
+                try {
+                    str_result2= (String)new checkIfCanDM(getApplicationContext()).execute(followCase, getIntent().getStringExtra("USERID"),getIntent().getStringExtra("PUBLIC_USER")).get(2000, TimeUnit.MILLISECONDS);;
+
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
+                Document postXML2 = null;
+                try {
+                    postXML2 = viewComments.loadXMLFromString(str_result2);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                postXML2.getDocumentElement().normalize();
+                NodeList nList2 = postXML2.getElementsByTagName("block");
+                Element commentElement2 = (Element)(nList2.item(0));
+                if(followCase.equals("1")){
+                    Toast.makeText(getApplicationContext(), "You are not following this user, Cannot DM", Toast.LENGTH_LONG).show();
+                }else if(commentElement2.getAttribute("is_blocked").equals("true")){
+                    Toast.makeText(getApplicationContext(), "User Is Blocked, Cannot DM", Toast.LENGTH_LONG).show();
+                }else{
+                    //Open DM page goes here
+                    setContentView(R.layout.activity_dm_user);
+                    Intent intent = new Intent(getApplicationContext(), viewDM.class);
+                    intent.putExtra("USERID1", getIntent().getStringExtra("USERID"));
+                    intent.putExtra("USERID2", getIntent().getStringExtra("PUBLIC_USER"));
+                    intent.putExtra("DM_ID", "");
+                    intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                    intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                    //Log.d("ViewPost PostID", "" + postID);
+                    startActivity(intent);
+                }
             }
         });
 

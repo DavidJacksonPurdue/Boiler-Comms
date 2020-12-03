@@ -40,18 +40,24 @@ import android.widget.Toast;
 
 import com.example.boiler_commslogin.Constants;
 import com.example.boiler_commslogin.R;
+import com.example.boiler_commslogin.comment.viewComments;
 import com.example.boiler_commslogin.data.MainActivity;
 import com.example.boiler_commslogin.data.PasswordHasher;
 import com.example.boiler_commslogin.data.model.LoadUserCredentials;
 import com.example.boiler_commslogin.data.model.RequestHandler;
 import com.example.boiler_commslogin.data.model.SendUserCredentials;
+import com.example.boiler_commslogin.data.setProfileToFollowOnly;
 import com.example.boiler_commslogin.delete_account.deleteUser;
+import com.example.boiler_commslogin.directMessage.checkIfCanDM;
 import com.example.boiler_commslogin.sign_up.verifyUser;
 import com.example.boiler_commslogin.ui.login.LoginViewModel;
 import com.example.boiler_commslogin.ui.login.LoginViewModelFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -104,6 +110,7 @@ public class EditUserProfile extends AppCompatActivity {
         final Button loginButton = findViewById(R.id.save_changes);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
         final Button deletebutton = findViewById(R.id.button4);
+        final Button limitToFollowedUsers = findViewById(R.id.DMOnlyFollowed);
 
         //download initial values from user
         String str_result = null;
@@ -353,6 +360,28 @@ public class EditUserProfile extends AppCompatActivity {
                 dialog.show();
                 dialog.getButton(-1).setVisibility(View.VISIBLE);
                 dialog.getButton(-2).setVisibility(View.VISIBLE);
+            }
+        });
+
+        limitToFollowedUsers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String str_result1 = "";
+                String followCase = "0";
+                try {
+                    str_result1= (String)new setProfileToFollowOnly(getApplicationContext()).execute(getIntent().getStringExtra("USERID")).get(2000, TimeUnit.MILLISECONDS);;
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
+                if (str_result1.equals("TRUE")) {
+                    Toast.makeText(getApplicationContext(), "No Longer Limiting DMs to Followed Users", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Limiting DMs to Followed Users", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         findViewById(R.id.progressBar).setVisibility(View.GONE);
