@@ -501,9 +501,12 @@ public class PublicProfilePage extends AppCompatActivity {
         dmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String str_result0 = "";
                 String str_result1 = "";
-                String followCase = "0";
+                String followCase = "dick";
+                String followCase2 = "dick";
                 try {
+                    str_result0 = (String)new checkIfFollowCase(getApplicationContext()).execute(getIntent().getStringExtra("PUBLIC_USER")).get(2000, TimeUnit.MILLISECONDS);;
                     str_result1= (String)new checkIfFollowCase(getApplicationContext()).execute(getIntent().getStringExtra("USERID")).get(2000, TimeUnit.MILLISECONDS);;
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -513,25 +516,39 @@ public class PublicProfilePage extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 Document postXML1 = null;
+                Document postXML0 = null;
                 try {
                     postXML1 = viewComments.loadXMLFromString(str_result1);
+                    postXML0 = viewComments.loadXMLFromString(str_result0);
                 }catch(Exception e){
                     e.printStackTrace();
                 }
                 postXML1.getDocumentElement().normalize();
+                postXML0.getDocumentElement().normalize();
                 NodeList nList1 = postXML1.getElementsByTagName("block");
+                NodeList nList0 = postXML0.getElementsByTagName("block");
                 Element commentElement1 = (Element)(nList1.item(0));
+                Element commentElement0 = (Element)(nList0.item(0));
+                Log.d("c1", commentElement1.getAttribute("is_blocked"));
+                Log.d("c0", commentElement0.getAttribute("is_blocked"));
                 if(commentElement1.getAttribute("is_blocked").equals("true")){
                     followCase = "1";
                 }else{
                     followCase = "0";
                 }
-
+                if(commentElement0.getAttribute("is_blocked").equals("true")){
+                    followCase2 = "1";
+                }else{
+                    followCase2 = "0";
+                }
+                Log.d("follow1", followCase);
+                Log.d("follow2", followCase2);
 
                 String str_result2 = "";
+                String str_result3 = "";
                 try {
                     str_result2= (String)new checkIfCanDM(getApplicationContext()).execute(followCase, getIntent().getStringExtra("USERID"),getIntent().getStringExtra("PUBLIC_USER")).get(2000, TimeUnit.MILLISECONDS);;
-
+                    str_result3 = (String)new checkIfCanDM(getApplicationContext()).execute(followCase2, getIntent().getStringExtra("PUBLIC_USER"),getIntent().getStringExtra("USERID")).get(2000, TimeUnit.MILLISECONDS);;
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -540,19 +557,24 @@ public class PublicProfilePage extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 Document postXML2 = null;
+                Document postXML3 = null;
                 try {
                     postXML2 = viewComments.loadXMLFromString(str_result2);
+                    postXML3 = viewComments.loadXMLFromString(str_result3);
                 }catch(Exception e){
                     e.printStackTrace();
                 }
                 postXML2.getDocumentElement().normalize();
+                postXML3.getDocumentElement().normalize();
                 NodeList nList2 = postXML2.getElementsByTagName("block");
+                NodeList nList3 = postXML3.getElementsByTagName("block");
                 Element commentElement2 = (Element)(nList2.item(0));
-                if(followCase.equals("1")){
-                    Toast.makeText(getApplicationContext(), "You are not following this user, Cannot DM", Toast.LENGTH_LONG).show();
-                }else if(commentElement2.getAttribute("is_blocked").equals("true")){
-                    Toast.makeText(getApplicationContext(), "User Is Blocked, Cannot DM", Toast.LENGTH_LONG).show();
-                }else{
+                Element commentElement3 = (Element)(nList3.item(0));
+                Log.d("Us to them", commentElement2.getAttribute("is_blocked"));
+                Log.d("them to us", commentElement3.getAttribute("is_blocked"));
+                if(commentElement2.getAttribute("is_blocked").equals("true") || commentElement3.getAttribute("is_blocked").equals("true")){
+                    Toast.makeText(getApplicationContext(), "You can not DM this user", Toast.LENGTH_LONG).show();
+                } else{
                     //Open DM page goes here
                     setContentView(R.layout.activity_dm_user);
                     Intent intent = new Intent(getApplicationContext(), viewDM.class);
