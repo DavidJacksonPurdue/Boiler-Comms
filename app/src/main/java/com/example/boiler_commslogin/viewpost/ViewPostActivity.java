@@ -145,12 +145,18 @@ public class ViewPostActivity extends AppCompatActivity {
             postImage = (ImageView) findViewById(R.id.postImage);
             String base64Image = image.split(",")[1];
             Log.d("Base64 Image", base64Image);
-            byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            postImage.setImageBitmap(decodedByte);
+            byte[] decodedString = null;
+            try {
+                decodedString = Base64.decode(base64Image, Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                postImage.setImageBitmap(decodedByte);
+            }
+            catch (IllegalArgumentException e) {
+                postImage.setImageBitmap(null);
+            }
         } else {
             setContentView(R.layout.activity_viewpost);
-            postImage = null;
+            postImage.setImageBitmap(null);
         }
 
         //Setup layout element objects
@@ -169,6 +175,7 @@ public class ViewPostActivity extends AppCompatActivity {
         saveButton = (Button) findViewById(R.id.saveButton);
         postDate = (TextView) findViewById(R.id.postDate);
         anonComment = (CheckBox) findViewById(R.id.anonCommentViewCheck);
+        postText.setKeyListener(null);
 
         postName.setText(name);
         postAuthor.setText(author);
@@ -242,6 +249,7 @@ public class ViewPostActivity extends AppCompatActivity {
                     intent.putExtra("POSTID", postID);
                     //myIntent.putExtra("key", value); //Optional parameters
                     startActivity(intent);
+                    finish();
                 }else{
                     Toast.makeText(getApplicationContext(), "unable to comment: comment empty", Toast.LENGTH_SHORT).show();
                 }
@@ -258,6 +266,7 @@ public class ViewPostActivity extends AppCompatActivity {
                 intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                 //Log.d("ViewPost PostID", "" + postID);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -369,10 +378,16 @@ public class ViewPostActivity extends AppCompatActivity {
         intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
         intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
         startActivity(intent);
+        finish();
     }
 
     public Document loadXMLFromString(String xml) throws Exception
     {
+        xml = xml.replaceAll("[^\\x20-\\x7e]","");
+        xml = xml.replaceAll("[^\\u0000-\\uFFFF]", "");
+        if (xml.lastIndexOf(">") != xml.length() - 1) {
+            xml += ">";
+        }
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));

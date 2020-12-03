@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -56,16 +57,13 @@ public class ViewPost extends AsyncTask {
         con.setReadTimeout(5000);
         int status = 0;
         BufferedReader in = null;
-        StringBuilder content = new StringBuilder();
+        StringWriter content = new StringWriter();
         try {
+            int n = 0;
+            char[] buffer = new char[1];
             in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            while (true) {
-                inputLine = in.readLine();
-                if(inputLine == null){
-                    break;
-                }
-                content.append(inputLine);
+            while (-1 != (n = in.read(buffer))) {
+                content.write(buffer, 0, n);
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -270,6 +270,10 @@ public class MainActivity extends AppCompatActivity {
     {
         xml = xml.replaceAll("[^\\x20-\\x7e]","");
         xml = xml.replaceAll("[^\\u0000-\\uFFFF]", "");
+        if (xml.lastIndexOf(">") != xml.length() - 1) {
+            Log.d("XML1", xml.substring(xml.lastIndexOf("<") - 5));
+            xml += ">";
+        }
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));
@@ -437,6 +441,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
                     intent.putExtra("POSTID", (String) object.get(0));
                     startActivity(intent);
+                    finish();
                 }else if (position == topic_pos) {
                     setContentView(R.layout.activity_topic_post);
                     Intent intent = new Intent(getApplicationContext(), TopicPostActivity.class);

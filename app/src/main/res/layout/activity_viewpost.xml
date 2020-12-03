@@ -129,11 +129,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:height="150dp"
-                android:editable="false"
                 android:ems="10"
                 android:gravity="start|top"
                 android:hint="Post text"
-                android:inputType="textMultiLine" />
+                android:inputType="none" />
         </LinearLayout>
     </ScrollView>
 

@@ -240,6 +240,76 @@ public class PublicProfilePage extends AppCompatActivity {
         }
     }
 
+    public class UnfollowWhenBlock extends AsyncTask {
+        private Context context;
+        String userCredentials;
+
+        public UnfollowWhenBlock(Context context) {
+            this.context = context;
+        }
+        public String getUserCredentials(){
+            return userCredentials;
+        }
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            URL url = null;
+            String userID = (String)objects[0];
+            try {
+                url = new URL(Constants.DELETE_FOLLOW + objects[0].toString() + "_" + objects[1].toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            HttpURLConnection con = null;
+            try {
+                con = (HttpURLConnection) url.openConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                con.setRequestMethod("GET");
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+            }
+            con.setConnectTimeout(5000);
+            con.setReadTimeout(5000);
+            int status = 0;
+            try {
+                status = con.getResponseCode();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            BufferedReader in = null;
+            StringBuilder content = new StringBuilder();
+            if (status <= 299) {
+                try {
+                    in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String inputLine;
+                    while (true) {
+                        inputLine = in.readLine();
+                        if (inputLine == null) {
+                            break;
+                        }
+                        content.append(inputLine);
+                    }
+                    con.disconnect();
+                } catch (IOException e) {
+                    con.disconnect();
+                    content.delete(0,content.length());
+                    content.append("ERROR");
+                    e.printStackTrace();
+                }
+                try {
+                    if (in != null) {
+                        in.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return content.toString();
+        }
+    }
+
 
     public static final String UPLOAD_KEY = "image";
 
@@ -402,6 +472,18 @@ public class PublicProfilePage extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Failed to block user at this time", Toast.LENGTH_SHORT).show();
                 }
                 else if (block_result.equals("INS")) {
+                    try {
+                        Object temp = objects[0];
+                        objects[0] = objects[1];
+                        objects[1] = temp;
+                        String unfollow_result =  (String) new UnfollowWhenBlock(getApplicationContext()).execute(objects).get(3000, TimeUnit.MILLISECONDS);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    }
                     Toast.makeText(getApplicationContext(), "Blocked User", Toast.LENGTH_SHORT).show();
                 }
                 else {

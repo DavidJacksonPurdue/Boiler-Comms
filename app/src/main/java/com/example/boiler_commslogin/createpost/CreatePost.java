@@ -51,7 +51,8 @@ public class CreatePost extends AsyncTask {
         String base64Image = "data:image/;" + filetype + ";base64," + ((String) objects[6]);
         Log.d("b64", base64Image);
         try {
-            url = new URL(Constants.CREATE_POST + userID + "_" + postID + "_" + topicID + "_" + postName + "_" + postText + "_" + postDate);
+            char delim = 157;
+            url = new URL(Constants.CREATE_POST + userID + delim + postID + delim + topicID + delim + postName + delim + postText + delim + postDate);
             Log.d("URL", url.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();

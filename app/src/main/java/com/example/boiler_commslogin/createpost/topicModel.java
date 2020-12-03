@@ -30,7 +30,8 @@ public class topicModel extends AsyncTask{
             String topicName = (String)objects[1];
 
             /* Create the url request string using the parameters*/
-            String link = Constants.INSERTOPIC + topicId + "_" + topicName;
+            char delim = 157;
+            String link = Constants.INSERTOPIC + topicId + delim + topicName;
 
             /* Create a new url */
             URL url = new URL(link);

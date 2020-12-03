@@ -218,6 +218,6 @@
         app:layout_constraintStart_toEndOf="@+id/saved_posts"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.871"
-        tools:visibility="invisible" />
+        android:visibility="invisible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
