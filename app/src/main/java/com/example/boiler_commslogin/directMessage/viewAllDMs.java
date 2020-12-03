@@ -92,7 +92,7 @@ public class viewAllDMs extends AppCompatActivity {
                 otherUIDs.add(tempUID1);
             }
         }
-        allDMAdapter myAdapter = new allDMAdapter(this, dm_IDs, usernames, bodys, times, otherUIDs, getIntent().getStringExtra("USERID"), getIntent().getStringExtra("UserName"));
+        allDMAdapter myAdapter = new allDMAdapter(this, dm_IDs, usernames, bodys, times, otherUIDs, getIntent().getStringExtra("USERID"), getIntent().getStringExtra("UserName"), getIntent().getStringExtra("PASSWORD"));
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Button backButton = findViewById(R.id.leaveDMs);
