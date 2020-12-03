@@ -115,14 +115,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="35dp"
-        android:layout_marginRight="35dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
         android:enabled="true"
         android:text="@string/save_changes"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username3" />
+        app:layout_constraintTop_toBottomOf="@+id/DMOnlyFollowed"
+        app:layout_constraintVertical_bias="0.496" />
 
     <ProgressBar
         android:id="@+id/loading"
@@ -170,11 +170,20 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:layout_marginLeft="25dp"
-        android:layout_marginTop="50dp"
         android:text="@string/delete_account"
         android:textColor="#D11414"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/save_changes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DMOnlyFollowed" />
+
+    <Button
+        android:id="@+id/DMOnlyFollowed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="lock dm to only followed users"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username3" />
 

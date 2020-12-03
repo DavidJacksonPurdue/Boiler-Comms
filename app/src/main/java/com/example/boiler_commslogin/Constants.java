@@ -38,5 +38,8 @@ public abstract class Constants {
     public static final String GETALLDMS = ROOT_URL + "getMostRecentDMs.php?q=";
     public static final String GETSPECIFICDMS = ROOT_URL + "getSpecificDM.php?q=";
     public static final String SENDDM = ROOT_URL + "sendDM.php?q=";
+    public static final String checkIfCanDM = ROOT_URL + "checkIfBlocked.php?q=";
+    public static final String checkIfCanDMFromFollow = ROOT_URL + "checkBlockOrFollow.php?q=";
+    public static final String SENDFOLLOWCASE = ROOT_URL + "setProfileToFollowOnly.php?q=";
 
 }
