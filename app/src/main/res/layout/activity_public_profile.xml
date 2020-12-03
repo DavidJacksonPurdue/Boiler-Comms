@@ -267,13 +267,16 @@
         android:id="@+id/AllDMButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Direct MEssages"
+        android:background="@drawable/custom_button"
+        android:padding="10dp"
+        android:text="Direct Messages"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.366"
+        app:layout_constraintHorizontal_bias="0.155"
         app:layout_constraintStart_toEndOf="@+id/saved_posts"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.871"
-        tools:visibility="invisible" />
+        app:layout_constraintVertical_bias="0.021"
+        android:visibility="invisible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -51,16 +51,26 @@
         android:id="@+id/imageView"
         android:layout_width="324dp"
         android:layout_height="143dp"
-        android:layout_marginTop="15dp"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/scrollView2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postTopicText"
-        app:layout_constraintVertical_bias="0.088"
+        app:layout_constraintTop_toBottomOf="@+id/postLinkEntered"
         app:srcCompat="@android:drawable/ic_menu_camera"
         tools:ignore="VectorDrawableCompat" />
+
+    <EditText
+        android:id="@+id/postLinkEntered"
+        android:layout_width="379dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:hint="Link"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postTopicText" />
 
     <Button
         android:id="@+id/loadButton"
