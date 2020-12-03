@@ -5,9 +5,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.SpannedString;
+import android.text.method.LinkMovementMethod;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.text.HtmlCompat;
 
 import com.example.boiler_commslogin.R;
 import com.example.boiler_commslogin.comment.MyCommentAdapter;
@@ -66,6 +72,7 @@ public class ViewPostActivity extends AppCompatActivity {
     String text;
     String votes;
     String date;
+    String webLink;
     String saved = "";
     boolean isSaved = false;
     String anonUser = "0";
@@ -76,8 +83,10 @@ public class ViewPostActivity extends AppCompatActivity {
     TextView postTopic;
     ImageView postImage;
     TextView postText;
+    TextView linkLabel;
     EditText commentText;
     TextView postDate;
+    TextView linkText;
     Button postCommentButton;
     Button viewCommentButton;
     TextView voteText;
@@ -86,6 +95,7 @@ public class ViewPostActivity extends AppCompatActivity {
     Button saveButton;
     CheckBox anonComment;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,6 +132,7 @@ public class ViewPostActivity extends AppCompatActivity {
                         votes = post.getAttribute("voteTotal");
                         image = post.getAttribute("postImage");
                         saved = post.getAttribute("savedPostID");
+                        webLink = post.getAttribute("postLink");
                     }
                 }
 
@@ -169,6 +180,14 @@ public class ViewPostActivity extends AppCompatActivity {
         saveButton = (Button) findViewById(R.id.saveButton);
         postDate = (TextView) findViewById(R.id.postDate);
         anonComment = (CheckBox) findViewById(R.id.anonCommentViewCheck);
+        linkLabel = (TextView) findViewById(R.id.linkLabel);
+        linkText = (TextView) findViewById(R.id.linkText);
+        linkText.setMovementMethod(LinkMovementMethod.getInstance());
+
+        if (webLink.equals("null")) {
+            linkLabel.setVisibility(View.INVISIBLE);
+            linkText.setVisibility(View.INVISIBLE);
+        }
 
         postName.setText(name);
         postAuthor.setText(author);
@@ -176,6 +195,7 @@ public class ViewPostActivity extends AppCompatActivity {
         postText.setText(text);
         voteText.setText(votes);
         postDate.setText(date);
+        linkText.setText(webLink);
 
         if (!saved.equals("false")) {
             saveButton.setBackgroundResource(R.drawable.ic_baseline_bookmark_24);
@@ -190,6 +210,17 @@ public class ViewPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 returnIntent();
+            }
+        });
+
+        linkText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!webLink.equals("null")) {
+                    Uri uri = Uri.parse(webLink); // missing 'http://' will cause crashed
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }
             }
         });
 
