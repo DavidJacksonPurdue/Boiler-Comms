@@ -52,7 +52,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="33dp"
                     android:text="SEND"
-                    android:textColor="#3F51B5"
+                    android:background="@drawable/custom_button"
+                    android:padding="10dp"
+                    android:textColor="@android:color/white"
                     android:textSize="10sp" />
 
                 <CheckBox

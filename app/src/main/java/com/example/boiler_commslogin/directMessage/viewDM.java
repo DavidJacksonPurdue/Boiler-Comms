@@ -176,6 +176,7 @@ public class viewDM extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
     }
 
 
