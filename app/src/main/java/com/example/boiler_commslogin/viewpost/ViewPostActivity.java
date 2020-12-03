@@ -167,7 +167,7 @@ public class ViewPostActivity extends AppCompatActivity {
             }
         } else {
             setContentView(R.layout.activity_viewpost);
-            postImage.setImageBitmap(null);
+            postImage = null;
         }
 
         //Setup layout element objects
