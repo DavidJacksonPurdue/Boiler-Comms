@@ -35,7 +35,12 @@ tools:context=".directMessage.viewAllDMs">
         android:id="@+id/leaveDMs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="exitDMs"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:background="@drawable/custom_button"
+        android:padding="10dp"
+        android:text="exit DMs"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,8 +48,12 @@ tools:context=".directMessage.viewAllDMs">
         android:id="@+id/refresh2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/custom_button"
+        android:padding="10dp"
         android:text="refresh"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.931"
         app:layout_constraintStart_toEndOf="@+id/leaveDMs"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
