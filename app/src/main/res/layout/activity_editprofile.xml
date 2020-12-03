@@ -24,6 +24,20 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
+    <Button
+        android:id="@+id/DMOnlyFollowed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="lock dm to only followed users"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/custom_button"
+        android:padding="10dp"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username3" />
+
     <EditText
         android:id="@+id/username"
         android:layout_width="331dp"
@@ -115,14 +129,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginEnd="40dp"
-        android:layout_marginRight="40dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
+        android:background="@drawable/custom_button"
         android:enabled="true"
+
+        android:padding="10dp"
         android:text="@string/save_changes"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/DMOnlyFollowed"
-        app:layout_constraintVertical_bias="0.496" />
+        app:layout_constraintTop_toBottomOf="@+id/DMOnlyFollowed" />
 
     <ProgressBar
         android:id="@+id/loading"
@@ -139,52 +156,46 @@
         android:id="@+id/imageView"
         android:layout_width="97dp"
         android:layout_height="95dp"
-        android:layout_marginEnd="250dp"
-        android:layout_marginRight="250dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
         android:contentDescription="@string/todo"
         app:layout_constraintBottom_toTopOf="@+id/username"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.100000024"
+        app:layout_constraintVertical_bias="0.066"
         tools:visibility="visible" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginStart="37dp"
+        android:layout_marginLeft="37dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/custom_button"
+        android:padding="10dp"
         android:text="@string/change_profile_picture"
+        android:textColor="#FFFFFF"
         android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/username4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.32" />
 
     <Button
         android:id="@+id/button4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginLeft="25dp"
+        android:background="@drawable/custom_button"
+        android:padding="10dp"
         android:text="@string/delete_account"
         android:textColor="#D11414"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/save_changes"
+        app:layout_constraintHorizontal_bias="0.78"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/DMOnlyFollowed" />
-
-    <Button
-        android:id="@+id/DMOnlyFollowed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="lock dm to only followed users"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

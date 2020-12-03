@@ -44,6 +44,9 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
+        android:background="@drawable/custom_button"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
         android:text="Go Home"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -75,6 +78,9 @@
         app:layout_constraintHorizontal_bias="0.923"
         app:layout_constraintStart_toEndOf="@+id/topicSearch"
         app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/custom_button"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
         tools:visibility="visible" />
 
     <ProgressBar

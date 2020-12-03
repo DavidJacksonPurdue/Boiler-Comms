@@ -6,4 +6,9 @@
     <color name="colorLoading">#0261BF</color>
     <color name="colorAccent">#FFFFFF</color>
     <color name="colorTitle">#DCA622</color>
+    <color name="athleticGold">#CEB888</color>
+    <color name="black">#000000</color>
+    <color name="gray">#9D968D</color>
+    <color name="secondary_text">#FFFFFF</color>
+    <color name="light_gray">#808080</color>
 </resources>
