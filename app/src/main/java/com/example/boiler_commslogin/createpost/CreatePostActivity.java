@@ -2,7 +2,10 @@ package com.example.boiler_commslogin.createpost;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -92,8 +95,40 @@ public class CreatePostActivity extends AppCompatActivity {
                     //String postText = (String) postText.getText();
                     String post_text = postText.getText().toString();
                     String postLink = postLinkText.getText().toString();
+                    if (postName.length() == 0 || postTopicText.getText().length() == 0) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(CreatePostActivity.this, R.style.AlertDialogTheme);
+                        builder.setTitle("Error");
+                        builder.setMessage("Title and Topic name cannot be empty")
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // FIRE ZE MISSILES!
+                                        dialog.cancel();
+                                    }
+                                });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                        return;
+                    }
+
+
                     if (postLink.equals("")) {
                         postLink = "null";
+                    } else if (postLink.length() > 0) {
+                        if (!postLink.startsWith("http://") && !postLink.startsWith("https://")) {
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(CreatePostActivity.this, R.style.AlertDialogTheme);
+                            builder.setTitle("Error");
+                            builder.setMessage("Link must start with 'http://' or 'https://'")
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            // FIRE ZE MISSILES!
+                                            dialog.cancel();
+                                        }
+                                    });
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
+                            return;
+                        }
                     }
                     String postImage = "null";
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

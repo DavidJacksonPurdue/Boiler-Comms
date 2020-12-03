@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class allDMAdapter extends RecyclerView.Adapter{
     String userID;
     String userName;
+    String password;
     ArrayList<String> dmIDs;
     ArrayList<String> usernames;
     ArrayList<String> bodys;
@@ -29,7 +30,7 @@ public class allDMAdapter extends RecyclerView.Adapter{
     ArrayList<String> otherUIDs;
     Context context;
 
-    public allDMAdapter(Context context, ArrayList<String> dmIDs, ArrayList<String> usernames, ArrayList<String> bodys, ArrayList<String> times, ArrayList<String> ohterUIDs, String userID, String userName){
+    public allDMAdapter(Context context, ArrayList<String> dmIDs, ArrayList<String> usernames, ArrayList<String> bodys, ArrayList<String> times, ArrayList<String> ohterUIDs, String userID, String userName, String password){
         this.context = context;
         this.userID = userID;
         this.dmIDs = dmIDs;
@@ -38,6 +39,7 @@ public class allDMAdapter extends RecyclerView.Adapter{
         this.times = times;
         this.otherUIDs = ohterUIDs;
         this.userName = userName;
+        this.password = password;
     }
 
     @NonNull
@@ -57,6 +59,7 @@ public class allDMAdapter extends RecyclerView.Adapter{
         ((allDMViewHolder)holder).uid2 = otherUIDs.get(position);
         ((allDMViewHolder)holder).uid1 = userID;
         ((allDMViewHolder)holder).username = userName;
+        ((allDMViewHolder)holder).password = password;
     }
 
     @Override
@@ -73,6 +76,7 @@ public class allDMAdapter extends RecyclerView.Adapter{
         String uid1;
         String uid2;
         String username;
+        String password;
         public allDMViewHolder(@NonNull View itemView) {
             super(itemView);
             theirUsername = itemView.findViewById(R.id.username_textview_new_message);
@@ -86,6 +90,7 @@ public class allDMAdapter extends RecyclerView.Adapter{
                     myIntent.putExtra("DM_ID", dmID);
                     myIntent.putExtra("USERID2",uid2);
                     myIntent.putExtra("USERNAME", username);
+                    myIntent.putExtra("PASSWORD", password);
                     //myIntent.putExtra("key", value); //Optional parameters
                     context.startActivity(myIntent);
                 }

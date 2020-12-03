@@ -118,8 +118,8 @@ public class viewDM extends AppCompatActivity {
                 if(!tempMsg.equals("")){
                     String str_result0 = "";
                     String str_result1 = "";
-                    String followCase = "dick";
-                    String followCase2 = "dick";
+                    String followCase = "0";
+                    String followCase2 = "0";
                     try {
                         str_result0 = (String)new checkIfFollowCase(getApplicationContext()).execute(getIntent().getStringExtra("USERID2")).get(2000, TimeUnit.MILLISECONDS);;
                         str_result1= (String)new checkIfFollowCase(getApplicationContext()).execute(getIntent().getStringExtra("USERID1")).get(2000, TimeUnit.MILLISECONDS);;
